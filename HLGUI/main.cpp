@@ -1,4 +1,4 @@
-#include "HLQTData/HL_GameSystem.h"
+#include "../HLBase/HL_GameSystem.h"
 #include<QApplication>
 #include<HLDataWidget.h>
 #include<LGWidget.h>

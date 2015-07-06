@@ -426,7 +426,7 @@ int FightSystem::CanGoOn()		// 判断能否继续。0我输，1继续，-1赢了
 
  QString FightSystem::Attack(HunLing * a, HunLing * b)
 {
-	double ATKPoint = a->ATK - b->DEF;
+    double ATKPoint = a->ATK - b->DEF;//以后要优化
 	if (ATKPoint < 0)
 		return a->Name+"的攻击太低了！起不了作用！";
 	else

@@ -6,20 +6,40 @@
 #include<QHBoxLayout>
 #include<QPushButton>
 #include<QListWidget>
-
+#include<QMessageBox>
 class ChooseDialog: public QDialog
 {
 	public:
-    int type;// 敌人还是自己,0敌人1自己
 	int num;
-	HLList a;
-	HLList b;
-	QListWidget MyList;
-	QListWidget EnemyList;
-	ChooseDialog(HLList a,HLList b);
+
+    QListWidget List;
+    QPushButton OK;
+    QVBoxLayout* MainLayout;
+    ChooseDialog(HLList a)
+    {
+        for(int i=1;i<=a.Count();i++)
+            List.addItem(a.GetData(i).Name+"   生命值："+QString::number(a.GetData(i).VITNOW));
+        MainLayout=new QVBoxLayout;
+        List.setCurrentRow(0);
+        MainLayout->addWidget(&List);
+        MainLayout->addWidget(&OK);
+        this->setLayout(MainLayout);
+        connect(&OK,&QPushButton::clicked,this,&ChooseDialog::OKClick);
+        this->setWindowFlags(Qt::FramelessWindowHint);
+        this->setWindowTitle("请选择魂灵");
+
+    }
     ~ChooseDialog(){}
-	void setData();
+    void OKClick()
+    {
+        num=List.currentRow()+1;
+    }
+
 };
+
+
+
+
 
 class LGSkillWidget: public QDialog
 {
@@ -190,14 +210,46 @@ FightWidget::FightWidget(RenWu a,NPC b)
     MainLayout->addWidget(&MessageList);
     this->setLayout(MainLayout);
 
-    connect(&ATkButton,Q)
+    connect(&ATkButton,&QPushButton::clicked,this,&FightWidget::Attack);
+    connect(&SkillButton,&QPushButton::clicked,this,&FightWidget::Skill);
+    connect(&LGSkillButton,&QPushButton::clicked,this,&FightWidget::LGSkill);
+    connect(&ItemButton,&QPushButton::clicked,this,&FightWidget::UseItem);
+    connect(&SkipButton,&QPushButton::clicked,this,&FightWidget::Skip);
+
+
 
 
 }
 
 void FightWidget::Attack()
 {
+    if(System->EB->type==0)
+    {
+        HunLing tempEnemy=EnemyHL.GetData(System->EB->index);
+        int a=GetNumber(1,MyHL.Count());
+        HunLing tempMe=MyHL.GetData(a);//以后要优化
+        QString msg=System->Attack(&tempEnemy,&tempMe);
+        QMessageBox::about(this,"提示",msg);
+     MessageList.addItem(System->Attack(&tempEnemy,&tempMe));
+     EnemyHL.Replace(tempEnemy,System->EB->index);
+     MyHL.Replace(tempMe,a);
+     GoOn.setEnabled(true);
+    }
+    if(System->EB->type==1)
+    {
+        ChooseDialog* temp=new ChooseDialog(EnemyHL);
+        temp->exec();
+        HunLing tempEnemy=EnemyHL.GetData(temp->num);
+        HunLing tempMe=MyHL.GetData(System->EB->index);
+        QString msg=System->Attack(&tempMe,&tempEnemy);
+        QMessageBox::about(this,"提示",msg);
+        MessageList.addItem(msg);
+        EnemyHL.Replace(tempEnemy,temp->num);
+        MyHL.Replace(tempMe,System->EB->index);
+        delete temp;
+        GoOn.setEnabled(true);
 
+    }
 
 }
 

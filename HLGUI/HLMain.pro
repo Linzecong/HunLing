@@ -38,4 +38,15 @@ HEADERS  += \
     HLQTData/HL_LingHuan.h \
     HLQTData/HL_NPC.h \
     HLQTData/HL_RenWu.h \
-    HLQTData/HL_Task.h
+    HLQTData/HL_Task.h \
+    ../HLBase/HL_DiTu.h \
+    ../HLBase/HL_FightSystem.h \
+    ../HLBase/HL_GameSystem.h \
+    ../HLBase/HL_HunJi.h \
+    ../HLBase/HL_HunLing.h \
+    ../HLBase/HL_Item.h \
+    ../HLBase/HL_LingGu.h \
+    ../HLBase/HL_LingHuan.h \
+    ../HLBase/HL_NPC.h \
+    ../HLBase/HL_RenWu.h \
+    ../HLBase/HL_Task.h
