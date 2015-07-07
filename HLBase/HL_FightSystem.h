@@ -323,7 +323,10 @@ class FightSystem
     FightSystem(RenWu* a, NPC b,HLList* a1,HLList* b1);
 	void TurnOut();				// 技能-1
 	QString Attack(HunLing * a, HunLing * b);//攻击
-	QString Skill(HunLing * a, HunLing * b, HunJi * skill);//技能，直接传入技能。
+    QString Skill(HunLing * a, HunLing* b, HunJi * skill);//技能，直接传入技能。单体。
+    QString Skill(HunLing * a, HLList& b, HunJi * skill);//技能，直接传入技能。全体。注意replace
+
+
 	QString UseItem(int a, HunLing * b,HunLing *c);//用道具，道具编号。
     QString Skip();
 	int CanGoOn();				// 判断能否继续
@@ -454,6 +457,24 @@ QString FightSystem::Skill(HunLing * a, HunLing * b, HunJi * skill)//注意技�
 		}
 	}
 	return Description;
+}
+
+QString FightSystem::Skill(HunLing * a, HLList& b, HunJi * skill)//注意replace
+{
+    QString Description;
+    skill->NowTurn += skill->Turn;
+    switch (skill->ID)
+    {
+    case 1:
+        {
+            break;
+        }
+    case 2:
+        {
+            break;
+        }
+    }
+    return Description;
 }
 
 QString FightSystem::UseItem(int a, HunLing * b,HunLing* c)

@@ -44,6 +44,8 @@ MapNPCWidget::MapNPCWidget(RenWu temp,NPC a)
     LV.setText("等级："+QString::number(tempNPC.LV));
     Task.setText("任务");
     Talk.setText("交谈");
+    if(tempNPC.CanATK==0)
+        Attack.setEnabled(false);
     Attack.setText("攻击");
     MainLayout->addWidget(&Head);
     MainLayout->addWidget(&Name);
@@ -86,6 +88,7 @@ void MapNPCWidget::Attack_Click()
 
         this->setEnabled(false);
 
+    SystemNPC[tempNPC.ID].CanATK=0;
     }
 
 

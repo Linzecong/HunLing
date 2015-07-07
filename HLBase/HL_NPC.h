@@ -145,39 +145,6 @@ void NPC::Update()
 	temp.ID=a.ID;
 	temp.LV = a.LV - 2 + GetNumber(2, 4);
 	temp.Type = i;
-	switch (temp.Type)
-	{
-	case 1:
-		{
-			temp.Name = a.Name + "之头盖骨";
-			break;
-		}
-	case 2:
-		{
-			temp.Name = a.Name + "之躯干骨";
-			break;
-		}
-	case 3:
-		{
-			temp.Name = a.Name + "之左臂骨";
-			break;
-		}
-	case 4:
-		{
-			temp.Name = a.Name + "之右臂骨";
-			break;
-		}
-	case 5:
-		{
-			temp.Name = a.Name + "之左腿骨";
-			break;
-		}
-	case 6:
-		{
-			temp.Name = a.Name + "之右腿骨";
-			break;
-		}
-	}
 	temp.Strength = a.Strength - 5 + GetNumber(5, 10);
 	temp.Agility = a.Agility - 5 + GetNumber(5, 10);
 	temp.ATK_Ski = a.ATK_Ski;
@@ -187,7 +154,45 @@ void NPC::Update()
 		(temp.Strength * 100 + temp.Agility * 100 + temp.LV * 50 +
 		 temp.Add_Str * 150 + temp.Add_Agi * 150) * 1.5;
 	temp.DEF_Ski = GetNumber(1, temp.LV * 2);
-	
+    switch (temp.Type)
+    {
+    case 1:
+        {
+            temp.Name = a.Name + "之头盖骨";
+            LG.Head=temp;
+            break;
+        }
+    case 2:
+        {
+            temp.Name = a.Name + "之躯干骨";
+            LG.Body=temp;
+            break;
+        }
+    case 3:
+        {
+            temp.Name = a.Name + "之左臂骨";
+            LG.LHand=temp;
+            break;
+        }
+    case 4:
+        {
+            temp.Name = a.Name + "之右臂骨";
+            LG.RHand=temp;
+            break;
+        }
+    case 5:
+        {
+            temp.Name = a.Name + "之左腿骨";
+            LG.LLeg=temp;
+            break;
+        }
+    case 6:
+        {
+            temp.Name = a.Name + "之右腿骨";
+            LG.RLeg=temp;
+            break;
+        }
+    }
 		
 	}
 	

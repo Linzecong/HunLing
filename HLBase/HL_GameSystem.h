@@ -124,7 +124,7 @@ LingGu GameSystem::CreateLG(HunLing a,int type)//生成灵骨
 {
 	NPC temp;
 	temp.LH = a;
-
+    temp.Des="魂灵";//判断是否有灵骨技能的依据
 	int tempLV = 0;
 	for (int i = 1; i <= a.Count(); i++)
 		tempLV += a.GetData(i).LV;
