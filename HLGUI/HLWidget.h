@@ -44,14 +44,16 @@ HLWidget::HLWidget(HunLing a)
     MainLayout.addWidget(&DEF);
     MainLayout.addWidget(&VIT);
     MainLayout.addWidget(&Data);
-    tempData=new HLDataWidget(a);
+
     this->setLayout(&MainLayout);
     connect(&Data,&QPushButton::clicked,this,&HLWidget::Data_Click);
 }
 
 void HLWidget::Data_Click()
 {
-    tempData->show();
+    tempData=new HLDataWidget(tempHL);
+    tempData->exec();
+    delete tempData;
 }
 void HLWidget::setData(HunLing a)
 {

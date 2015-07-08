@@ -281,12 +281,16 @@ NPCList GameSystem::CanShowList(DiTu a, RenWu *b)//返回目前可以显示的NP
 
 
 
-DropData GameSystem::DropItem(HLList a)//通过魂灵列表生成掉落的东西
+DropData GameSystem::DropItem(HLList a)//通过魂灵列表生成掉落的东西,特定物品可特定判断
 {
 	DropData tempData;
 	for (int i = 1; i <= a.Count(); i++)
 	{
 		HunLing temp = a.GetData(i);
+        /*特定掉落
+        if(temp.ID==x)
+            tempData.Item.Insert(SystemItem[aaa]);*/
+        /*全局掉落*/
 		int aaa = temp.DropItem[GetNumber(1, 9)];
 		tempData.Item.Insert(SystemItem[aaa]);
 		tempData.Exp +=
@@ -302,6 +306,7 @@ DropData GameSystem::DropItem(HLList a)//通过魂灵列表生成掉落的东西
 			LingHuan tempLH = CreateLH(temp);
 			tempData.LH.Insert(tempLH);
 		}
+
 	}
 	return tempData;
 }

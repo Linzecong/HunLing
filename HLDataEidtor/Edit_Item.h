@@ -6,6 +6,7 @@ class Item
 	QString Des;
 	QString Name;
 	int Type;
+    int ATKType;//0敌人单体,1敌人全体,2我方单体,3我方全体
 	int Value;
 	int Str;
 	int Agi;
@@ -31,6 +32,7 @@ void Item::Save()
 		int a = sizeof(i);
 		tmpfile.write((char *)&SystemItem[i].ID, a);
 		tmpfile.write((char *)&SystemItem[i].Type, a);
+        tmpfile.write((char *)&SystemItem[i].ATKType, a);
 		tmpfile.write((char *)&SystemItem[i].Value, a);
 		tmpfile.write((char *)&SystemItem[i].Str, a);
 		tmpfile.write((char *)&SystemItem[i].Agi, a);
@@ -65,6 +67,7 @@ void Item::Init()
 		int a = sizeof(int);
 		tmpfile.read((char *)&SystemItem[i].ID, a);
 		tmpfile.read((char *)&SystemItem[i].Type, a);
+        tmpfile.read((char *)&SystemItem[i].ATKType, a);
 		tmpfile.read((char *)&SystemItem[i].Value, a);
 		tmpfile.read((char *)&SystemItem[i].Str, a);
 		tmpfile.read((char *)&SystemItem[i].Agi, a);
@@ -85,6 +88,7 @@ void Item::Init()
 	QLineEdit *Des;
 	QSpinBox *ID;
 	QSpinBox *Type;
+    QSpinBox *ATKType;
 	QSpinBox *Value;
 	QSpinBox *Str;
 	QSpinBox *Agi;
@@ -94,6 +98,7 @@ void Item::Init()
 	QSpinBox *Exp;
 
 	QLabel *Type_L;
+    QLabel *ATKType_L;
 	QLabel *Value_L;
 	QLabel *Str_L;
 	QLabel *Agi_L;
@@ -135,6 +140,7 @@ void ItemWidget::read()
 	Des->setText(SystemItem[a].Des);
 	ID->setValue(a);
 	Type->setValue(SystemItem[a].Type);
+    ATKType->setValue(SystemItem[a].ATKType);
 	Value->setValue(SystemItem[a].Value);
 	Str->setValue(SystemItem[a].Str);
 	Agi->setValue(SystemItem[a].Agi);
@@ -157,7 +163,9 @@ ItemWidget::ItemWidget()
 
 
 	Type = new QSpinBox;
-	Type->setRange(1, 5);
+    Type->setRange(1, 3);
+    ATKType = new QSpinBox;
+    ATKType->setRange(0, 3);
 	Value = new QSpinBox;
 	Value->setRange(0, 50000);
 	Value->setSingleStep(50);
@@ -178,6 +186,7 @@ ItemWidget::ItemWidget()
 
 
 	Type_L = new QLabel("类型：");
+    Type_L = new QLabel("0敌单2我单");
 	Value_L = new QLabel("价值：");
 	Str_L = new QLabel("力量：");
 	Agi_L = new QLabel("敏捷：");
@@ -194,6 +203,7 @@ ItemWidget::ItemWidget()
 	NameLayout->addWidget(ID);
 	NameLayout->addWidget(Name);
 	LabelLayout->addWidget(Type_L);
+    LabelLayout->addWidget(ATKType_L);
 	LabelLayout->addWidget(Value_L);
 	LabelLayout->addWidget(Str_L);
 	LabelLayout->addWidget(Agi_L);
@@ -203,6 +213,7 @@ ItemWidget::ItemWidget()
 	LabelLayout->addWidget(Exp_L);
 
 	SpinLayout->addWidget(Type);
+    SpinLayout->addWidget(ATKType);
 	SpinLayout->addWidget(Value);
 	SpinLayout->addWidget(Str);
 	SpinLayout->addWidget(Agi);
@@ -235,6 +246,7 @@ void ItemWidget::Save()
 	SystemItem[a].Name = Name->text();
 	SystemItem[a].Des = Des->text();
 	SystemItem[a].Type = Type->value();
+    SystemItem[a].ATKType = ATKType->value();
 	SystemItem[a].Value = Value->value();
 	SystemItem[a].Str = Str->value();
 	SystemItem[a].Agi = Agi->value();

@@ -242,7 +242,7 @@ EnergyBar::EnergyBar(HLList* a,HLList* b)
 
 }
 
-void EnergyBar::next()
+void EnergyBar::next()//有一个大bug
 {
     if(ATKList.isEmpty()==1)//如果可攻击列表是空的
     {
@@ -290,6 +290,7 @@ void EnergyBar::next()
     }
     else//如果可攻击列表不为空
     {
+
         if(ATKList[0]>Me->Count())
          {
             type=0;
@@ -327,7 +328,8 @@ class FightSystem
     QString Skill(HunLing * a, HLList& b, HunJi * skill);//技能，直接传入技能。全体。注意replace
 
 
-	QString UseItem(int a, HunLing * b,HunLing *c);//用道具，道具编号。
+    QString UseItem(int a, HunLing * b, HunLing *c);//用道具，道具编号。
+    QString UseItem(int a, HunLing * b,HLList &c);//用道具，道具编号。全体，注意replace
     QString Skip();
 	int CanGoOn();				// 判断能否继续
 	void UpdateATKDEF();//每轮前调用，更新攻击和防御力和体力
@@ -434,14 +436,14 @@ int FightSystem::CanGoOn()		// 判断能否继续。0我输，1继续，-1赢了
 		return a->Name+"的攻击太低了！起不了作用！";
 	else
 	{
-		b->VIT -= ATKPoint;
+        b->VIT -= ATKPoint;//important
 		if (b->VIT <= 0)
 			b->VIT = 0;
 		return a->Name+"对对方"+b->Name+"造成"+QString::number(ATKPoint)+"点伤害！";
 	}
 }
 
-QString FightSystem::Skill(HunLing * a, HunLing * b, HunJi * skill)//注意技能类型！
+QString FightSystem::Skill(HunLing * a, HunLing * b, HunJi * skill)//注意技能类型！和体力小于0
 {
 	QString Description;
 	skill->NowTurn += skill->Turn;
@@ -459,7 +461,7 @@ QString FightSystem::Skill(HunLing * a, HunLing * b, HunJi * skill)//注意技�
 	return Description;
 }
 
-QString FightSystem::Skill(HunLing * a, HLList& b, HunJi * skill)//注意replace
+QString FightSystem::Skill(HunLing * a, HLList& b, HunJi * skill)//注意replace和体力小于0
 {
     QString Description;
     skill->NowTurn += skill->Turn;
@@ -477,7 +479,7 @@ QString FightSystem::Skill(HunLing * a, HLList& b, HunJi * skill)//注意replace
     return Description;
 }
 
-QString FightSystem::UseItem(int a, HunLing * b,HunLing* c)
+QString FightSystem::UseItem(int a, HunLing * b,HunLing* c)//和体力小于0
 {
 	QString Description;
 	switch (a)
@@ -492,6 +494,24 @@ QString FightSystem::UseItem(int a, HunLing * b,HunLing* c)
 		}
 	}
 	return Description;
+
+}
+
+QString FightSystem::UseItem(int a, HunLing * b,HLList& c)//和体力小于0
+{
+    QString Description;
+    switch (a)
+    {
+    case 1:
+        {
+            break;
+        }
+    case 2:
+        {
+            break;
+        }
+    }
+    return Description;
 
 }
 

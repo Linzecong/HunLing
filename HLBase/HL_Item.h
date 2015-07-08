@@ -7,6 +7,7 @@
 	QString Des;
 	QString Name;
     int Type; //1战前使用,2战中使用,3不可使用
+    int ATKType;//0敌人单体,1敌人全体,2我方单体,3我方全体
 	int Value;
 	//会永久增加的数值
 	int Str;
@@ -41,6 +42,7 @@ void Item::Init()
 		int a = sizeof(int);
 		tmpfile.read((char *)&SystemItem[i].ID, a);
 		tmpfile.read((char *)&SystemItem[i].Type, a);
+        tmpfile.read((char *)&SystemItem[i].ATKType, a);
 		tmpfile.read((char *)&SystemItem[i].Value, a);
 		tmpfile.read((char *)&SystemItem[i].Str, a);
 		tmpfile.read((char *)&SystemItem[i].Agi, a);
