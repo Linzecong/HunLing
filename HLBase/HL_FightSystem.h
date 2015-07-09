@@ -211,9 +211,9 @@ class EnergyBar
 public:
     HLList* Me;
     HLList* Enemy;
-    QList<int> List;
-    int totle;//能量最大值
-    QList<int> ATKList;
+    QList<double> List;
+    double totle;//能量最大值
+
     int type;// 敌人还是自己,0敌人1自己
     int index;
 public:
@@ -229,12 +229,12 @@ EnergyBar::EnergyBar(HLList* a,HLList* b)
     totle=0;
     for(int i=1;i<=Enemy->Count();i++)//统计能量最大值
     {
-        totle+=Enemy->GetData(i).Agility;
+        totle+=Enemy->GetData(i).Agility*500;
        List.append(Enemy->GetData(i).Agility);
     }
     for(int i=1;i<=Me->Count();i++)
     {
-        totle+=Me->GetData(i).Agility;
+        totle+=Me->GetData(i).Agility*500;
         List.append(Me->GetData(i).Agility);
     }
     type=0;
@@ -242,66 +242,41 @@ EnergyBar::EnergyBar(HLList* a,HLList* b)
 
 }
 
-void EnergyBar::next()//有一个大bug
+void EnergyBar::next()
 {
-    if(ATKList.isEmpty()==1)//如果可攻击列表是空的
+    int stop=0;
+    while(stop!=1)
     {
-    int stop=0;//停止循环标志
-    while(stop==0)
-    {
-        for(int i=0;i<=List.size();i++)
+   for(int i=0;i<=List.size();i++)
         {
             if((i+1)>Me->Count())//判断是加敌人还是自己的敏捷值
             List[i]+=Me->GetData(i).Agility;
             else
             List[i]+=Enemy->GetData(i).Agility;
 
-            if(List[i]>=totle)//如果大于能量最大值
-            {
-                List[i]-=totle;//循环
-                ATKList.append(i);//将序号插入可循环列表
-                stop=1;
-            }
+
         }
-    }
-
-
-    if(ATKList.size()>1)//如果可循环列表大于一个
-    for(int i=0;i<=ATKList.size();i++)//按照敏捷值大小由大到小排序
-        for(int j=0;j<=ATKList.size();j++)
-        if(List[ATKList[j]]>List[ATKList[i]])
+   for(int i=0;i<=List.size();i++)
         {
-                int a=ATKList[i];
-                ATKList[j]=a;
-                ATKList[i]=ATKList[j];
-        }
+   if(List[i]>=totle)//如果大于能量最大值
+   {
+       List[i]-=totle;//循环
+       if(i>Me->Count())
+       {
+           type=0;
+           index=i-Me->Count();
+       }
+       else
+       {
+           type=1;
+           index=i;
+       }
 
-    if(ATKList[0]>Me->Count())//设置本轮攻击的人
-     {
-        type=0;
-        index=ATKList[0]-Me->Count();
-    }
-    else
-    {
-        type=1;
-        index=ATKList[0];
-    }
-    ATKList.removeFirst();//移除
-    }
-    else//如果可攻击列表不为空
-    {
+       stop=1;
+       break;
 
-        if(ATKList[0]>Me->Count())
-         {
-            type=0;
-            index=ATKList[0]-Me->Count();
-        }
-        else
-        {
-            type=1;
-            index=ATKList[0];
-        }
-        ATKList.removeFirst();
+   }
+   }
     }
 
 }
@@ -314,14 +289,14 @@ class FightSystem
 {
   public:
 	RenWu * Me;
-	NPC Enemy;
+    NPC* Enemy;
     HLList* MyHL;
     HLList* EnemyHL;
     EnergyBar* EB;
 	int Turn;
   public:
 	void SetBuff();//初始化后自动调用，设置Buff效果
-    FightSystem(RenWu* a, NPC b,HLList* a1,HLList* b1);
+    FightSystem(RenWu* a, NPC* b,HLList* a1,HLList* b1);
 	void TurnOut();				// 技能-1
 	QString Attack(HunLing * a, HunLing * b);//攻击
     QString Skill(HunLing * a, HunLing* b, HunJi * skill);//技能，直接传入技能。单体。
@@ -330,17 +305,14 @@ class FightSystem
 
     QString UseItem(int a, HunLing * b, HunLing *c);//用道具，道具编号。
     QString UseItem(int a, HunLing * b,HLList &c);//用道具，道具编号。全体，注意replace
-    QString Skip();
+
 	int CanGoOn();				// 判断能否继续
 	void UpdateATKDEF();//每轮前调用，更新攻击和防御力和体力
 };
 
-QString FightSystem::Skip()
-{
 
-}
 
-FightSystem::FightSystem(RenWu* a, NPC b, HLList *a1, HLList *b1)
+FightSystem::FightSystem(RenWu* a, NPC *b, HLList *a1, HLList *b1)
 {
     Me = a;
     Enemy= b;
@@ -371,9 +343,9 @@ void FightSystem::SetBuff()
 		}
 	}
 
-	for (int i = 1; i <= Enemy.myBuffList.Count(); i++)//注意！！
+    for (int i = 1; i <= Enemy->myBuffList.Count(); i++)//注意！！
 	{
-		int a = Enemy.myBuffList.GetData(i).ID;
+        int a = Enemy->myBuffList.GetData(i).ID;
 		switch (a)
 		{
 		case 1:
@@ -443,7 +415,7 @@ int FightSystem::CanGoOn()		// 判断能否继续。0我输，1继续，-1赢了
 	}
 }
 
-QString FightSystem::Skill(HunLing * a, HunLing * b, HunJi * skill)//注意技能类型！和体力小于0
+QString FightSystem::Skill(HunLing * a, HunLing * b, HunJi * skill)//注意技能类型！和体力小于0(敏捷制0)
 {
 	QString Description;
 	skill->NowTurn += skill->Turn;
@@ -461,7 +433,7 @@ QString FightSystem::Skill(HunLing * a, HunLing * b, HunJi * skill)//注意技�
 	return Description;
 }
 
-QString FightSystem::Skill(HunLing * a, HLList& b, HunJi * skill)//注意replace和体力小于0
+QString FightSystem::Skill(HunLing * a, HLList& b, HunJi * skill)//注意replace和体力小于0(敏捷制0)
 {
     QString Description;
     skill->NowTurn += skill->Turn;
@@ -479,7 +451,7 @@ QString FightSystem::Skill(HunLing * a, HLList& b, HunJi * skill)//注意replace
     return Description;
 }
 
-QString FightSystem::UseItem(int a, HunLing * b,HunLing* c)//和体力小于0
+QString FightSystem::UseItem(int a, HunLing * b,HunLing* c)//和体力小于0(敏捷制0)
 {
 	QString Description;
 	switch (a)
@@ -497,7 +469,7 @@ QString FightSystem::UseItem(int a, HunLing * b,HunLing* c)//和体力小于0
 
 }
 
-QString FightSystem::UseItem(int a, HunLing * b,HLList& c)//和体力小于0
+QString FightSystem::UseItem(int a, HunLing * b,HLList& c)//和体力小于0(敏捷制0)
 {
     QString Description;
     switch (a)

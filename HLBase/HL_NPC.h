@@ -1,5 +1,6 @@
 
 #include <QString>
+#include <QList>
 class NPC:public RenWu
 {
   public:
@@ -16,7 +17,30 @@ class NPC:public RenWu
     void Update();//设置LHLG;
 	void Init();
 	void Save();
+    QList<int> CanUseHJList(int hl);//返回当前可以使用的技能(魂灵ID)，0魂技,1~6魂骨技能
 } SystemNPC[200];
+
+QList<int> NPC::CanUseHJList(int hl)
+{
+    QList<int> temp;
+    if(SystemHL[hl].ATK_Ski.Energy<=Energy&&SystemHL[hl].ATK_Ski.Sour<=Sour&&SystemHL[hl].ATK_Ski.NowTurn==0)
+        temp.append(0);
+    if(LG.Head.ATK_Ski.Energy<=Energy&&LG.Head.ATK_Ski.Sour<=Sour&&LG.Head.ATK_Ski.NowTurn==0&&LG.Head.ATK_Ski.ID!=0)
+        temp.append(1);
+    if(LG.Body.ATK_Ski.Energy<=Energy&&LG.Body.ATK_Ski.Sour<=Sour&&LG.Body.ATK_Ski.NowTurn==0&&LG.Body.ATK_Ski.ID!=0)
+        temp.append(2);
+    if(LG.LHand.ATK_Ski.Energy<=Energy&&LG.LHand.ATK_Ski.Sour<=Sour&&LG.LHand.ATK_Ski.NowTurn==0&&LG.LHand.ATK_Ski.ID!=0)
+        temp.append(3);
+    if(LG.RHand.ATK_Ski.Energy<=Energy&&LG.RHand.ATK_Ski.Sour<=Sour&&LG.RHand.ATK_Ski.NowTurn==0&&LG.RHand.ATK_Ski.ID!=0)
+        temp.append(4);
+    if(LG.LLeg.ATK_Ski.Energy<=Energy&&LG.LLeg.ATK_Ski.Sour<=Sour&&LG.LLeg.ATK_Ski.NowTurn==0&&LG.LLeg.ATK_Ski.ID!=0)
+        temp.append(5);
+    if(LG.RLeg.ATK_Ski.Energy<=Energy&&LG.RLeg.ATK_Ski.Sour<=Sour&&LG.RLeg.ATK_Ski.NowTurn==0&&LG.RLeg.ATK_Ski.ID!=0)
+        temp.append(6);
+    return temp;
+
+
+}
 
 void NPC::Save()
 {

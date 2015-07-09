@@ -42,14 +42,20 @@ class ChooseDialog: public QDialog
 class SkillChooseDialog: public QDialog
 {
 public:
+    int Energy;
+    int Sour;
     HunJi Skill;
     LGList LG;
     QListWidget List;
     QPushButton OK;
+    QPushButton Close;
     QVBoxLayout* MainLayout;
-    SkillChooseDialog(LGList a)
+    SkillChooseDialog(LGList a,int b,int c)
     {
-
+        Skill.ID=0;
+        Energy=b;
+        Sour=c;
+Close.setText("关闭");
         if(a.Head.ID!=0)
         List.addItem(a.Head.Name+"   技能："+a.Head.ATK_Ski.Des+"   所需魂力："+QString::number(a.Head.ATK_Ski.Energy)+"   所需灵力："+QString::number(a.Head.ATK_Ski.Sour)+"   剩余冷却时间："+QString::number(a.Head.ATK_Ski.NowTurn));
         else
@@ -79,8 +85,10 @@ public:
         List.setCurrentRow(0);
         MainLayout->addWidget(&List);
         MainLayout->addWidget(&OK);
+        MainLayout->addWidget(&Close);
         this->setLayout(MainLayout);
         connect(&OK,&QPushButton::clicked,this,&SkillChooseDialog::OKClick);
+        connect(&Close,&QPushButton::clicked,this,&SkillChooseDialog::close);
         this->setWindowFlags(Qt::FramelessWindowHint);
         this->setWindowTitle("请选择灵骨技能");
 
@@ -98,49 +106,49 @@ public:
         switch(List.currentRow())
         {
         case 0:
-            if(LG.Head.ATK_Ski.NowTurn>0)
+            if(LG.Head.ATK_Ski.NowTurn>0&&LG.Head.ATK_Ski.Energy>=Energy&&LG.Head.ATK_Ski.Sour>=Sour)
             {
-                QMessageBox::about(this,"提示","此技能冷却中");
+                QMessageBox::about(this,"提示","此技能冷却中或魂力或灵力不足");
                 return;
             }
             Skill=LG.Head.ATK_Ski;
             break;
         case 1:
-            if(LG.Body.ATK_Ski.NowTurn>0)
+            if(LG.Body.ATK_Ski.NowTurn>0&&LG.Body.ATK_Ski.Energy>=Energy&&LG.Body.ATK_Ski.Sour>=Sour)
             {
-                QMessageBox::about(this,"提示","此技能冷却中");
+                QMessageBox::about(this,"提示","此技能冷却中或魂力或灵力不足");
                 return;
             }
             Skill=LG.Body.ATK_Ski;
             break;
         case 2:
-            if(LG.LHand.ATK_Ski.NowTurn>0)
+            if(LG.LHand.ATK_Ski.NowTurn>0&&LG.LHand.ATK_Ski.Energy>=Energy&&LG.LHand.ATK_Ski.Sour>=Sour)
             {
-                QMessageBox::about(this,"提示","此技能冷却中");
+                QMessageBox::about(this,"提示","此技能冷却中或魂力或灵力不足");
                 return;
             }
             Skill=LG.LHand.ATK_Ski;
             break;
         case 3:
-            if(LG.RHand.ATK_Ski.NowTurn>0)
+            if(LG.RHand.ATK_Ski.NowTurn>0&&LG.RHand.ATK_Ski.Energy>=Energy&&LG.RHand.ATK_Ski.Sour>=Sour)
             {
-                QMessageBox::about(this,"提示","此技能冷却中");
+                QMessageBox::about(this,"提示","此技能冷却中或魂力或灵力不足");
                 return;
             }
             Skill=LG.RHand.ATK_Ski;
             break;
         case 4:
-            if(LG.LLeg.ATK_Ski.NowTurn>0)
+            if(LG.LLeg.ATK_Ski.NowTurn>0&&LG.LLeg.ATK_Ski.Energy>=Energy&&LG.LLeg.ATK_Ski.Sour>=Sour)
             {
-                QMessageBox::about(this,"提示","此技能冷却中");
+                QMessageBox::about(this,"提示","此技能冷却中或魂力或灵力不足");
                 return;
             }
             Skill=LG.LLeg.ATK_Ski;
             break;
         case 5:
-            if(LG.RLeg.ATK_Ski.NowTurn>0)
+            if(LG.RLeg.ATK_Ski.NowTurn>0&&LG.RLeg.ATK_Ski.Energy>=Energy&&LG.RLeg.ATK_Ski.Sour>=Sour)
             {
-                QMessageBox::about(this,"提示","此技能冷却中");
+                QMessageBox::about(this,"提示","此技能冷却中或魂力或灵力不足");
                 return;
             }
             Skill=LG.RLeg.ATK_Ski;
@@ -162,12 +170,14 @@ public:
     ItemList Item;
     QListWidget List;
     QPushButton OK;
+    QPushButton Close;
     QVBoxLayout* MainLayout;
     FightItemWidget(ItemList a)
     {
         Item=a;
         OK.setText("确定");
-
+        UseIndex=0;
+        Close.setText("关闭");
         for(int i=1;i<=a.Count();i++)
         List.addItem(Item.GetData(i).Name+"作用："+Item.GetData(i).Des);
 
@@ -175,8 +185,10 @@ public:
         List.setCurrentRow(0);
         MainLayout->addWidget(&List);
         MainLayout->addWidget(&OK);
+        MainLayout->addWidget(&Close);
         this->setLayout(MainLayout);
         connect(&OK,&QPushButton::clicked,this,&FightItemWidget::OKClick);
+        connect(&Close,&QPushButton::clicked,this,&FightItemWidget::close);
         this->setWindowFlags(Qt::FramelessWindowHint);
         this->setWindowTitle("请选择道具");
 
@@ -212,6 +224,8 @@ class FightWidget: public QDialog
     QListWidget MyHLList;
     QListWidget MessageList;
     HLWidget HLData;
+    QLabel Energy;
+    QLabel Sour;
 
 	QLabel Title;
 
@@ -257,6 +271,8 @@ FightWidget::FightWidget(RenWu a,NPC b)
 {
     Me=a;
     Enemy=b;
+    Energy.setText("魂力："+QString::number(Me.Energy)+"/"+QString::number(Me.Ori_Energy));
+    Sour.setText("灵力："+QString::number(Me.Sour)+"/"+QString::number(Me.Ori_Sour));
     WinOrLose=0;
     for (int i = 1; i <= a.LH.Count(); i++)//灵环初始化成魂灵
     {
@@ -293,7 +309,7 @@ FightWidget::FightWidget(RenWu a,NPC b)
         EnemyHL.Insert(tempHL);
     }
 
-    System=new FightSystem(&Me,Enemy,&MyHL,&EnemyHL);
+    System=new FightSystem(&Me,&Enemy,&MyHL,&EnemyHL);
 
     for(int i=1;i<=MyHL.Count();i++)
         MyHLList.addItem(MyHL.GetData(i).Name);
@@ -334,6 +350,9 @@ FightWidget::FightWidget(RenWu a,NPC b)
     Layout2->addWidget(&SkipButton);
 
     MainLayout->addWidget(&Title);
+    MainLayout->addLayout(Layout1);
+    MainLayout->addWidget(&Energy);
+    MainLayout->addWidget(&Sour);
     MainLayout->addLayout(Layout1);
     MainLayout->addWidget(&GoOn);
     MainLayout->addLayout(Layout2);
@@ -423,8 +442,13 @@ void FightWidget::Skill()
         }
         msg="（敌方）"+msg;
         QMessageBox::about(this,"提示",msg);
+
+        Enemy.Energy-=tempEnemy.ATK_Ski.Energy;
+        Enemy.Sour-=tempEnemy.ATK_Ski.Sour;
+
      MessageList.addItem(msg);
      EnemyHL.Replace(tempEnemy,System->EB->index);
+
 
      GoOn.setEnabled(true);
     }
@@ -432,6 +456,21 @@ void FightWidget::Skill()
     {
         HunLing tempMe=MyHL.GetData(System->EB->index);
         QString msg="";
+        if(tempMe.ATK_Ski.NowTurn>0)
+        {
+            QMessageBox::about(this,"提示","技能还有"+QString::number(tempMe.ATK_Ski.NowTurn)+"回合冷却时间！");
+            return;
+        }
+        else
+        {
+             if(tempMe.ATK_Ski.Energy>Me.Energy||tempMe.ATK_Ski.Sour<=Me.Sour)
+             {
+                 QMessageBox::about(this,"提示","魂力或灵力不足");
+                 return;
+             }
+        }
+
+
         switch(tempMe.ATK_Ski.Type)
         {
         case 0:
@@ -465,6 +504,9 @@ void FightWidget::Skill()
         msg="（我方）"+msg;
         QMessageBox::about(this,"提示",msg);
         MessageList.addItem(msg);
+
+        Me.Energy-=tempMe.ATK_Ski.Energy;
+        Me.Sour-=tempMe.ATK_Ski.Sour;
 
         MyHL.Replace(tempMe,System->EB->index);
 
@@ -513,6 +555,9 @@ void FightWidget::EnemyLGSkill(HunJi* Skill)
      MessageList.addItem(msg);
      EnemyHL.Replace(tempEnemy,System->EB->index);
 
+     Enemy.Energy-=tempEnemy.ATK_Ski.Energy;
+     Enemy.Sour-=tempEnemy.ATK_Ski.Sour;
+
      GoOn.setEnabled(true);
 
 
@@ -521,8 +566,13 @@ void FightWidget::LGSkill()
 {
         HunLing tempMe=MyHL.GetData(System->EB->index);
         QString msg="";
-        SkillChooseDialog* temp2=new SkillChooseDialog(Me.LG);
+        SkillChooseDialog* temp2=new SkillChooseDialog(Me.LG,Me.Energy,Me.Sour);
         temp2->exec();
+        if(temp2->Skill.ID==0)
+        {
+            delete temp2;
+            return;
+        }
         switch(temp2->Skill.Type)
         {
         case 0:
@@ -582,6 +632,9 @@ void FightWidget::LGSkill()
         QMessageBox::about(this,"提示",msg);
         MessageList.addItem(msg);
 
+        Me.Energy-=tempMe.ATK_Ski.Energy;
+        Me.Sour-=tempMe.ATK_Ski.Sour;
+
         MyHL.Replace(tempMe,System->EB->index);
         GoOn.setEnabled(true);
 
@@ -597,6 +650,11 @@ void FightWidget::UseItem()
     QString msg="";
     FightItemWidget* tempItemList=new FightItemWidget(Me.Bag);
     tempItemList->exec();
+    if(tempItemList->UseIndex==0)
+    {
+        delete tempItemList;
+        return;
+    }
 
     switch(Me.Bag.GetData(tempItemList->UseIndex).ATKType)
     {
@@ -673,13 +731,86 @@ void FightWidget::MeClick()
 
 void FightWidget::GoOn_Ckick()//注意判断技能冷却,敌人灵骨技能的冷却
 {
+
      GoOn.setEnabled(false);
      System->TurnOut();
      if(System->CanGoOn()==1)
      {
+         System->EB->next();
+         if(System->EB->type==0)
+         {
+             if(Enemy.Des=="魂灵")
+             {
+             if(Enemy.CanUseHJList(EnemyHL.GetData(System->EB->index).ID).isEmpty()==true)
+             {
+                 Attack();
+             }
+             else
+             {
+                 if(GetNumber(0,10)>=7)
+                     Attack();
+                 else
+                     Skill();
+             }
+             }
+             else
+             {
+                 if(Enemy.CanUseHJList(EnemyHL.GetData(System->EB->index).ID).isEmpty()==true)
+                 {
+                         Attack();
+                 }
+                 else
+                 {
+                     if(GetNumber(0,10)>=5)
+                         Attack();
+                     else
+                     {
+                         QList<int> temphj=Enemy.CanUseHJList(EnemyHL.GetData(System->EB->index).ID);
+                         int hj=GetNumber(1,temphj.size());
 
-         return;
+
+                             switch(temphj[hj-1])
+                             {
+                             case 0:
+                                 Skill();
+                                 break;
+                             case 1:
+                                 EnemyLGSkill(&Enemy.LG.Head.ATK_Ski);
+                                 break;
+                             case 2:
+                                 EnemyLGSkill(&Enemy.LG.Body.ATK_Ski);
+                                 break;
+                             case 3:
+                                 EnemyLGSkill(&Enemy.LG.LHand.ATK_Ski);
+                                 break;
+                             case 4:
+                                 EnemyLGSkill(&Enemy.LG.RHand.ATK_Ski);
+                                 break;
+                             case 5:
+                                 EnemyLGSkill(&Enemy.LG.LLeg.ATK_Ski);
+                                 break;
+                             case 6:
+                                 EnemyLGSkill(&Enemy.LG.RLeg.ATK_Ski);
+                                 break;
+                             }
+
+                     }
+
+                 }
+             }
+             GoOn.setEnabled(false);
+
+         }
+         else
+         {
+             this->SetButtonEnable(true);
+
+         }
+
+
      }
+     Energy.setText("魂力："+QString::number(Me.Energy)+"/"+QString::number(Me.Ori_Energy));
+     Sour.setText("灵力："+QString::number(Me.Sour)+"/"+QString::number(Me.Ori_Sour));
      if(System->CanGoOn()==0)
      {
          QMessageBox::about(this,"提示","你输了！");
@@ -701,6 +832,7 @@ void FightWidget::GoOn_Ckick()//注意判断技能冷却,敌人灵骨技能的�
          WinOrLose=-1;
          return;
      }
+
 }
 
 
