@@ -1,5 +1,6 @@
 
 #include <QString>
+#include <QList>
 	class HunLing
 {
   public:
@@ -89,26 +90,15 @@ file.open(QIODevice::ReadOnly);
 }
 
 
-class HLNode
-{
-  public:
-	HunLing data;
-	HLNode *link;
-	  HLNode(HunLing a)
-	{
-		data = a;
-		link = NULL;
-	}
-};
 
 class HLList
 {
   public:
-	HLNode * first;
+    QList<HunLing> List;
   public:
 	HLList()
 	{
-		first = NULL;
+
 	}
 	HunLing GetData(int a);
 	int Count();
@@ -123,113 +113,37 @@ class HLList
 
 HunLing HLList::Replace(HunLing a, int b)
 {
-    HunLing C;
-	if (first == NULL)
-	{
-		HLNode *temp = new HLNode(a);
-		first = temp;
-		return C;
-	}
-	if (b <= 1)					// 如果是第一个
-	{
-        C = first->data;
-		first->data = a;		// 直接把值域替换
-	}
-	if (b > 1)
-	{
-		HLNode *del;			// 释放内存用
-		HLNode *current = first;	// 指向第一个
-		HLNode *temp = new HLNode(a);	// 新建要插入的节点
-
-		for (int i = 2; i < b; i++)	// 找到要替代的前一个
-			current = current->link;
-
-		del = current->link;	// 找出要替代的
-		current->link = temp;	// 替换
-		temp->link = del->link;	// 替换 替换的那个 的下一个
-        C = del->data;	// 返回用
-		delete del;				// 释放内存
-	}
+    HunLing C=List[b];
+    List[b]=a;
     return C;
 }
 
 
 HunLing HLList::Take(int a)
 {
-    HunLing C;
-	if (first == NULL)	
-		return C;
-
-	if (a <= 1)
-	{
-		HLNode *temp = first;
-		first = first->link;
-        C = temp->data;
-		delete temp;
-	}
-	if (a > 1)
-	{
-		HLNode *del;
-		HLNode *temp = first;
-		for (int i = 2; i < a; i++)
-			temp = temp->link;
-		del = temp->link;
-		temp->link = del->link;
-        C = del->data;	// 保存值域
-		delete del;
-	}
-    return C;
+   return List.takeAt(a);
 }
 
 int HLList::Count()
 {
-	int sum = 0;
-	if (first == NULL)			// 是否空
-		return 0;
-
-	HLNode *temp = first;
-	while (temp != NULL)		// 不空就++
-	{
-		sum++;
-		temp = temp->link;		// 变成下一个
-	}
-	return sum;
+    return List.size();
 }
 
 void HLList::Insert(HunLing a)
 {
-	if (first == NULL)			// 如果为空
-	{
-		HLNode *newHL = new HLNode(a);
-		first = newHL;			// 插入第一个
-	}
-	else
-	{
-		HLNode *newHL = new HLNode(a);
-		HLNode *temp = first;
-		while (temp->link != NULL)	// 遍历直到一个为空
-			temp = temp->link;	// 变成下一个
-		temp->link = newHL;
-	}
+    List.append(a);
 }
 
 HunLing HLList::GetData(int a)	// 取数据
 {
-	if (first == NULL)
-	{
-		HunLing C;
-		return C;
-	}
-	HLNode *temp = first;		// 从第一个开始
-	for (int i = 2; i <= a; i++)	// 从第二个开始遍历
-		temp = temp->link;		// 变成下一个
-	return temp->data;
+
+    return List[a];
 }
 
 int HLList::AVE_ATK()
 {
 	int sum = 0;
-	for (int i = 1; i <= Count(); i++)
+    for (int i = 1; i <=Count(); i++)
 		sum += GetData(i).ATK;
 	return sum / Count();
 }

@@ -1,6 +1,7 @@
 #include<QFile>
 #include<QTextStream>
 #include <QString>
+#include<QList>
 	class Task
 {
   public:
@@ -104,27 +105,17 @@ file.open(QIODevice::ReadOnly);
     tmpfile.close();  
 }
 
-class TaskNode
-{
-  public:
-	Task data;
-	TaskNode *link;
-	  TaskNode(Task a)
-	{
-		data = a;
-		link = NULL;
-	}
-};
+
 
 
 class TaskList
 {
   public:
-	TaskNode * first;
+    QList<Task> List;
   public:
 	TaskList()
 	{
-		first = NULL;
+
 	}
 	Task TakeByIndex(int a);
 	Task TakeByID(int a);
@@ -135,62 +126,18 @@ class TaskList
 
 Task TaskList::TakeByIndex(int a)
 {
-            Task C;
-	if (first == NULL)
-		return C;
 
-	if (a <= 1)
-	{
-		TaskNode *temp = first;
-		first = first->link;
-        C = temp->data;
-		delete temp;
-	}
-	if (a > 1)
-	{
-		TaskNode *del;
-		TaskNode *temp = first;
-		for (int i = 2; i < a; i++)
-			temp = temp->link;
-		del = temp->link;
-		temp->link = del->link;
-        C = del->data;	// 保存值域
-		delete del;
-	}
-    return C;
+    return List.takeAt(a);
 }
 
 Task TaskList::TakeByID(int a)
 {
-	TaskNode *del;
-	if (first == NULL)
-	{
-		Task C;
-		return C;
-	}
-	if (first->data.ID == a)
-	{
-		del = first;
-		Task A1 = first->data;	// 保存值域
-		first = first->link;
-		delete del;
-		return A1;
-	}
-
-
-
-	TaskNode *temp = first;
-	for (int i = 2; i <= Count(); i++)
-	{
-		if (temp->link->data.ID == a)
-			break;
-		temp = temp->link;
-	}
-	del = temp->link;
-	temp->link = del->link;
-	Task A1 = del->data;		// 保存值域
-	delete del;
-	return A1;
+    for(int i=1;i<=Count();i++)
+    {
+        if(List[i].ID==a)
+    return List[i];
+        }
+    return SystemTask[0];
 }
 
 
@@ -198,45 +145,17 @@ Task TaskList::TakeByID(int a)
 
 int TaskList::Count()
 {
-	int sum = 0;
-	if (first == NULL)			// 是否空
-		return 0;
 
-	TaskNode *temp = first;
-	while (temp != NULL)		// 不空就++
-	{
-		sum++;
-		temp = temp->link;		// 变成下一个
-	}
-	return sum;
+    return List.size();
 }
 
 void TaskList::Insert(Task a)
 {
-	if (first == NULL)			// 如果为空
-	{
-		TaskNode *newTask = new TaskNode(a);
-		first = newTask;		// 插入第一个
-	}
-	else
-	{
-		TaskNode *newTask = new TaskNode(a);
-		TaskNode *temp = first;
-		while (temp->link != NULL)	// 遍历直到一个为空
-			temp = temp->link;	// 变成下一个
-		temp->link = newTask;
-	}
+    List.append(a);
 }
 
 Task TaskList::GetData(int a)	// 取数据
 {
-	if (first == NULL)
-	{
-		Task C;
-		return C;
-	}
-	TaskNode *temp = first;		// 从第一个开始
-	for (int i = 2; i <= a; i++)	// 从第二个开始遍历
-		temp = temp->link;		// 变成下一个
-	return temp->data;
+
+    return List[a];
 }

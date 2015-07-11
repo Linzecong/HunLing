@@ -227,27 +227,17 @@ void NPC::Update()
 	
 }
 
-class NPCNode
-{
-  public:
-	NPC data;
-	NPCNode *link;
-	  NPCNode(NPC a)
-	{
-		data = a;
-		link = NULL;
-	}
-};
+
 
 
 class NPCList
 {
   public:
-	NPCNode * first;
+    QList<NPC> List;
   public:
 	NPCList()
 	{
-		first = NULL;
+
 	}
 	int Count();
 	void Insert(NPC a);
@@ -281,27 +271,17 @@ void Message::Init()
 
 	file.close();
 }  
-class MessageNode
-{
-  public:
-	Message data;
-	MessageNode *link;
-	  MessageNode(Message a)
-	{
-		data = a;
-		link = NULL;
-	}
-};
+
 
 
 class MessageList
 {
   public:
-	MessageNode * first;
+    QList<Message> List;
   public:
 	MessageList()
 	{
-		first = NULL;
+
 	}
 
 	int Count();
@@ -312,90 +292,33 @@ class MessageList
 
 int NPCList::Count()
 {
-	int sum = 0;
-	if (first == NULL)			// 是否空
-		return 0;
 
-	NPCNode *temp = first;
-	while (temp != NULL)		// 不空就++
-	{
-		sum++;
-		temp = temp->link;		// 变成下一个
-	}
-	return sum;
+    return List.size();
 }
 
 void NPCList::Insert(NPC a)
 {
-	if (first == NULL)			// 如果为空
-	{
-		NPCNode *newNPC = new NPCNode(a);
-		first = newNPC;			// 插入第一个
-	}
-	else
-	{
-		NPCNode *newNPC = new NPCNode(a);
-		NPCNode *temp = first;
-		while (temp->link != NULL)	// 遍历直到一个为空
-			temp = temp->link;	// 变成下一个
-		temp->link = newNPC;
-	}
+    List.append(a);
 }
 
 NPC NPCList::GetData(int a)		// 取数据
 {
-	if (first == NULL)
-	{
-		NPC C;
-		return C;
-	}
-	NPCNode *temp = first;		// 从第一个开始
-	for (int i = 2; i <= a; i++)	// 从第二个开始遍历
-		temp = temp->link;		// 变成下一个
-	return temp->data;
+    return List[a];
 }
 
 int MessageList::Count()
 {
-	int sum = 0;
-	if (first == NULL)			// 是否空
-		return 0;
 
-	MessageNode *temp = first;
-	while (temp != NULL)		// 不空就++
-	{
-		sum++;
-		temp = temp->link;		// 变成下一个
-	}
-	return sum;
+    return List.size();
 }
 
 void MessageList::Insert(Message a)
 {
-	if (first == NULL)			// 如果为空
-	{
-		MessageNode *newMessage = new MessageNode(a);
-		first = newMessage;		// 插入第一个
-	}
-	else
-	{
-		MessageNode *newMessage = new MessageNode(a);
-		MessageNode *temp = first;
-		while (temp->link != NULL)	// 遍历直到一个为空
-			temp = temp->link;	// 变成下一个
-		temp->link = newMessage;
-	}
+    List.append(a);
 }
 
 Message MessageList::GetData(int a)	// 取数据
 {
-	if (first == NULL)
-	{
-		Message C;
-		return C;
-	}
-	MessageNode *temp = first;	// 从第一个开始
-	for (int i = 2; i <= a; i++)	// 从第二个开始遍历
-		temp = temp->link;		// 变成下一个
-	return temp->data;
+
+    return List[a];
 }
