@@ -18,9 +18,9 @@ class TaskMsgWidget: public QDialog
 	QLabel MB_FMB;
 	QLabel Reward;
 	QPushButton Except;
-    QVBoxLayout Layout1;
-    QHBoxLayout Layout2;
-    QVBoxLayout MainLayout;
+    QVBoxLayout* Layout1;
+    QHBoxLayout* Layout2;
+    QVBoxLayout* MainLayout;
 
 	public:
     TaskMsgWidget(TaskList a,TaskList* b);
@@ -32,6 +32,10 @@ class TaskMsgWidget: public QDialog
 
 TaskMsgWidget::TaskMsgWidget(TaskList a,TaskList* b)
 {
+    Layout1=new QVBoxLayout;
+    Layout2=new QHBoxLayout;
+    MainLayout=new QVBoxLayout;
+
     tempTask=a;
     Me=b;
     for(int i=1;i<=tempTask.Count();i++)
@@ -42,15 +46,15 @@ TaskMsgWidget::TaskMsgWidget(TaskList a,TaskList* b)
     MB_FMB.setText("任务进度：");
     Reward.setText("任务奖励：<br>");
     Except.setText("接受！");
-    Layout1.addWidget(&Title);
-    Layout1.addWidget(&List);
-    Layout2.addWidget(&Name);
-    Layout2.addWidget(&Des);
-    Layout2.addWidget(&MB_FMB);
-    Layout2.addWidget(&Reward);
-    MainLayout.addLayout(&Layout1);
-    MainLayout.addLayout(&Layout2);
-    this->setLayout(&MainLayout);
+    Layout1->addWidget(&Title);
+    Layout1->addWidget(&List);
+    Layout2->addWidget(&Name);
+    Layout2->addWidget(&Des);
+    Layout2->addWidget(&MB_FMB);
+    Layout2->addWidget(&Reward);
+    MainLayout->addLayout(Layout1);
+    MainLayout->addLayout(Layout2);
+    this->setLayout(MainLayout);
 }
 
 void TaskMsgWidget::Except_Click()

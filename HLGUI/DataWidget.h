@@ -10,6 +10,7 @@ class DataWidget: public QWidget
 	public:
 	RenWu Me;
 	QLabel Title;
+    QLabel Name;
 	QLabel Level;
 	QLabel Exp;
 	QLabel LingHuan;//颜色
@@ -31,6 +32,7 @@ DataWidget::DataWidget(RenWu a,QWidget *parent): QWidget(parent)
      MainLayout=new QVBoxLayout;
     Me=a;
     Title.setText("人物信息：");
+    Name.setText("名字："+Me.Name);
     Level.setText("等级："+QString::number(Me.LV)+"级");
     Exp.setText("经验："+QString::number(Me.Exp_Now)+"/"+QString::number(Me.Exp_Need));
     for(int i=1;i<=Me.LH.Count();i++)
@@ -42,6 +44,7 @@ DataWidget::DataWidget(RenWu a,QWidget *parent): QWidget(parent)
     Sour.setText("灵力："+QString::number(Me.Sour)+"("+QString::number(Me.Ori_Sour)+")");
     myBuff=new BuffWidget(Me.myBuffList);
     MainLayout->addWidget(&Title);
+    MainLayout->addWidget(&Name);
     MainLayout->addWidget(&Level);
     MainLayout->addWidget(&Exp);
     MainLayout->addWidget(&LingHuan);
@@ -59,6 +62,7 @@ void DataWidget::UpDate(RenWu a)
 {
     Me=a;
     Title.setText("人物信息：");
+    Name.setText("名字："+Me.Name);
     Level.setText("等级："+QString::number(Me.LV)+"级");
     Exp.setText("经验："+QString::number(Me.Exp_Now)+"/"+QString::number(Me.Exp_Need));
     for(int i=1;i<=Me.LH.Count();i++)

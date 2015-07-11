@@ -26,6 +26,23 @@ class GameSystem
     {
 
     }
+    GameSystem()
+    {
+        Me.Init();
+        SystemMap[0][0].Init();
+         SystemHJ[0].Init();
+          SystemHL[0].Init();
+           SystemItem[0].Init();
+            SystemNPC[0].Init();
+             SystemTask[0].Init();
+              SystemBuff[0].Init();
+              Me.PosX=0;
+              Me.PosY=1;
+              SystemTask[0].IsFinish=1;
+              Me.myTaskList.Insert(SystemTask[0]);
+              Me.LH.Insert(CreateLH(SystemHL[1]));
+
+    }
 
     static LingGu CreateLG(HunLing a,int type);
     static LingHuan CreateLH(HunLing a);

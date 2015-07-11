@@ -339,9 +339,9 @@ FightWidget::FightWidget(RenWu a,NPC b)
     Reward.Exp=0;
     Reward.Coin=0;
 
-    Layout1->addWidget(&MyHLList);
-    Layout1->addWidget(&HLData);
     Layout1->addWidget(&EnemyHLList);
+    Layout1->addWidget(&HLData);
+    Layout1->addWidget(&MyHLList);
 
     Layout2->addWidget(&ATkButton);
     Layout2->addWidget(&SkillButton);
@@ -364,6 +364,7 @@ FightWidget::FightWidget(RenWu a,NPC b)
     connect(&LGSkillButton,&QPushButton::clicked,this,&FightWidget::LGSkill);
     connect(&ItemButton,&QPushButton::clicked,this,&FightWidget::UseItem);
     connect(&SkipButton,&QPushButton::clicked,this,&FightWidget::Skip);
+    connect(&GoOn,&QPushButton::clicked,this,&FightWidget::GoOn_Ckick);
 
 
 

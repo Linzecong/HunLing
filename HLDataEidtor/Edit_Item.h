@@ -186,7 +186,7 @@ ItemWidget::ItemWidget()
 
 
 	Type_L = new QLabel("类型：");
-    Type_L = new QLabel("0敌单2我单");
+    ATKType_L = new QLabel("0敌单2我单");
 	Value_L = new QLabel("价值：");
 	Str_L = new QLabel("力量：");
 	Agi_L = new QLabel("敏捷：");

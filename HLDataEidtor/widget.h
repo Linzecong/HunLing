@@ -1,6 +1,5 @@
 #ifndef WIDGET_H
 #define WIDGET_H
-#define SAVEPATH QString("./Save/")
 #define DATAPATH QString("./Data/")
 #include <QString>
 #include<QFile>

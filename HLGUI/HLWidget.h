@@ -20,22 +20,17 @@ class HLWidget: public QWidget
     QVBoxLayout MainLayout;
     HLDataWidget* tempData;
 	public:
-    HLWidget(HunLing a);
-    HLWidget(){}
+    HLWidget();
 	~HLWidget(){}
 	void Data_Click();
     void setData(HunLing a);
 	
 };
-HLWidget::HLWidget(HunLing a)
+HLWidget::HLWidget()
 {
-    tempHL=a;
+
 //    Head.setPixmap(QPixmap::load(""));
-    Name.setText(a.Name);
-    LV.setText("等级："+QString::number(a.LV));
-    ATK.setText("攻击力："+QString::number(a.ATK));
-    DEF.setText("防御力："+QString::number(a.DEF));
-    VIT.setText("生命力："+QString::number(a.VITNOW)+"/"+QString::number(a.VIT));
+
     Data.setText("详细");
     MainLayout.addWidget(&Head);
     MainLayout.addWidget(&Name);

@@ -180,8 +180,8 @@ void MapWidget::read()
 
 MapWidget::MapWidget()
 {
-    Name = new QLineEdit("请勿修改这个");
-    Des = new QLineEdit("请勿修改这个");
+    Name = new QLineEdit;
+    Des = new QLineEdit;
     SaveButton = new QPushButton("保存");
 
     PosX = new QSpinBox;
@@ -354,13 +354,7 @@ void MapWidget::Init()
 {
 
     SystemMap[1][1].Init();
-    for (int i = 0; i <= 25; i++)
-    {
-    SystemMap[0][i].Name = "请勿修改这个";
-    SystemMap[0][i].Des = "请勿修改这个";
-    SystemMap[i][0].Name = "请勿修改这个";
-    SystemMap[i][0].Des = "请勿修改这个";
-    }
+
 
 
 }

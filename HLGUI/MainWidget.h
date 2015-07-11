@@ -101,7 +101,10 @@ void MainWidget::Quit()
 
 void MainWidget::Save()
 {
-
+    Game->Me.Save();
+    SystemNPC[0].Save();
+    SystemTask[0].Save();
+    QMessageBox::about(this,"提示","保存成功");
 }
 
 void MainWidget::Help()
@@ -160,6 +163,7 @@ void MainWidget::keyPressEvent(QKeyEvent *e)
 void MainWidget::xia()
 {
   Map_Widget->UpDate(SystemMap[0][1],Game->Me);
+  Game->Me.PosY++;
 
 }
 void MainWidget::shang(){}

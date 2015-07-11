@@ -54,7 +54,9 @@ MapNPCWidget::MapNPCWidget(RenWu temp,NPC a)
     MainLayout->addWidget(&Talk);
     MainLayout->addWidget(&Attack);
     this->setLayout(MainLayout);
-connect(&Attack,QPushButton::clicked,this,MapNPCWidget::Attack_Click);
+    connect(&Attack,QPushButton::clicked,this,MapNPCWidget::Attack_Click);
+     connect(&Task,QPushButton::clicked,this,MapNPCWidget::Task_Click);
+      connect(&Talk,QPushButton::clicked,this,MapNPCWidget::Talk_Click);
 }
 
 

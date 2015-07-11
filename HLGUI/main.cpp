@@ -21,10 +21,11 @@
 #include<MapWidget.h>
 #include<MainWidget.h>
 #include<BeginWidget.h>
-
+#include<QTextCodec>
 
 int main(int argc, char *argv[])
 {
+    QTextCodec::setCodecForLocale(QTextCodec::codecForName("UTF-8"));
     QApplication a(argc, argv);
     BeginWidget b;
     b.show();
