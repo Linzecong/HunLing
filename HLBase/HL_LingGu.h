@@ -48,7 +48,7 @@ class LGList{
 };
 
 
-
+/*
 class LGBagList{
   public:
     QList<LingGu> List;
@@ -78,5 +78,5 @@ void LGBagList::Insert(LingGu a){
 LingGu LGBagList::GetData(int a){
     return List[a];
 }
-
+*/
 #endif

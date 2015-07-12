@@ -22,11 +22,12 @@ class Item{
 	int Ene;
 	int Sour;
 	int Exp;
+    int Count;
 	void Init();
     Item(){
         ID=Type=ATKType=Value=0;
         Des=Name="空";
-        Str=Agi=Vit=Ene=Sour=Exp=0;
+        Str=Agi=Vit=Ene=Sour=Exp=Count=0;
     }
 } SystemItem[200];
 
@@ -36,12 +37,12 @@ void Item::Init(){
 	QTextStream in(&file);
     for (int i = 0; i <200; i++)
 		in >> SystemItem[i].Name >> SystemItem[i].Des;
+       file.close();
 
-	file.close();
 	QFile tmpfile(DATAPATH+"SaveItem.num");
 	tmpfile.open(QIODevice::ReadOnly);
-    for (int i = 0; i <200; i++){
-		int a = sizeof(int);
+        int a = sizeof(int);
+        for (int i = 0; i <200; i++){
 		tmpfile.read((char *)&SystemItem[i].ID, a);
 		tmpfile.read((char *)&SystemItem[i].Type, a);
         tmpfile.read((char *)&SystemItem[i].ATKType, a);
@@ -52,10 +53,11 @@ void Item::Init(){
 		tmpfile.read((char *)&SystemItem[i].Ene, a);
 		tmpfile.read((char *)&SystemItem[i].Sour, a);
 		tmpfile.read((char *)&SystemItem[i].Exp, a);
+        tmpfile.read((char *)&SystemItem[i].Count, a);
 	}
 	tmpfile.close();
 }  
-
+/*
 class ItemNode{
   public:
 	Item data;
@@ -103,5 +105,5 @@ int ItemList::GetCount(int a){
     return List[a].Count;
 
 }
-
+*/
 #endif

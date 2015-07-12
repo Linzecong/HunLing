@@ -63,12 +63,12 @@ void HunLing::Init(){
       QTextStream in(&file);
          for(int i=0;i<200;i++)
         in>>SystemHL[i].Name>>SystemHL[i].Des;
+       file.close();
 
-   file.close();
     QFile tmpfile( DATAPATH+"SaveHL.num" );
     tmpfile.open(QIODevice::ReadOnly);
+    int a=sizeof(int);
     for(int i=0;i<200;i++){
-        int a=sizeof(i);
         tmpfile.read(( char *)&SystemHL[i].ID,a);
         tmpfile.read(( char *)&SystemHL[i].Strength,a);
         tmpfile.read(( char *)&SystemHL[i].Agility,a);
@@ -94,6 +94,7 @@ void HunLing::Init(){
     tmpfile.close();
 }
 
+/*
 class HLList{
   public:
     QList<HunLing> List;
@@ -152,5 +153,5 @@ int HLList::TOL_VIT(){
 		sum += GetData(i).VIT;
 	return sum;
 }
-
+*/
 #endif

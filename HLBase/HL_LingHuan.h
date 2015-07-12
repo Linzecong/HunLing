@@ -24,6 +24,7 @@ class LingHuan{
     }
 };
 
+/*
 class LHList{
   public:
     QList<LingHuan> List;
@@ -71,5 +72,5 @@ void LHList::Exchange(int a, int b){
 	LingHuan temp2 = Replace(temp1, b);
 	Replace(temp2, a);
 }
-
+*/
 #endif

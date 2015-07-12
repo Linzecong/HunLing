@@ -108,8 +108,10 @@ void DataWidget::UpDate(){
     Name.setText("名字："+Me->Name);
     Level.setText("等级："+QString::number(Me->LV)+"级");
     Exp.setText("经验："+QString::number(Me->Exp_Now)+"/"+QString::number(Me->Exp_Need));
+    LingHuan.setText("");
     for(int i=0;i<Me->LH.Count();i++)
     LingHuan.setText(LingHuan.text()+Me->LH.GetData(i).Col);
+    LingHuan.setText("灵环："+LingHuan.text());
     Strength.setText("力量："+QString::number(Me->Strength)+"("+QString::number(Me->Ori_Strength)+")");
     Agility.setText("敏捷："+QString::number(Me->Agility)+"("+QString::number(Me->Ori_Agility)+")");
     Vitality.setText("体力："+QString::number(Me->Vitality)+"("+QString::number(Me->Ori_Vitality)+")");

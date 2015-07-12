@@ -11,29 +11,29 @@
 
 class EnergyBar{
 public:
-    HLList* Me;
-    HLList* Enemy;
+    QList<HunLing*> Me;
+    QList<HunLing*> Enemy;
     QList<double> List;//敌人再自己
     double totle;//能量最大值
     int type;// 敌人还是自己,0敌人1自己
     int index;
 public:
-    EnergyBar(HLList* a,HLList* b);
+    EnergyBar(QList<HunLing*> a,QList<HunLing*> b);
     ~EnergyBar(){}
     void next();
 
 };
-EnergyBar::EnergyBar(HLList* a,HLList* b){
+EnergyBar::EnergyBar(QList<HunLing*> a, QList<HunLing*> b){
     Enemy=b;
     Me=a;
     totle=0;
-    for(int i=0;i<Enemy->Count();i++){//统计能量最大值
-        totle+=Enemy->GetData(i).Agility*500;
-        List.append(Enemy->GetData(i).Agility);
+    for(int i=0;i<Enemy.size();i++){//统计能量最大值
+        totle+=Enemy[i]->Agility*500;
+        List.append(Enemy[i]->Agility);
     }
-    for(int i=0;i<Me->Count();i++){
-        totle+=Me->GetData(i).Agility*500;
-        List.append(Me->GetData(i).Agility);
+    for(int i=0;i<Me.size();i++){
+        totle+=Me[i]->Agility*500;
+        List.append(Me[i]->Agility);
     }
     type=0;
     index=0;
@@ -43,17 +43,17 @@ void EnergyBar::next(){
     int stop=0;
     while(stop!=1){
         for(int i=0;i<=List.size();i++){
-            if(i<Enemy->Count())//判断是加敌人还是自己的敏捷值
-            List[i]+=Enemy->GetData(i).Agility;
+            if(i<Enemy.size())//判断是加敌人还是自己的敏捷值
+            List[i]+=Enemy[i]->Agility;
             else
-            List[i]+=Me->GetData(i-Enemy->Count()).Agility;
+            List[i]+=Me[i-Enemy.size()]->Agility;
         }
    for(int i=0;i<=List.size();i++){
    if(List[i]>=totle){//如果大于能量最大值
        List[i]-=totle;//循环
-       if(i>Me->Count()){
+       if(i>Me.size()){
            type=0;
-           index=i-Me->Count();
+           index=i-Me.size();
        }
        else{
            type=1;
@@ -77,19 +77,19 @@ class FightSystem{
   public:
 	RenWu * Me;
     NPC* Enemy;
-    HLList* MyHL;
-    HLList* EnemyHL;
+    QList<HunLing*> MyHL;
+    QList<HunLing*> EnemyHL;
     EnergyBar* EB;
 	int Turn;
   public:
 	void SetBuff();//初始化后自动调用，设置Buff效果
-    FightSystem(RenWu* a, NPC* b,HLList* a1,HLList* b1);
+    FightSystem(RenWu* a, NPC* b,QList<HunLing*> a1,QList<HunLing*> b1);
 	void TurnOut();				// 技能-1
 	QString Attack(HunLing * a, HunLing * b);//攻击
     QString Skill(HunLing * a, HunLing* b, HunJi * skill);//技能，直接传入技能。单体。
-    QString Skill(HunLing * a, HLList *b, HunJi * skill);//技能，直接传入技能。全体。注意replace
+    QString Skill(HunLing * a, QList<HunLing*> b, HunJi * skill);//技能，直接传入技能。全体。注意replace
     QString UseItem(int a, HunLing * b, HunLing *c);//用道具，道具编号。
-    QString UseItem(int a, HunLing * b, HLList *c);//用道具，道具编号。全体，注意replace
+    QString UseItem(int a, HunLing * b, QList<HunLing*> c);//用道具，道具编号。全体，注意replace
 
 	int CanGoOn();				// 判断能否继续
 	void UpdateATKDEF();//每轮前调用，更新攻击和防御力和体力
@@ -97,7 +97,7 @@ class FightSystem{
 
 
 
-FightSystem::FightSystem(RenWu* a, NPC *b, HLList *a1, HLList *b1){
+FightSystem::FightSystem(RenWu* a, NPC *b, QList<HunLing *> a1, QList<HunLing *> b1){
     Me = a;
     Enemy= b;
     MyHL=a1;
@@ -107,9 +107,10 @@ FightSystem::FightSystem(RenWu* a, NPC *b, HLList *a1, HLList *b1){
 	SetBuff();
 }
 
+
 void FightSystem::SetBuff(){
-    for (int i = 0; i < Me->myBuffList.Count(); i++){//注意！通过人物的BuffList来更新
-		int a = Me->myBuffList.GetData(i).ID;
+    for (int i = 0; i < Me->myBuffList.size(); i++){//注意！通过人物的BuffList来更新
+        int a = Me->myBuffList[i].ID;
 		switch (a){
 		case 1:
 				break;
@@ -118,8 +119,8 @@ void FightSystem::SetBuff(){
 		}
 	}
 
-    for (int i = 0; i < Enemy->myBuffList.Count(); i++){
-        int a = Enemy->myBuffList.GetData(i).ID;
+    for (int i = 0; i < Enemy->myBuffList.size(); i++){
+        int a = Enemy->myBuffList[i].ID;
 		switch (a){
 		case 1:
 				break;
@@ -132,19 +133,15 @@ void FightSystem::SetBuff(){
 
 void FightSystem::TurnOut(){// 技能冷却-1
     Turn++;
-    for (int i = 0; i < MyHL->Count(); i++){
-        HunLing temp = MyHL->GetData(i);
-		temp.ATK_Ski.NowTurn--;
-		if (temp.ATK_Ski.NowTurn < 0)
-			temp.ATK_Ski.NowTurn = 0;
-        MyHL->Replace(temp, i);
+    for (int i = 0; i < MyHL.size(); i++){
+        MyHL[i]->ATK_Ski.NowTurn--;
+        if (MyHL[i]->ATK_Ski.NowTurn < 0)
+            MyHL[i]->ATK_Ski.NowTurn = 0;
 	}
-    for (int i = 0; i < EnemyHL->Count(); i++){
-        HunLing temp = EnemyHL->GetData(i);
-		temp.ATK_Ski.NowTurn--;
-		if (temp.ATK_Ski.NowTurn < 0)
-			temp.ATK_Ski.NowTurn = 0;
-        EnemyHL->Replace(temp, i);
+    for (int i = 0; i < EnemyHL.size(); i++){
+        EnemyHL[i]->ATK_Ski.NowTurn--;
+        if (EnemyHL[i]->ATK_Ski.NowTurn < 0)
+            EnemyHL[i]->ATK_Ski.NowTurn = 0;
 	}
     UpdateATKDEF();
 }
@@ -153,14 +150,14 @@ int FightSystem::CanGoOn(){// 判断能否继续。0我输，1继续，-1赢了,
     if(Turn>=30)
         return -2;
 	int n = 0;
-    for (int i = 1; i <= MyHL->Count(); i++)
-        if (MyHL->GetData(i).VIT != 0)
+    for (int i = 1; i <= MyHL.size(); i++)
+        if (MyHL[i]->VIT != 0)
 			n = 1;
 
 	if (n == 1){
 		n = -1;
-        for (int i = 1; i <= EnemyHL->Count(); i++)
-            if (EnemyHL->GetData(i).VIT != 0)
+        for (int i = 1; i <= EnemyHL.size(); i++)
+            if (EnemyHL[i]->VIT != 0)
 				n = 1;
 	}
     return n;//注意初始化掉落
@@ -201,7 +198,7 @@ QString FightSystem::Skill(HunLing * a, HunLing * b, HunJi * skill){//注意技�
 	return Description;
 }
 
-QString FightSystem::Skill(HunLing * a, HLList* b, HunJi * skill){
+QString FightSystem::Skill(HunLing * a, QList<HunLing *> b, HunJi * skill){
     QString Description;
     skill->NowTurn += skill->Turn;
     switch (skill->ID){
@@ -212,10 +209,10 @@ QString FightSystem::Skill(HunLing * a, HLList* b, HunJi * skill){
     }
 
 
-    for(int i=0;i<b->Count();i++)
-        if (b->List[i].VIT <= 0){
-            b->List[i].VIT = 0;
-            b->List[i].Agility=0;
+    for(int i=0;i<b.size();i++)
+        if (b[i]->VIT <= 0){
+            b[i]->VIT = 0;
+            b[i]->Agility=0;
         }
 
     if (a->VIT <= 0){
@@ -254,7 +251,7 @@ QString FightSystem::UseItem(int a, HunLing * b,HunLing* c){
 }
 
 
-QString FightSystem::UseItem(int a, HunLing * b,HLList* c){
+QString FightSystem::UseItem(int a, HunLing * b, QList<HunLing *> c){
     QString Description;
     switch (a)
     {
@@ -269,10 +266,10 @@ QString FightSystem::UseItem(int a, HunLing * b,HLList* c){
     }
 
 
-    for(int i=0;i<c->Count();i++)
-        if (c->List[i].VIT <= 0){
-            c->List[i].VIT = 0;
-            c->List[i].Agility=0;
+    for(int i=0;i<c.size();i++)
+        if (c[i]->VIT <= 0){
+            c[i]->VIT = 0;
+            c[i]->Agility=0;
         }
 
     if (b->VIT <= 0){
@@ -284,17 +281,13 @@ QString FightSystem::UseItem(int a, HunLing * b,HLList* c){
 
 
 void FightSystem::UpdateATKDEF(){
-    for(int i=0;i<MyHL->Count();i++){
-        HunLing tempHL=MyHL->GetData(i);
-        tempHL.ATK =(1 + 0.2 * tempHL.LV) * (tempHL.Strength * tempHL.ATK_Str + tempHL.Agility * tempHL.ATK_Agi);
-        tempHL.DEF =(1 + 0.2 * tempHL.LV) * (tempHL.Strength * tempHL.DEF_Str + tempHL.Agility * tempHL.DEF_Agi);
-        MyHL->Replace(tempHL,i);
+    for(int i=0;i<MyHL.size();i++){
+        MyHL[i]->ATK =(1 + 0.2 * MyHL[i]->LV) * (MyHL[i]->Strength * MyHL[i]->ATK_Str + MyHL[i]->Agility * MyHL[i]->ATK_Agi);
+        MyHL[i]->DEF =(1 + 0.2 * MyHL[i]->LV) * (MyHL[i]->Strength * MyHL[i]->DEF_Str + MyHL[i]->Agility * MyHL[i]->DEF_Agi);
 	}
-        for(int i=0;i<EnemyHL->Count();i++){
-        HunLing tempHL=EnemyHL->GetData(i);
-		tempHL.ATK =(1 + 0.2 * tempHL.LV) * (tempHL.Strength * tempHL.ATK_Str +tempHL.Agility * tempHL.ATK_Agi);
-		tempHL.DEF =(1 + 0.2 * tempHL.LV) * (tempHL.Strength * tempHL.DEF_Str +tempHL.Agility * tempHL.DEF_Agi);
-        EnemyHL->Replace(tempHL,i);
+        for(int i=0;i<EnemyHL.size();i++){
+        EnemyHL[i]->ATK =(1 + 0.2 * EnemyHL[i]->LV) * (EnemyHL[i]->Strength * EnemyHL[i]->ATK_Str +EnemyHL[i]->Agility * EnemyHL[i]->ATK_Agi);
+        EnemyHL[i]->DEF =(1 + 0.2 * EnemyHL[i]->LV) * (EnemyHL[i]->Strength * EnemyHL[i]->DEF_Str +EnemyHL[i]->Agility * EnemyHL[i]->DEF_Agi);
 	}
 }
 

@@ -27,16 +27,16 @@ class HunJi{
 
 void HunJi::Init(){
     QFile file((DATAPATH+"SaveHJ.str"));
-file.open(QIODevice::ReadOnly);
+      file.open(QIODevice::ReadOnly);
       QTextStream in(&file);
-         for(int i=0;i<200;i++)
+        for(int i=0;i<200;i++)
         in>>SystemHJ[i].Name>>SystemHJ[i].Des;
+         file.close();
 
-   file.close();
     QFile tmpfile( DATAPATH+"SaveHJ.num" );
     tmpfile.open(QIODevice::ReadOnly);
-    for(int i=0;i<200;i++){
     int a=sizeof(int);
+    for(int i=0;i<200;i++){
     tmpfile.read(( char *)&SystemHJ[i].ID,a);
     tmpfile.read(( char *)&SystemHJ[i].Energy,a);
     tmpfile.read(( char *)&SystemHJ[i].Sour,a);
@@ -66,8 +66,9 @@ void Buff::Init(){
       QTextStream in(&file);
          for(int i=0;i<200;i++)
         in>>SystemBuff[i].Name>>SystemBuff[i].Des;
-   file.close();
-    QFile tmpfile( DATAPATH+"SaveBuff.num" );
+        file.close();
+
+    QFile tmpfile(DATAPATH+"SaveBuff.num" );
     tmpfile.open(QIODevice::ReadOnly);
     for(int i=0;i<200;i++){
     int a=sizeof(int);
@@ -77,7 +78,7 @@ void Buff::Init(){
     tmpfile.close();
 }
 
-
+/*
 class BuffList{
   public:
     QList<Buff> List;
@@ -109,5 +110,5 @@ void BuffList::Insert(Buff a){
 Buff BuffList::GetData(int a){
     return List[a];
 }
-
+*/
 #endif

@@ -3,6 +3,7 @@
 #define HL_RENWU
 
 #include <QString>
+#include <QList>
 #include "HL_DiTu.h"
 #include "HL_HunJi.h"
 #include "HL_HunLing.h"
@@ -31,12 +32,12 @@ class RenWu{
 	double Ori_Energy;
 	double Ori_Sour;
 	LGList LG;
-	LHList LH;
-	ItemList Bag;
-	TaskList myTaskList;
-	BuffList myBuffList;
-	LGBagList LGBag;
-    LHList LHBag;
+    QList<LingHuan> LH;
+    QList<Item> Bag;
+    QList<Task> myTaskList;
+    QList<Buff> myBuffList;
+    QList<LingGu> LGBag;
+    QList<LingHuan> LHBag;
   public:
     int UpdateLV();//返回升了多少级
     int ExceptTask(Task a);//1接受成功，-1异常，0不能接受
@@ -58,31 +59,12 @@ RenWu::RenWu(){
     LV=0;Exp_Need=0;Exp_Now=0;Name="空";Coin=0;PosX=0;PosY=0;
     Strength=0;Agility=0;Vitality=0;Energy=0;Sour=0;
     Ori_Strength=0;Ori_Agility=0;Ori_Vitality=0;Ori_Energy=0;Ori_Sour=0;
-    LingHuan a;
-    for(int i=0;i<10;i++)
-        LH.Insert(a);
-    Item b;
-    for(int i=0;i<200;i++)
-        Bag.Insert(b);
-    Task c;
-    for(int i=0;i<200;i++)
-        myTaskList.Insert(c);
-    LingGu d;
-    for(int i=0;i<200;i++)
-        LGBag.Insert(d);
-    for(int i=0;i<200;i++)
-        LHBag.Insert(a);
-
-
-
-
-
 }
 
 void RenWu::Save(){
         QFile file((DATAPATH+"SaveMe.str"));
-file.open(QIODevice::WriteOnly);
-      QTextStream in(&file);
+        file.open(QIODevice::WriteOnly);
+        QTextStream in(&file);
         in<<Name<<endl;
         in<<LG.Head.Name<<endl;
         in<<LG.Body.Name<<endl;
@@ -91,23 +73,22 @@ file.open(QIODevice::WriteOnly);
         in<<LG.LLeg.Name<<endl;
         in<<LG.RLeg.Name<<endl;
 
-        for(int i=0;i<10;i++)
-        in<<LH.GetData(i).Name<<" "<<LH.GetData(i).Des<<" "<<LH.GetData(i).Col<<endl;
+        for(int i=0;i<LH.size();i++)
+        in<<LH[i].Name<<" "<<LH[i].Des<<" "<<LH[i].Col<<endl;
 
-        for(int i=0;i<200;i++)
-        in<<myTaskList.GetData(i).Name<<" "<<myTaskList.GetData(i).Des<<endl;
+        for(int i=0;i<myTaskList.size();i++)
+        in<<myTaskList[i].Name<<" "<<myTaskList[i].Des<<endl;
 
-        for(int i=0;i<200;i++)
-        in<<LGBag.GetData(i).Name<<endl;
+        for(int i=0;i<LGBag.size();i++)
+        in<<LGBag[i].Name<<endl;
 
-        for(int i=0;i<200;i++)
-        in<<LHBag.GetData(i).Name<<" "<<LHBag.GetData(i).Des<<" "<<LHBag.GetData(i).Col<<endl;
+        for(int i=0;i<LHBag.size();i++)
+        in<<LHBag[i].Name<<" "<<LHBag[i].Des<<" "<<LHBag[i].Col<<endl;
 
         file.close();
 
      QFile tmpfile( DATAPATH+"SaveMe.num" );
     tmpfile.open(QIODevice::WriteOnly);
-
     int a=sizeof(int);
     int b=sizeof(double);
     tmpfile.write(( char *)&LV,a);
@@ -197,8 +178,8 @@ tmpfile.write(( char *)&LG.RHand.Add_Agi,b);
 tmpfile.write(( char *)&LG.LLeg.Add_Agi,b);
 tmpfile.write(( char *)&LG.RLeg.Add_Agi,b);
 
-for(int i=0;i<10;i++){
-    LingHuan temp=LH.GetData(i);
+for(int i=0;i<LH.size();i++){
+    LingHuan temp=LH[i];
     tmpfile.write(( char *)&temp.LV,a);
     tmpfile.write(( char *)&temp.ID,a);
     tmpfile.write(( char *)&temp.DEF_Ski,a);
@@ -208,33 +189,22 @@ for(int i=0;i<10;i++){
 
 }
 
-for(int i=0;i<200;i++){
-    Item temp=Bag.GetData(i);
-    int abc=Bag.GetCount(i);
+for(int i=0;i<Bag.size();i++){
+    Item temp=Bag[i];
+    int abc=Bag[i].Count;
     tmpfile.write(( char *)&temp.ID,a);
     tmpfile.write(( char *)&abc,a);
 }
 
 
-for(int i=0;i<200;i++){
-    Task temp=myTaskList.GetData(i);
+for(int i=0;i<myTaskList.size();i++){
+    Task temp=myTaskList[i];
     tmpfile.write(( char *)&temp.ID,a);
-    tmpfile.write(( char *)&temp.Need_ID,a);
-    tmpfile.write(( char *)&temp.IsFinish,a);
-    tmpfile.write(( char *)&temp.MB,a);
     tmpfile.write(( char *)&temp.FMB,a);
-    tmpfile.write(( char *)&temp.NKillHL,a);
-    tmpfile.write(( char *)&temp.NKillNPC,a);
-    tmpfile.write(( char *)&temp.NTalkNPC,a);
-    tmpfile.write(( char *)&temp.NGetItem,a);
-    tmpfile.write(( char *)&temp.A_Coin,a);
-    tmpfile.write(( char *)&temp.A_Exp,a);
-    tmpfile.write(( char *)&temp.A_Item,a);
-    tmpfile.write(( char *)&temp.A_Count,a);
 }
 
-for(int i=0;i<200;i++){
-    LingGu temp=LGBag.GetData(i);
+for(int i=0;i<LGBag.size();i++){
+    LingGu temp=LGBag[i];
 tmpfile.write(( char *)&temp.LV,a);
 tmpfile.write(( char *)&temp.ID,a);
 tmpfile.write(( char *)&temp.Type,a);
@@ -247,8 +217,8 @@ tmpfile.write(( char *)&temp.Add_Str,b);
 tmpfile.write(( char *)&temp.Add_Agi,b);
 }
 
-for(int i=0;i<200;i++){
-    LingHuan temp=LHBag.GetData(i);
+for(int i=0;i<LHBag.size();i++){
+    LingHuan temp=LHBag[i];
     tmpfile.write(( char *)&temp.LV,a);
     tmpfile.write(( char *)&temp.ID,a);
     tmpfile.write(( char *)&temp.DEF_Ski,a);
@@ -258,12 +228,46 @@ for(int i=0;i<200;i++){
 }
 
     tmpfile.close();
-    }
+
+
+    QFile file1(DATAPATH+"SaveMe.siz" );
+   file1.open(QIODevice::WriteOnly);
+
+   int s=LH.size();
+   file1.write(( char *)&s,a);
+   s=Bag.size();
+   file1.write(( char *)&s,a);
+   s=myTaskList.size();
+   file1.write(( char *)&s,a);
+   s=LGBag.size();
+   file1.write(( char *)&s,a);
+   s=LHBag.size();
+   file1.write(( char *)&s,a);
+
+}
 
 void RenWu::Init(){
+    int a=sizeof(int);
+    int b=sizeof(double);
+    QFile file1(DATAPATH+"SaveMe.siz" );
+   file1.open(QIODevice::ReadOnly);
+
+   int LH_SIZE;
+   file1.read(( char *)&LH_SIZE,a);
+   int BAG_SIZE;
+   file1.read(( char *)&BAG_SIZE,a);
+   int MYTASKLIST_SIZE;
+   file1.read(( char *)&MYTASKLIST_SIZE,a);
+   int LGBAG_SIZE;
+   file1.read(( char *)&LGBAG_SIZE,a);
+   int LHBAG_SIZE;
+   file1.read(( char *)&LHBAG_SIZE,a);
+
+   file1.close();
+
         QFile file((DATAPATH+"SaveMe.str"));
-file.open(QIODevice::ReadOnly);
-      QTextStream in(&file);
+        file.open(QIODevice::ReadOnly);
+        QTextStream in(&file);
         in>>Name;
         in>>LG.Head.Name;
         in>>LG.Body.Name;
@@ -272,37 +276,27 @@ file.open(QIODevice::ReadOnly);
         in>>LG.LLeg.Name;
         in>>LG.RLeg.Name;
 
-        for(int i=0;i<10;i++){
+        for(int i=0;i<LH_SIZE;i++){
             LingHuan temp;
         in>>temp.Name>>temp.Des>>temp.Col;
-        LH.Insert(temp);
+        LH.append(temp);
         }
 
-        for(int i=0;i<200;i++){
-            Task temp;
-        in>>temp.Name>>temp.Des;
-        myTaskList.Insert(temp);
-        }
 
-        for(int i=0;i<200;i++){
+        for(int i=0;i<LGBAG_SIZE;i++){
             LingGu temp;
         in>>temp.Name;
-        LGBag.Insert(temp);
+        LGBag.append(temp);
         }
-
-        for(int i=0;i<200;i++){
+        for(int i=0;i<LHBAG_SIZE;i++){
             LingHuan temp;
         in>>temp.Name>>temp.Des>>temp.Col;
-        LHBag.Insert(temp);
+        LHBag.append(temp);
         }
-
         file.close();
 
      QFile tmpfile( DATAPATH+"SaveMe.num" );
     tmpfile.open(QIODevice::ReadOnly);
-
-    int a=sizeof(int);
-    int b=sizeof(double);
     tmpfile.read(( char *)&LV,a);
     tmpfile.read(( char *)&Exp_Now,b);
     tmpfile.read(( char *)&Exp_Need,b);
@@ -390,48 +384,36 @@ tmpfile.read(( char *)&LG.RHand.Add_Agi,b);
 tmpfile.read(( char *)&LG.LLeg.Add_Agi,b);
 tmpfile.read(( char *)&LG.RLeg.Add_Agi,b);
 
-for(int i=0;i<10;i++){
-    LingHuan temp=LH.GetData(i);
+for(int i=0;i<LH_SIZE;i++){
+    LingHuan temp=LH[i];
     tmpfile.read(( char *)&temp.LV,a);
     tmpfile.read(( char *)&temp.ID,a);
     tmpfile.read(( char *)&temp.DEF_Ski,a);
     tmpfile.read(( char *)&temp.Value,b);
     tmpfile.read(( char *)&temp.Strength,b);
     tmpfile.read(( char *)&temp.Agility,b);
-    LH.Replace(temp,i);
-
+    LH[i]=temp;
 }
 
-for(int i=0;i<200;i++){
+for(int i=0;i<BAG_SIZE;i++){
     Item temp;
-    int abc;
     tmpfile.read(( char *)&temp.ID,a);
-    tmpfile.read(( char *)&abc,a);
-    for(int j=1;j<=abc;j++)
-    Bag.Insert(temp);
+    temp=SystemItem[temp.ID];
+    tmpfile.read(( char *)&temp.Count,a);
+    Bag.append(temp);
 }
 
 
-for(int i=0;i<200;i++){
-    Task temp=myTaskList.TakeByIndex(i);
+for(int i=0;i<MYTASKLIST_SIZE;i++){
+    Task temp;
     tmpfile.read(( char *)&temp.ID,a);
-    tmpfile.read(( char *)&temp.Need_ID,a);
-    tmpfile.read(( char *)&temp.IsFinish,a);
-    tmpfile.read(( char *)&temp.MB,a);
+    temp=SystemTask[temp.ID];
     tmpfile.read(( char *)&temp.FMB,a);
-    tmpfile.read(( char *)&temp.NKillHL,a);
-    tmpfile.read(( char *)&temp.NKillNPC,a);
-    tmpfile.read(( char *)&temp.NTalkNPC,a);
-    tmpfile.read(( char *)&temp.NGetItem,a);
-    tmpfile.read(( char *)&temp.A_Coin,a);
-    tmpfile.read(( char *)&temp.A_Exp,a);
-    tmpfile.read(( char *)&temp.A_Item,a);
-    tmpfile.read(( char *)&temp.A_Count,a);
-    myTaskList.Insert(temp);
+    myTaskList.append(temp);
 }
 
-for(int i=0;i<200;i++){
-    LingGu temp=LGBag.Take(i);
+for(int i=0;i<LGBAG_SIZE;i++){
+    LingGu temp;
 tmpfile.read(( char *)&temp.LV,a);
 tmpfile.read(( char *)&temp.ID,a);
 tmpfile.read(( char *)&temp.Type,a);
@@ -443,23 +425,23 @@ tmpfile.read(( char *)&temp.ATK_Ski.ID,a);
 temp.ATK_Ski=SystemHJ[temp.ATK_Ski.ID];
 tmpfile.read(( char *)&temp.Add_Str,b);
 tmpfile.read(( char *)&temp.Add_Agi,b);
-LGBag.Insert(temp);
+LGBag.append(temp);
 }
 
-for(int i=0;i<200;i++){
-    LingHuan temp=LHBag.Take(i);
+for(int i=0;i<LHBAG_SIZE;i++){
+    LingHuan temp;
     tmpfile.read(( char *)&temp.LV,a);
     tmpfile.read(( char *)&temp.ID,a);
     tmpfile.read(( char *)&temp.DEF_Ski,a);
     tmpfile.read(( char *)&temp.Value,b);
     tmpfile.read(( char *)&temp.Strength,b);
     tmpfile.read(( char *)&temp.Agility,b);
-    LHBag.Insert(temp);
+    LHBag.append(temp);
 }
 
     tmpfile.close();
     UpdateBuff();
-    }
+}
 
 int RenWu::UpdateLV(){
 	int sum = 0;
@@ -483,48 +465,48 @@ int RenWu::UpdateLV(){
 int RenWu::ExceptTask(Task a){
     if(a.ID==0)
         return -1;
-    for(int i=0;i<200;i++)
-        if(myTaskList.GetData(i).ID==0){
-            myTaskList.List[i]=a;
+    for(int i=0;i<myTaskList.size();i++)
+        if(myTaskList[i].ID==0){
+            myTaskList[i]=a;
             return 1;
             }
-    for(int i=0;i<200;i++)
-       if(myTaskList.GetData(i).ID==a.ID){
+    for(int i=0;i<myTaskList.size();i++)
+       if(myTaskList[i].ID==a.ID){
           return 0;
 }
 
 return -1;
 }
 
-bool RenWu::IsHaveTaskFinish()
-{
+bool RenWu::IsHaveTaskFinish(){
     for (int i = 0; i <200; i++)
-		if (myTaskList.GetData(i).FMB >= myTaskList.GetData(i).MB)
+        if (myTaskList[i].FMB >= myTaskList[i].MB)
 			return true;
 	return false;
-
 }
 
-int RenWu::FinishTask(Task a)
-{
+int RenWu::FinishTask(Task a){
     if(a.ID==0)
         return -1;
     else{
 	SystemTask[a.ID].IsFinish = 1;
-    myTaskList.TakeByID(a.ID);
+    for(int i=0;i<myTaskList.size();i++)
+    if(myTaskList[i].ID==a.ID)
+        myTaskList.removeAt(i);
+
 	Exp_Now += a.A_Exp;
 	Coin += a.A_Coin;
     if (a.A_Item != 0){
         for (int i = 1; i <= a.A_Count; i++){
-            for(int i=0;i<200;i++)
-                if(Bag.List[i].data.ID==a.ID){
-                    Bag.List[i].Count++;
+            for(int i=0;i<Bag.size();i++)
+                if(Bag[i].ID==SystemItem[a.A_Item].ID){
+                    Bag[i].Count++;
                     break;
                     }
                 else{
-                if(Bag.List[i].data.ID==0){
-                    Bag.List[i].data=SystemItem[a.A_Item];
-                    Bag.List[i].Count=1;
+                if(Bag[i].ID==0){
+                    Bag[i]=SystemItem[a.A_Item];
+                    Bag[i].Count=1;
                     break;
                     }
                 }
@@ -547,20 +529,18 @@ void RenWu::UseItem(Item a)
 }
 
 int RenWu::WearLH(LingHuan a){
-    for(int i=0;i<10;i++)
-        if(LH.GetData(i).ID==a.ID)
+    for(int i=0;i<LH.size();i++)
+        if(LH[i].ID==a.ID)
             return 2;
 
-    if (int(LV/10) <= LH.Count())
+    if (int(LV/10) <= LH.size())
 		return -1; 
 	else{
 		if (Ori_Strength < a.Strength || Ori_Agility < a.Agility)
 			return 0;
 		else
-            for(int i=0;i<10;i++){
-                if(LH.GetData(i).ID==0)
-                    LH.List[i]=a;
-            }
+           LH.append(a);
+
 		return 1;
 	}
 }
@@ -608,9 +588,9 @@ int RenWu::WearLG(LingGu a){
 
 
 void RenWu::TakeoffLH(int a){
-    for(int i=0;i<10;i++)
-        if(LH.GetData(i).ID==a)
-            LH.Remove(i);
+    for(int i=0;i<LH.size();i++)
+        if(LH[i].ID==a)
+            LH.removeAt(i);
 }
 
 void RenWu::TakeoffLG(int a){
@@ -637,22 +617,22 @@ void RenWu::TakeoffLG(int a){
 }
 
 void RenWu::UpdateBuff(){
-	myBuffList.Clear();
+    myBuffList.clear();
 	Strength = Ori_Strength;
 	Agility = Ori_Agility;
 	Vitality = Ori_Vitality;
 	Energy = Ori_Energy;
 	Sour = Ori_Sour;
-    for (int i = 0; i <10; i++){
-        if(LH.GetData(i).ID!=0)
-		myBuffList.Insert(SystemBuff[LH.GetData(i).DEF_Ski]);
+    for (int i = 0; i <LH.size(); i++){
+        if(LH[i].ID!=0)
+        myBuffList.append(SystemBuff[LH[i].DEF_Ski]);
     }
-	myBuffList.Insert(SystemBuff[LG.Head.DEF_Ski]);
-	myBuffList.Insert(SystemBuff[LG.Body.DEF_Ski]);
-	myBuffList.Insert(SystemBuff[LG.LHand.DEF_Ski]);
-	myBuffList.Insert(SystemBuff[LG.RHand.DEF_Ski]);
-	myBuffList.Insert(SystemBuff[LG.LLeg.DEF_Ski]);
-	myBuffList.Insert(SystemBuff[LG.RLeg.DEF_Ski]);
+    myBuffList.append(SystemBuff[LG.Head.DEF_Ski]);
+    myBuffList.append(SystemBuff[LG.Body.DEF_Ski]);
+    myBuffList.append(SystemBuff[LG.LHand.DEF_Ski]);
+    myBuffList.append(SystemBuff[LG.RHand.DEF_Ski]);
+    myBuffList.append(SystemBuff[LG.LLeg.DEF_Ski]);
+    myBuffList.append(SystemBuff[LG.RLeg.DEF_Ski]);
 
 	Strength += LG.Head.Add_Str;
 	Agility += LG.Head.Add_Agi;
@@ -667,8 +647,8 @@ void RenWu::UpdateBuff(){
 	Strength += LG.LHand.Add_Str;
 	Agility += LG.RHand.Add_Agi;
 
-	for (int i = 1; i <= myBuffList.Count(); i++){
-		int a = myBuffList.GetData(i).ID;
+    for (int i = 0; i < myBuffList.size(); i++){
+        int a = myBuffList[i].ID;
 		switch (a){
 		case 1:
 				break;

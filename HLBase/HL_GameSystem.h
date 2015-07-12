@@ -6,6 +6,7 @@
 #include <QString>
 #include<QTextStream>
 #include<QFile>
+#include<QList>
 #include "HL_RenWu.h"
 #include "HL_NPC.h"
 #include "HL_FightSystem.h"
@@ -15,9 +16,9 @@ class DropData{//掉落的东西
   public:
 	int Exp;
 	int Coin;
-	ItemList Item;
-	LGBagList LG;
-    LHList LH;
+    QList<Item> Item;
+    QList<LingGu> LG;
+    QList<LingHuan> LH;
 };
 
 class GameSystem{
@@ -32,30 +33,27 @@ class GameSystem{
         SystemItem[0].Init();
         SystemNPC[0].Init();
         SystemTask[0].Init();
+        SystemMessage[0].Init();
         SystemBuff[0].Init();*/
 
         /*测试用*/
-        Me.PosX=0;
-        Me.PosY=1;
-        SystemTask[0].IsFinish=1;
-        Me.myTaskList.Insert(SystemTask[0]);
-        Me.LH.Insert(CreateLH(SystemHL[1]));
+
         /*-----*/
 
     }
 
     static LingGu CreateLG(HunLing a,int type);
     static LingHuan CreateLH(HunLing a);
-    static NPC CreateNPC(LHList a);
-    static LHList CreateLHList(DiTu a);
+    static NPC CreateNPC(QList<LingHuan> a);
+    static QList<LingHuan> CreateLHList(DiTu a);
     static bool CanExcept(Task a,RenWu* b);
 	bool CanGoTo(DiTu a);
     void FinishTask(Task *a, HunLing b);
     void FinishTask(Task *a, NPC b, int type);
-    static MessageList CanTalkList(NPC a,RenWu* b);
-    static TaskList CanExceptList(NPC a,RenWu* b);
-    static NPCList CanShowList(DiTu a,RenWu* b);
-    static DropData DropItem(HLList a);
+    static QList<Message> CanTalkList(NPC a,RenWu* b);
+    static QList<Task> CanExceptList(NPC a,RenWu* b);
+    static QList<NPC> CanShowList(DiTu a,RenWu* b);
+    static DropData DropItem(QList<HunLing> a);
     template <class T>
     static HunLing CreatHL(T a,LingHuan b){
         HunLing tempHL = SystemHL[b.ID];
@@ -134,24 +132,24 @@ LingGu GameSystem::CreateLG(HunLing a,int type){
 	return temp;
 }
 
-NPC GameSystem::CreateNPC(LHList a){//通过灵环列表生成NPC，为了让魂灵和NPC整合
+NPC GameSystem::CreateNPC(QList<LingHuan> a){//通过灵环列表生成NPC，为了让魂灵和NPC整合
 	NPC temp;
 	temp.LH = a;
     temp.Des="魂灵";//判断是否有灵骨技能的依据
 	int tempLV = 0;
-    for (int i = 0; i < a.Count(); i++)
-		tempLV += a.GetData(i).LV;
-	temp.LV = tempLV / a.Count();//等级平均数
+    for (int i = 0; i < a.size(); i++)
+        tempLV += a[i].LV;
+    temp.LV = tempLV / a.size();//等级平均数
 
 	int tempStr = 0;
-    for (int i = 0; i < a.Count(); i++)
-		tempStr += a.GetData(i).Strength;
-	temp.Ori_Strength = tempStr / a.Count();//平均力量
+    for (int i = 0; i < a.size(); i++)
+        tempStr += a[i].Strength;
+    temp.Ori_Strength = tempStr / a.size();//平均力量
 
 	int tempAgi = 0;
-    for (int i = 0; i < a.Count(); i++)
-		tempAgi += a.GetData(i).Agility;
-	temp.Ori_Agility = tempAgi / a.Count();//平均敏捷
+    for (int i = 0; i < a.size(); i++)
+        tempAgi += a[i].Agility;
+    temp.Ori_Agility = tempAgi / a.size();//平均敏捷
 
 	temp.Ori_Vitality = temp.Ori_Strength + temp.Ori_Agility;//体力等于力量加敏捷
 
@@ -163,9 +161,9 @@ NPC GameSystem::CreateNPC(LHList a){//通过灵环列表生成NPC，为了让魂
 	return temp;
 }
 
-LHList GameSystem::CreateLHList(DiTu a){//通过地图，生成灵环列表
+QList<LingHuan> GameSystem::CreateLHList(DiTu a){//通过地图，生成灵环列表
     int LHCount = GetNumber(0, 9);//数量
-	LHList tempList;
+    QList<LingHuan> tempList;
 	for (int i = 1; i <= LHCount; i++){
 		LingHuan temp;
         int aaa = a.IndexHL[GetNumber(1, 9)];
@@ -196,14 +194,14 @@ LHList GameSystem::CreateLHList(DiTu a){//通过地图，生成灵环列表
 		if (temp.LV >= 95 && temp.LV < 100)
 			temp.Col = "金";
 		temp.Value = 0;
-		tempList.Insert(temp);
+        tempList.append(temp);
 	}
 	return tempList;
 }
 
 bool GameSystem::CanExcept(Task a,RenWu* b){//判断能否接受任务
-    for(int i=0;i<b->myTaskList.Count();i++)
-    if(a.ID==b->myTaskList.GetData(i).ID)
+    for(int i=0;i<b->myTaskList.size();i++)
+    if(a.ID==b->myTaskList[i].ID)
         return false;
     return SystemTask[a.Need_ID].IsFinish;
 }
@@ -226,48 +224,48 @@ void GameSystem::FinishTask(Task* a, NPC b, int type){//完成 1杀NPC 2谈NPC +
             a->FMB++;
 }
 
-MessageList GameSystem::CanTalkList(NPC a, RenWu *b){//返回一个NPC所能说的话的列表
-	MessageList tempList;
+QList<Message> GameSystem::CanTalkList(NPC a, RenWu *b){//返回一个NPC所能说的话的列表
+    QList<Message> tempList;
     for (int i = 0; i < 20; i++){
 		int aaa = a.CanTalk[i];
 		if (aaa == 0)
 			continue;
 		Task temp = SystemTask[SystemMessage[aaa].NTask];//说话所需任务
         for (int j = 0; j < 200; j++)
-            if (b->myTaskList.GetData(j).ID == temp.ID){
-				tempList.Insert(SystemMessage[aaa]);
+            if (b->myTaskList[j].ID == temp.ID){
+                tempList.append(SystemMessage[aaa]);
                 break;
             }
     }
 	return tempList;
 }
 
-TaskList GameSystem::CanExceptList(NPC a, RenWu *b){//返回当前可以接受的任务列表
-	TaskList tempList;
-    for (int i = 0; i <10; i++){
-		Task temp = a.myTaskList.GetData(i);
+QList<Task> GameSystem::CanExceptList(NPC a, RenWu *b){//返回当前可以接受的任务列表
+    QList<Task> tempList;
+    for (int i = 0; i <a.myTaskList.size(); i++){
+        Task temp = a.myTaskList[i];
         if (temp.IsFinish == 0 && CanExcept(temp,b) == true)
-			tempList.Insert(temp);
+            tempList.append(temp);
 	}
 	return tempList;
 }
 
-NPCList GameSystem::CanShowList(DiTu a, RenWu *b){//返回目前可以显示的NPC
-	NPCList tempList;
+QList<NPC> GameSystem::CanShowList(DiTu a, RenWu *b){//返回目前可以显示的NPC
+    QList<NPC>  tempList;
     for (int i = 0; i <10; i++){
-        for(int j=0;j<200;j++)
-        if (SystemNPC[a.IndexNPC[i]].TaskShow==b->myTaskList.GetData(j).ID){
-			tempList.Insert(SystemNPC[a.IndexNPC[i]]);
+        for(int j=0;j<b->myTaskList.size();j++)
+        if (SystemNPC[a.IndexNPC[i]].TaskShow==b->myTaskList[j].ID&&a.IndexNPC[i]!=0){
+            tempList.append(SystemNPC[a.IndexNPC[i]]);
             break;
         }
 	}
 	return tempList;
 }
 
-DropData GameSystem::DropItem(HLList a){//通过魂灵列表生成掉落的东西,特定物品可特定判断
+DropData GameSystem::DropItem(QList<HunLing> a){//通过魂灵列表生成掉落的东西,特定物品可特定判断
 	DropData tempData;
-    for (int i = 0; i < a.Count(); i++){
-		HunLing temp = a.GetData(i);
+    for (int i = 0; i < a.size(); i++){
+        HunLing temp = a[i];
 
         /*特定掉落
         if(temp.ID==x)
@@ -275,17 +273,17 @@ DropData GameSystem::DropItem(HLList a){//通过魂灵列表生成掉落的东�
         /*全局掉落*/
 
 		int aaa = temp.DropItem[GetNumber(1, 9)];
-		tempData.Item.Insert(SystemItem[aaa]);
+        tempData.Item.append(SystemItem[aaa]);
 		tempData.Exp +=
 			100 * pow(1.2, temp.LV) - (100 * pow(1.2, temp.LV - 1));
 		tempData.Coin += GetNumber(temp.LV * 1.5, temp.LV * 2);
 		if (GetNumber(1, 100) == 1){
 			LingGu tempLG = CreateLG(temp,GetNumber(1,6));
-			tempData.LG.Insert(tempLG);
+            tempData.LG.append(tempLG);
 		}
 		if (GetNumber(1, 20) == 1){
 			LingHuan tempLH = CreateLH(temp);
-			tempData.LH.Insert(tempLH);
+            tempData.LH.append(tempLH);
 		}
 
 	}

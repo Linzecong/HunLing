@@ -60,15 +60,16 @@ QList<int> NPC::CanUseHJList(int hl){
 
 void NPC::Save(){
         QFile file((DATAPATH+"SaveNPC.str"));
-file.open(QIODevice::WriteOnly);
-      QTextStream in(&file);
+        file.open(QIODevice::WriteOnly);
+         QTextStream in(&file);
          for(int i=0;i<200;i++)
         in<<SystemNPC[i].Name<<" "<<SystemNPC[i].Des<<endl;
+         file.close();
 
-     QFile tmpfile( DATAPATH+"SaveNPC.num" );
+     QFile tmpfile(DATAPATH+"SaveNPC.num" );
     tmpfile.open(QIODevice::WriteOnly);
+    int a=sizeof(int);
     for(int i=0;i<200;i++){
-    int a=sizeof(i);
     tmpfile.write(( char *)&SystemNPC[i].ID,a);
     tmpfile.write(( char *)&SystemNPC[i].LV,a);
     tmpfile.write(( char *)&SystemNPC[i].Ori_Strength,a);
@@ -90,16 +91,16 @@ file.open(QIODevice::WriteOnly);
 
 void NPC::Init(){
     QFile file((DATAPATH+"SaveNPC.str"));
-file.open(QIODevice::ReadOnly);
+     file.open(QIODevice::ReadOnly);
       QTextStream in(&file);
          for(int i=0;i<200;i++)
         in>>SystemNPC[i].Name>>SystemNPC[i].Des;
-   file.close();
+      file.close();
 
     QFile tmpfile( DATAPATH+"SaveNPC.num" );
     tmpfile.open(QIODevice::ReadOnly);
+     int a=sizeof(int);
     for(int i=0;i<200;i++){
-        int a=sizeof(i);
         tmpfile.read(( char *)&SystemNPC[i].ID,a);
         tmpfile.read(( char *)&SystemNPC[i].LV,a);
         tmpfile.read(( char *)&SystemNPC[i].Ori_Strength,a);
@@ -156,8 +157,8 @@ void NPC::Update(){
 			temp.Col = "金";
 		temp.Value = 0;
         for(int i=0;i<10;i++)
-            if(LH.GetData(i).ID==0)
-               LH.List[i]=temp;
+            if(LH[i].ID==0)
+               LH[i]=temp;
 	}
 	for(int i=1;i<=6;i++){
 		int aID=LGID[i];
@@ -208,13 +209,13 @@ void NPC::Update(){
 	}
 
     for(int i=0;i<10;i++)
-        myTaskList.Insert(SystemTask[Task[i]]);//Attention
+        myTaskList.append(SystemTask[Task[i]]);//Attention
     UpdateBuff();
 }
 
 
 
-
+/*
 class NPCList{
   public:
     QList<NPC> List;
@@ -223,6 +224,7 @@ class NPCList{
 	void Insert(NPC a);
 	NPC GetData(int a);
 };
+*/
 
 class Message{
   public:
@@ -246,7 +248,7 @@ void Message::Init(){
 }  
 
 
-
+/*
 class MessageList{
   public:
     QList<Message> List;
@@ -280,5 +282,5 @@ void MessageList::Insert(Message a){
 Message MessageList::GetData(int a){
     return List[a];
 }
-
+*/
 #endif
