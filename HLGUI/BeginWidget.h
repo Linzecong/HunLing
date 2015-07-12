@@ -1,10 +1,15 @@
+/*开始界面*/
+#ifndef BEGINWIDGET
+#define BEGINWIDGET
+
 #include<QString>
 #include<QWidget>
 #include<QLabel>
 #include<QPushButton>
 #include<QVBoxLayout>
-class BeginWidget :public QWidget
-{
+#include<MainWidget.h>
+
+class BeginWidget :public QWidget{
 	public:
 	QLabel Title;
 	QLabel Text;
@@ -18,8 +23,7 @@ class BeginWidget :public QWidget
 	void Begin_Click();
 };
 
-BeginWidget::BeginWidget()
-{
+BeginWidget::BeginWidget(){
     this->setFixedSize(QSize(640,480));
     Title.setText("魂灵师");
     Text.setText("这就是魂灵师……");
@@ -34,11 +38,8 @@ BeginWidget::BeginWidget()
     connect(&Quit,&QPushButton::clicked,this,&BeginWidget::close);
 }
 
-void BeginWidget::Begin_Click()
-{
-
- Main_W.show();
-
-
-
+void BeginWidget::Begin_Click(){
+    Main_W.show();
 }
+
+#endif

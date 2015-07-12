@@ -1,3 +1,7 @@
+/*显示背包*/
+
+#ifndef ITEMWIDGET
+#define ITEMWIDGET
 
 #include<QString>
 #include<QDialog>
@@ -7,11 +11,13 @@
 #include<QPushButton>
 #include<QListWidget>
 #include<QMessageBox>
-class ItemWidget:public QDialog
-{
+#include<../HLBase/HL_RenWu.h>
+#include<../HLBase/HL_Item.h>
+
+class ItemWidget:public QDialog{
 	public:
-    ItemList Bag;
-    RenWu Me;
+    ItemList* Bag;
+    RenWu* Me;
 	QLabel Title;
 	QPushButton Use;
     QListWidget Item_List;
@@ -22,23 +28,22 @@ class ItemWidget:public QDialog
     QHBoxLayout* MainLayout;
     QVBoxLayout* LabelLayout;
 	public:
-    ItemWidget(RenWu a);
+    ItemWidget(RenWu* a);
     ~ItemWidget(){}
 	void Use_Click();
     void UpDate();
     void UpDateList();
 };
 
-ItemWidget::ItemWidget(RenWu a)
-{
+ItemWidget::ItemWidget(RenWu* a){
     MainLayout=new QHBoxLayout;
     LabelLayout=new QVBoxLayout;
     Me=a;
-    Bag=Me.Bag;
+    Bag=&Me->Bag;
     Title.setText("背包");
     Use.setText("使用");
-    for(int i=1;i<=Bag.Count();i++)
-      Item_List.addItem(Bag.GetData(i).Name);
+    for(int i=0;i<Bag->Count();i++)
+      Item_List.addItem(Bag->GetData(i).Name);
 
     Name.setText("名字：");
     Des.setText("作用：");
@@ -57,14 +62,12 @@ ItemWidget::ItemWidget(RenWu a)
     this->setLayout(MainLayout);
 }
 
-void ItemWidget::Use_Click()
-{
-    int temp=Item_List.currentRow()+1;
-    Item a=Bag.GetData(temp);
-    if(a.Type==1)
-    {
-    Bag.Remove(temp);
-    Me.UseItem(a);
+void ItemWidget::Use_Click(){
+    int temp=Item_List.currentRow();
+    Item a=Bag->GetData(temp);
+    if(a.Type==1){
+    Bag->Remove(temp);
+    Me->UseItem(a);
     QMessageBox::about(this,"提示","使用成功！");
     }
     if(a.Type==2)
@@ -74,24 +77,22 @@ void ItemWidget::Use_Click()
     UpDateList();
 }
 
- void ItemWidget::UpDate()
- {
-     int temp=Item_List.currentRow()+1;
-     Item a=Bag.GetData(temp);
+void ItemWidget::UpDate(){
+     int temp=Item_List.currentRow();
+     Item a=Bag->GetData(temp);
      Name.setText("名字："+a.Name);
      Des.setText("作用："+a.Des);
      Value.setText("价值："+a.Value);
-     Count.setText("数量："+Bag.GetCount(temp));
- }
+     Count.setText("数量："+Bag->GetCount(temp));
+}
 
- void ItemWidget::UpDateList()
- {
+void ItemWidget::UpDateList(){
      Item_List.clear();
-     for(int i=1;i<=Bag.Count();i++)
-       Item_List.addItem(Bag.GetData(i).Name);
- }
+     for(int i=0;i<Bag->Count();i++)
+       Item_List.addItem(Bag->GetData(i).Name);
+}
 
-
+#endif
 
 
 

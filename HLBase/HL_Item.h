@@ -1,8 +1,13 @@
+/*道具*/
+#ifndef HL_ITEM
+#define HL_ITEM
 
 #include <QString>
 #include<QList>
-	class Item
-{
+#include<QFile>
+#include<QTextStream>
+
+class Item{
   public:
 	int ID;
 	QString Des;
@@ -18,28 +23,24 @@
 	int Sour;
 	int Exp;
 	void Init();
+    Item(){
+        ID=Type=ATKType=Value=0;
+        Des=Name="空";
+        Str=Agi=Vit=Ene=Sour=Exp=0;
+    }
 } SystemItem[200];
 
-void Item::Init()
-{
+void Item::Init(){
 	QFile file((DATAPATH+"SaveItem.str"));
 	file.open(QIODevice::ReadOnly);
 	QTextStream in(&file);
-	for (int i = 1; i <= 199; i++)
+    for (int i = 0; i <200; i++)
 		in >> SystemItem[i].Name >> SystemItem[i].Des;
-	for (int i = 1; i <= 199; i++)
-		if (SystemItem[i].Name == "")
-		{
-			SystemItem[i].Name = "未编辑";
-			SystemItem[i].Des = "未编辑";
-		}
-
 
 	file.close();
 	QFile tmpfile(DATAPATH+"SaveItem.num");
 	tmpfile.open(QIODevice::ReadOnly);
-	for (int i = 1; i <= 199; i++)
-	{
+    for (int i = 0; i <200; i++){
 		int a = sizeof(int);
 		tmpfile.read((char *)&SystemItem[i].ID, a);
 		tmpfile.read((char *)&SystemItem[i].Type, a);
@@ -51,32 +52,25 @@ void Item::Init()
 		tmpfile.read((char *)&SystemItem[i].Ene, a);
 		tmpfile.read((char *)&SystemItem[i].Sour, a);
 		tmpfile.read((char *)&SystemItem[i].Exp, a);
-
 	}
 	tmpfile.close();
 }  
 
-class ItemNode
-{
+class ItemNode{
   public:
 	Item data;
 	int Count;
-
-	  ItemNode(Item a)
+    ItemNode(Item a)
 	{
 		Count = 1;
 		data = a;
 	}
 };
 
-class ItemList
-{
+class ItemList{
   public:
     QList<ItemNode> List;
   public:
-	ItemList()
-	{
-	}
 	void Remove(int a);
 	int Count();
 	void Insert(Item a);
@@ -84,33 +78,30 @@ class ItemList
 	int GetCount(int a);
 };
 
-void ItemList::Remove(int a)
-{
+void ItemList::Remove(int a){
     if(List[a].Count>1)
         List[a].Count--;
     else
         List.takeAt(a);
 }
 
-int ItemList::Count()
-{
+int ItemList::Count(){
 
     return List.size();
 }
 
-void ItemList::Insert(Item a)
-{
+void ItemList::Insert(Item a){
     List.append(a);
 }
 
-Item ItemList::GetData(int a)	// 取数据
-{
+Item ItemList::GetData(int a){
 
     return List[a].data;
 }
 
-int ItemList::GetCount(int a)
-{
+int ItemList::GetCount(int a){
     return List[a].Count;
 
 }
+
+#endif

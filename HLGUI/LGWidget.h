@@ -1,3 +1,8 @@
+/*显示灵骨*/
+
+#ifndef LGWIDGET
+#define LGWIDGET
+
 #include<QString>
 #include<QDialog>
 #include<QLabel>
@@ -6,12 +11,12 @@
 #include<QPushButton>
 #include<QListWidget>
 #include<QMessageBox>
-//#include"HLQTData/HL_LingGu.h"
-//#include"HLQTData/HL_RenWu.h"
-class LGWidget: public QDialog
-{
+#include<../HLBase/HL_LingGu.h>
+#include<../HLBase/HL_RenWu.h>
+
+class LGWidget: public QDialog{
 	public:
-    RenWu Me;
+    RenWu* Me;
 	QListWidget Bag;
 	QListWidget Wear;
 	QLabel Title;
@@ -38,26 +43,26 @@ class LGWidget: public QDialog
     void Bag_Click();
     void UpDate();
     void SetData(LingGu a);
-    LGWidget(RenWu a);
+    LGWidget(RenWu* a);
     ~LGWidget(){}
 	
 };
-LGWidget::LGWidget(RenWu a)
-{
+LGWidget::LGWidget(RenWu* a){
      Layout1=new QVBoxLayout;
-    Layout2=new QVBoxLayout;
-    Layout3=new QVBoxLayout;
-    MainLayout=new QHBoxLayout;
-    Me=a;
-    for(int i=1;i<=Me.LGBag.Count();i++)
-      Bag.addItem(Me.LGBag.GetData(i).Name);
-    Wear.addItem(Me.LG.Head.Name);
-    Wear.addItem(Me.LG.Body.Name);
-    Wear.addItem(Me.LG.LHand.Name);
-    Wear.addItem(Me.LG.RHand.Name);
-    Wear.addItem(Me.LG.LLeg.Name);
-    Wear.addItem(Me.LG.RLeg.Name);
-    WearButton.setText("穿上");
+     Layout2=new QVBoxLayout;
+     Layout3=new QVBoxLayout;
+     MainLayout=new QHBoxLayout;
+     Me=a;
+     for(int i=0;i<Me->LGBag.Count();i++)
+       Bag.addItem(Me->LGBag.GetData(i).Name);
+     Wear.addItem(Me->LG.Head.Name);
+     Wear.addItem(Me->LG.Body.Name);
+     Wear.addItem(Me->LG.LHand.Name);
+     Wear.addItem(Me->LG.RHand.Name);
+     Wear.addItem(Me->LG.LLeg.Name);
+     Wear.addItem(Me->LG.RLeg.Name);
+
+     WearButton.setText("穿上");
     Putoff.setText("脱下");
     WearButton.setEnabled(false);
     Putoff.setEnabled(false);
@@ -97,52 +102,43 @@ LGWidget::LGWidget(RenWu a)
     MainLayout->addLayout(Layout2);
     MainLayout->addLayout(Layout3);
     this->setLayout(MainLayout);
-
-
-
-
 }
 
-void LGWidget::Putoff_Click()
-{
+void LGWidget::Putoff_Click(){
     QString temp=Wear.item(Wear.currentRow())->text();
-    if(Me.LG.Head.Name==temp)
-    {
-        Me.LGBag.Insert(Me.LG.Head);
-        Me.TakeoffLG(1);
-    }
-    if(Me.LG.Body.Name==temp)
-    {
-        Me.LGBag.Insert(Me.LG.Body);
-        Me.TakeoffLG(2);
-    }
-    if(Me.LG.LHand.Name==temp)
-    {
-        Me.LGBag.Insert(Me.LG.LHand);
-        Me.TakeoffLG(3);
-    }
-    if(Me.LG.RHand.Name==temp)
-    {
-        Me.LGBag.Insert(Me.LG.RHand);
-        Me.TakeoffLG(4);
-    }
-    if(Me.LG.LLeg.Name==temp)
-    {
-        Me.LGBag.Insert(Me.LG.LLeg);
-        Me.TakeoffLG(5);
-    }
-    if(Me.LG.RLeg.Name==temp)
-    {
-        Me.LGBag.Insert(Me.LG.RLeg);
-        Me.TakeoffLG(6);
+    if(temp!="空"){
+       if(Me->LG.Head.Name==temp){
+        Me->LGBag.Insert(Me->LG.Head);
+        Me->TakeoffLG(1);
+       }
+       if(Me->LG.Body.Name==temp){
+        Me->LGBag.Insert(Me->LG.Body);
+        Me->TakeoffLG(2);
+       }
+       if(Me->LG.LHand.Name==temp){
+        Me->LGBag.Insert(Me->LG.LHand);
+        Me->TakeoffLG(3);
+       }
+       if(Me->LG.RHand.Name==temp){
+        Me->LGBag.Insert(Me->LG.RHand);
+        Me->TakeoffLG(4);
+       }
+       if(Me->LG.LLeg.Name==temp){
+        Me->LGBag.Insert(Me->LG.LLeg);
+        Me->TakeoffLG(5);
+       }
+       if(Me->LG.RLeg.Name==temp){
+        Me->LGBag.Insert(Me->LG.RLeg);
+        Me->TakeoffLG(6);
+       }
     }
     UpDate();
 }
 
-void LGWidget::WearButton_Click()
-{
-    int a=Bag.currentRow()+1;
-    switch(Me.WearLG(Me.LGBag.GetData(a)))
+void LGWidget::WearButton_Click(){
+    int a=Bag.currentRow();
+
+    switch(Me->WearLG(Me->LGBag.GetData(a)))
     {
     case -1:
         QMessageBox::about(this,"提示","请先脱下该位置的灵骨！");
@@ -152,62 +148,52 @@ void LGWidget::WearButton_Click()
         break;
     case 1:
         QMessageBox::about(this,"提示","穿着成功！");
-        Me.LGBag.Remove(a);
+        Me->LGBag.Remove(a);
         break;
 
     }
     UpDate();
 }
 
-void LGWidget::Wear_Click()
-{
-
+void LGWidget::Wear_Click(){
     WearButton.setEnabled(false);
     Putoff.setEnabled(true);
     QString temp=Wear.item(Wear.currentRow())->text();
-    if(Me.LG.Head.Name==temp)
-      SetData(Me.LG.Head);
-    if(Me.LG.Body.Name==temp)
-    SetData(Me.LG.Body);
-    if(Me.LG.LHand.Name==temp)
-   SetData(Me.LG.LHand);
-    if(Me.LG.RHand.Name==temp)
-   SetData(Me.LG.RHand);
-    if(Me.LG.LLeg.Name==temp)
-    SetData(Me.LG.LLeg);
-    if(Me.LG.RLeg.Name==temp)
-    SetData(Me.LG.RLeg);
-
-
-
-
-
+    if(Me->LG.Head.Name==temp)
+      SetData(Me->LG.Head);
+    if(Me->LG.Body.Name==temp)
+    SetData(Me->LG.Body);
+    if(Me->LG.LHand.Name==temp)
+   SetData(Me->LG.LHand);
+    if(Me->LG.RHand.Name==temp)
+   SetData(Me->LG.RHand);
+    if(Me->LG.LLeg.Name==temp)
+    SetData(Me->LG.LLeg);
+    if(Me->LG.RLeg.Name==temp)
+    SetData(Me->LG.RLeg);
 }
 
-void LGWidget::Bag_Click()
-{
+void LGWidget::Bag_Click(){
     WearButton.setEnabled(true);
     Putoff.setEnabled(false);
-    int a=Bag.currentRow()+1;
-    SetData(Me.LGBag.GetData(a));
+    int a=Bag.currentRow();
+    SetData(Me->LGBag.GetData(a));
 }
 
-void LGWidget::UpDate()
-{
+void LGWidget::UpDate(){
     Wear.clear();
     Bag.clear();
-    for(int i=1;i<=Me.LGBag.Count();i++)
-      Bag.addItem(Me.LGBag.GetData(i).Name);
-    Wear.addItem(Me.LG.Head.Name);
-    Wear.addItem(Me.LG.Body.Name);
-    Wear.addItem(Me.LG.LHand.Name);
-    Wear.addItem(Me.LG.RHand.Name);
-    Wear.addItem(Me.LG.LLeg.Name);
-    Wear.addItem(Me.LG.RLeg.Name);
+    for(int i=0;i<Me->LGBag.Count();i++)
+      Bag.addItem(Me->LGBag.GetData(i).Name);
+    Wear.addItem(Me->LG.Head.Name);
+    Wear.addItem(Me->LG.Body.Name);
+    Wear.addItem(Me->LG.LHand.Name);
+    Wear.addItem(Me->LG.RHand.Name);
+    Wear.addItem(Me->LG.LLeg.Name);
+    Wear.addItem(Me->LG.RLeg.Name);
 }
 
-void LGWidget::SetData(LingGu a)
-{
+void LGWidget::SetData(LingGu a){
     Name.setText("名字："+a.Name);
     LV.setText("等级："+QString::number(a.LV));
     Value.setText("价值："+QString::number(a.Value));
@@ -220,7 +206,7 @@ void LGWidget::SetData(LingGu a)
 }
 
 
-
+#endif
 
 
 

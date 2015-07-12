@@ -9,22 +9,17 @@ SOURCES += main.cpp
 
 HEADERS  += \
     BeginWidget.h \
-    BuffWidget.h \
-    ButtonWidget.h \
     DataWidget.h \
     HLDataWidget.h \
     HLWidget.h \
     ItemWidget.h \
     LGWidget.h \
     LHWidget.h \
-    MapButtonWidget.h \
     MapHLWidget.h \
     MapNPCWidget.h \
-    MessageWidget.h \
     TaskMsgWidget.h \
     TaskWidget.h \
     TimeWidget.h \
-    UseItemWidget.h \
     FightWidget.h \
     MainWidget.h \
     MapWidget.h \

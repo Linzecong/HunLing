@@ -3,18 +3,12 @@
 #include<HLDataWidget.h>
 #include<LGWidget.h>
 #include<LHWidget.h>
-#include<BuffWidget.h>
-#include<ButtonWidget.h>
 #include<DataWidget.h>
 #include<HLWidget.h>
 #include<ItemWidget.h>
-
-#include<MapButtonWidget.h>
-#include<MessageWidget.h>
 #include<TaskMsgWidget.h>
 #include<TaskWidget.h>
 #include<TimeWidget.h>
-#include<UseItemWidget.h>
 #include<FightWidget.h>
 #include<MapHLWidget.h>
 #include<MapNPCWidget.h>
@@ -23,13 +17,11 @@
 #include<BeginWidget.h>
 #include<QTextCodec>
 
-int main(int argc, char *argv[])
-{
-    QTextCodec::setCodecForLocale(QTextCodec::codecForName("UTF-8"));
+int main(int argc, char *argv[]){
+    //QTextCodec::setCodecForLocale(QTextCodec::codecForName("UTF-8"));
     QApplication a(argc, argv);
     BeginWidget b;
     b.show();
-
     return a.exec();
 }
 

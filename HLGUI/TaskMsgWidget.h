@@ -1,3 +1,8 @@
+/*用于显示能接受的NPC任务*/
+
+#ifndef TASKMSGWIDGET
+#define TASKMSGWIDGET
+
 #include<QString>
 #include<QDialog>
 #include<QLabel>
@@ -5,12 +10,11 @@
 #include<QPushButton>
 #include<QListWidget>
 #include<QMessageBox>
-//#include"HLQTData/HL_Task.h"
-class TaskMsgWidget: public QDialog
-{
+#include<../HLBase/HL_Task.h>
+class TaskMsgWidget: public QDialog{
 	public:
-    TaskList* Me;
-    TaskList tempTask;
+    TaskList* Me;//自己的任务列表
+    TaskList tempTask;//能接受的任务列表
     QListWidget List;
     QLabel Title;
 	QLabel Name;
@@ -27,18 +31,15 @@ class TaskMsgWidget: public QDialog
     void Except_Click();
     void ListClick();
     ~TaskMsgWidget(){}
-	
 };
 
-TaskMsgWidget::TaskMsgWidget(TaskList a,TaskList* b)
-{
+TaskMsgWidget::TaskMsgWidget(TaskList a,TaskList* b){
     Layout1=new QVBoxLayout;
     Layout2=new QHBoxLayout;
     MainLayout=new QVBoxLayout;
-
     tempTask=a;
     Me=b;
-    for(int i=1;i<=tempTask.Count();i++)
+    for(int i=0;i<tempTask.Count();i++)
         List.addItem(tempTask.GetData(i).Name);
     Title.setText("任务列表：");
     Name.setText("任务名称：");
@@ -57,23 +58,23 @@ TaskMsgWidget::TaskMsgWidget(TaskList a,TaskList* b)
     this->setLayout(MainLayout);
 }
 
-void TaskMsgWidget::Except_Click()
-{
-    int a=List.currentRow()+1;
+void TaskMsgWidget::Except_Click(){
+    int a=List.currentRow();
     int b=tempTask.GetData(a).ID;
     Me->Insert(SystemTask[b]);
     Except.setEnabled(false);
     QMessageBox::about(this,"提示","接受成功！");
-    this->close();
-
+    List.takeItem(a);
+    tempTask.TakeByIndex(a);
 }
 
-void TaskMsgWidget::ListClick()
-{
-    int a=List.currentRow()+1;
+void TaskMsgWidget::ListClick(){
+    int a=List.currentRow();
     Task b=tempTask.GetData(a);
     Name.setText("任务名称："+b.Name);
     Des.setText("任务简介："+b.Des);
     MB_FMB.setText("任务进度："+QString::number(b.FMB)+"/"+QString::number(b.MB));
     Reward.setText("任务奖励：<br>金钱："+QString::number(b.A_Coin)+"<br>经验："+QString::number(b.A_Exp)+"<br>"+SystemItem[b.A_Item].Name+"x"+QString::number(b.A_Count)+"个");
 }
+
+#endif

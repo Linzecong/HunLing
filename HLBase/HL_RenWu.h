@@ -1,3 +1,6 @@
+/*人物*/
+#ifndef HL_RENWU
+#define HL_RENWU
 
 #include <QString>
 #include "HL_DiTu.h"
@@ -7,8 +10,8 @@
 #include "HL_LingGu.h"
 #include "HL_LingHuan.h"
 #include "HL_Task.h"
-	class RenWu
-{
+
+class RenWu{
   public:
 	int LV;
 	double Exp_Now;
@@ -17,12 +20,12 @@
 	double Coin;
 	int PosX;
 	int PosY;
-	double Strength;
+    double Strength;//加了buff后的数据
 	double Agility;
 	double Vitality;
 	double Energy;
 	double Sour;
-	double Ori_Strength;
+    double Ori_Strength;//原始数据
 	double Ori_Agility;
 	double Ori_Vitality;
 	double Ori_Energy;
@@ -33,25 +36,50 @@
 	TaskList myTaskList;
 	BuffList myBuffList;
 	LGBagList LGBag;
-	LHBagList LHBag;
+    LHList LHBag;
   public:
-	int UpdateLV();
-	void ExceptTask(Task a);
-	bool IsHaveTaskFinish();
-	void FinishTask(Task a);
-	void UseItem(Item a);
-	int WearLH(LingHuan a);
-	int WearLG(LingGu a);
-    void TakeoffLH(int a);
-    void TakeoffLG(int a);
+    int UpdateLV();//返回升了多少级
+    int ExceptTask(Task a);//1接受成功，-1异常，0不能接受
+    bool IsHaveTaskFinish();//判断是否有任务已完成
+    int FinishTask(Task a);//1成功完成，-1异常
+    void UseItem(Item a);//战前使用道具只有这些效果,不负责删除
+    int WearLH(LingHuan a);//穿灵环，等级不足返回-1，需求不够返回0，1返回成功,2返回相同
+    int WearLG(LingGu a);//穿灵骨,-1已有灵骨，0需求不足，1成功
+    void TakeoffLH(int a);//a is ID
+    void TakeoffLG(int a);// a is Type
 
-	void UpdateBuff();
-    void Save();//还没写其他，保存
-    void Init();//还没写其他，读取
-}God;
+    void UpdateBuff();//更新战前Buff
+    void Save();
+    void Init();
+    RenWu();
+};
 
-    void RenWu::Save()
-    {
+RenWu::RenWu(){
+    LV=0;Exp_Need=0;Exp_Now=0;Name="空";Coin=0;PosX=0;PosY=0;
+    Strength=0;Agility=0;Vitality=0;Energy=0;Sour=0;
+    Ori_Strength=0;Ori_Agility=0;Ori_Vitality=0;Ori_Energy=0;Ori_Sour=0;
+    LingHuan a;
+    for(int i=0;i<10;i++)
+        LH.Insert(a);
+    Item b;
+    for(int i=0;i<200;i++)
+        Bag.Insert(b);
+    Task c;
+    for(int i=0;i<200;i++)
+        myTaskList.Insert(c);
+    LingGu d;
+    for(int i=0;i<200;i++)
+        LGBag.Insert(d);
+    for(int i=0;i<200;i++)
+        LHBag.Insert(a);
+
+
+
+
+
+}
+
+void RenWu::Save(){
         QFile file((DATAPATH+"SaveMe.str"));
 file.open(QIODevice::WriteOnly);
       QTextStream in(&file);
@@ -62,14 +90,19 @@ file.open(QIODevice::WriteOnly);
         in<<LG.RHand.Name<<endl;
         in<<LG.LLeg.Name<<endl;
         in<<LG.RLeg.Name<<endl;
-        for(int i=1;i<=LH.Count();i++)
+
+        for(int i=0;i<10;i++)
         in<<LH.GetData(i).Name<<" "<<LH.GetData(i).Des<<" "<<LH.GetData(i).Col<<endl;
-        for(int i=1;i<=myTaskList.Count();i++)
+
+        for(int i=0;i<200;i++)
         in<<myTaskList.GetData(i).Name<<" "<<myTaskList.GetData(i).Des<<endl;
-        for(int i=1;i<=LGBag.Count();i++)
+
+        for(int i=0;i<200;i++)
         in<<LGBag.GetData(i).Name<<endl;
-        for(int i=1;i<=LHBag.Count();i++)
+
+        for(int i=0;i<200;i++)
         in<<LHBag.GetData(i).Name<<" "<<LHBag.GetData(i).Des<<" "<<LHBag.GetData(i).Col<<endl;
+
         file.close();
 
      QFile tmpfile( DATAPATH+"SaveMe.num" );
@@ -164,8 +197,7 @@ tmpfile.write(( char *)&LG.RHand.Add_Agi,b);
 tmpfile.write(( char *)&LG.LLeg.Add_Agi,b);
 tmpfile.write(( char *)&LG.RLeg.Add_Agi,b);
 
-for(int i=1;i<=LH.Count();i++)
-{
+for(int i=0;i<10;i++){
     LingHuan temp=LH.GetData(i);
     tmpfile.write(( char *)&temp.LV,a);
     tmpfile.write(( char *)&temp.ID,a);
@@ -176,8 +208,7 @@ for(int i=1;i<=LH.Count();i++)
 
 }
 
-for(int i=1;i<=Bag.Count();i++)
-{
+for(int i=0;i<200;i++){
     Item temp=Bag.GetData(i);
     int abc=Bag.GetCount(i);
     tmpfile.write(( char *)&temp.ID,a);
@@ -185,8 +216,7 @@ for(int i=1;i<=Bag.Count();i++)
 }
 
 
-for(int i=1;i<=myTaskList.Count();i++)
-{
+for(int i=0;i<200;i++){
     Task temp=myTaskList.GetData(i);
     tmpfile.write(( char *)&temp.ID,a);
     tmpfile.write(( char *)&temp.Need_ID,a);
@@ -203,14 +233,7 @@ for(int i=1;i<=myTaskList.Count();i++)
     tmpfile.write(( char *)&temp.A_Count,a);
 }
 
-for(int i=1;i<=myBuffList.Count();i++)
-{
-    Buff temp=myBuffList.GetData(i);
-    tmpfile.write(( char *)&temp.ID,a);
-}
-
-for(int i=1;i<=LGBag.Count();i++)
-{
+for(int i=0;i<200;i++){
     LingGu temp=LGBag.GetData(i);
 tmpfile.write(( char *)&temp.LV,a);
 tmpfile.write(( char *)&temp.ID,a);
@@ -224,8 +247,7 @@ tmpfile.write(( char *)&temp.Add_Str,b);
 tmpfile.write(( char *)&temp.Add_Agi,b);
 }
 
-for(int i=1;i<=LHBag.Count();i++)
-{
+for(int i=0;i<200;i++){
     LingHuan temp=LHBag.GetData(i);
     tmpfile.write(( char *)&temp.LV,a);
     tmpfile.write(( char *)&temp.ID,a);
@@ -238,8 +260,7 @@ for(int i=1;i<=LHBag.Count();i++)
     tmpfile.close();
     }
 
-void RenWu::Init()
-    {
+void RenWu::Init(){
         QFile file((DATAPATH+"SaveMe.str"));
 file.open(QIODevice::ReadOnly);
       QTextStream in(&file);
@@ -250,30 +271,31 @@ file.open(QIODevice::ReadOnly);
         in>>LG.RHand.Name;
         in>>LG.LLeg.Name;
         in>>LG.RLeg.Name;
-        for(int i=1;i<=LH.Count();i++)
-        {
+
+        for(int i=0;i<10;i++){
             LingHuan temp;
         in>>temp.Name>>temp.Des>>temp.Col;
         LH.Insert(temp);
         }
-        for(int i=1;i<=myTaskList.Count();i++)
-        {
+
+        for(int i=0;i<200;i++){
             Task temp;
         in>>temp.Name>>temp.Des;
         myTaskList.Insert(temp);
         }
-        for(int i=1;i<=LGBag.Count();i++)
-        {
+
+        for(int i=0;i<200;i++){
             LingGu temp;
         in>>temp.Name;
         LGBag.Insert(temp);
         }
-        for(int i=1;i<=LHBag.Count();i++)
-        {
+
+        for(int i=0;i<200;i++){
             LingHuan temp;
         in>>temp.Name>>temp.Des>>temp.Col;
         LHBag.Insert(temp);
         }
+
         file.close();
 
      QFile tmpfile( DATAPATH+"SaveMe.num" );
@@ -368,8 +390,7 @@ tmpfile.read(( char *)&LG.RHand.Add_Agi,b);
 tmpfile.read(( char *)&LG.LLeg.Add_Agi,b);
 tmpfile.read(( char *)&LG.RLeg.Add_Agi,b);
 
-for(int i=1;i<=LH.Count();i++)
-{
+for(int i=0;i<10;i++){
     LingHuan temp=LH.GetData(i);
     tmpfile.read(( char *)&temp.LV,a);
     tmpfile.read(( char *)&temp.ID,a);
@@ -381,8 +402,7 @@ for(int i=1;i<=LH.Count();i++)
 
 }
 
-for(int i=1;i<=Bag.Count();i++)
-{
+for(int i=0;i<200;i++){
     Item temp;
     int abc;
     tmpfile.read(( char *)&temp.ID,a);
@@ -392,8 +412,7 @@ for(int i=1;i<=Bag.Count();i++)
 }
 
 
-for(int i=1;i<=myTaskList.Count();i++)
-{
+for(int i=0;i<200;i++){
     Task temp=myTaskList.TakeByIndex(i);
     tmpfile.read(( char *)&temp.ID,a);
     tmpfile.read(( char *)&temp.Need_ID,a);
@@ -411,16 +430,7 @@ for(int i=1;i<=myTaskList.Count();i++)
     myTaskList.Insert(temp);
 }
 
-for(int i=1;i<=myBuffList.Count();i++)
-{
-    Buff temp;
-    tmpfile.read(( char *)&temp.ID,a);
-    temp=SystemBuff[temp.ID];
-    myBuffList.Insert(temp);
-}
-
-for(int i=1;i<=LGBag.Count();i++)
-{
+for(int i=0;i<200;i++){
     LingGu temp=LGBag.Take(i);
 tmpfile.read(( char *)&temp.LV,a);
 tmpfile.read(( char *)&temp.ID,a);
@@ -436,8 +446,7 @@ tmpfile.read(( char *)&temp.Add_Agi,b);
 LGBag.Insert(temp);
 }
 
-for(int i=1;i<=LHBag.Count();i++)
-{
+for(int i=0;i<200;i++){
     LingHuan temp=LHBag.Take(i);
     tmpfile.read(( char *)&temp.LV,a);
     tmpfile.read(( char *)&temp.ID,a);
@@ -449,10 +458,10 @@ for(int i=1;i<=LHBag.Count();i++)
 }
 
     tmpfile.close();
+    UpdateBuff();
     }
 
-int RenWu::UpdateLV()//返回升了多少级
-{
+int RenWu::UpdateLV(){
 	int sum = 0;
 	while (Exp_Now >= Exp_Need)
 		if (Exp_Now >= Exp_Need)
@@ -466,34 +475,67 @@ int RenWu::UpdateLV()//返回升了多少级
             Ori_Energy=Ori_Energy+50;
             Ori_Sour+=1;
 		}
+    UpdateBuff();
 	return sum;
 }
 
-void RenWu::ExceptTask(Task a)//接受任务
-{
-	myTaskList.Insert(a);
+
+int RenWu::ExceptTask(Task a){
+    if(a.ID==0)
+        return -1;
+    for(int i=0;i<200;i++)
+        if(myTaskList.GetData(i).ID==0){
+            myTaskList.List[i]=a;
+            return 1;
+            }
+    for(int i=0;i<200;i++)
+       if(myTaskList.GetData(i).ID==a.ID){
+          return 0;
 }
 
-bool RenWu::IsHaveTaskFinish()//判断是否有任务已完成
+return -1;
+}
+
+bool RenWu::IsHaveTaskFinish()
 {
-	for (int i = 1; i <= myTaskList.Count(); i++)
+    for (int i = 0; i <200; i++)
 		if (myTaskList.GetData(i).FMB >= myTaskList.GetData(i).MB)
 			return true;
 	return false;
 
 }
 
-void RenWu::FinishTask(Task a)//完成任务并获得奖励（记得删除任务）
+int RenWu::FinishTask(Task a)
 {
+    if(a.ID==0)
+        return -1;
+    else{
 	SystemTask[a.ID].IsFinish = 1;
+    myTaskList.TakeByID(a.ID);
 	Exp_Now += a.A_Exp;
 	Coin += a.A_Coin;
-	if (a.A_Item != 0)
-		for (int i = 1; i <= a.A_Count; i++)
-			Bag.Insert(SystemItem[a.A_Item]);
+    if (a.A_Item != 0){
+        for (int i = 1; i <= a.A_Count; i++){
+            for(int i=0;i<200;i++)
+                if(Bag.List[i].data.ID==a.ID){
+                    Bag.List[i].Count++;
+                    break;
+                    }
+                else{
+                if(Bag.List[i].data.ID==0){
+                    Bag.List[i].data=SystemItem[a.A_Item];
+                    Bag.List[i].Count=1;
+                    break;
+                    }
+                }
+        }
+        return 1;
+    }
+    }
+    return -1;
 }
 
-void RenWu::UseItem(Item a)//战前使用道具，只有这些效果
+void RenWu::UseItem(Item a)
 {
 	Ori_Strength += a.Str;
 	Ori_Agility += a.Agi;
@@ -504,124 +546,107 @@ void RenWu::UseItem(Item a)//战前使用道具，只有这些效果
 	UpdateLV();//判断LV
 }
 
-int RenWu::WearLH(LingHuan a)//穿灵环，等级不足返回-1，需求不够返回0，1返回成功,2返回相同
-{
-    for(int i=1;i<=LH.Count();i++)
+int RenWu::WearLH(LingHuan a){
+    for(int i=0;i<10;i++)
         if(LH.GetData(i).ID==a.ID)
             return 2;
-	if (LV % 10 <= LH.Count())
-		return -1;
-	else
-	{
+
+    if (int(LV/10) <= LH.Count())
+		return -1; 
+	else{
 		if (Ori_Strength < a.Strength || Ori_Agility < a.Agility)
 			return 0;
 		else
-			LH.Insert(a);
+            for(int i=0;i<10;i++){
+                if(LH.GetData(i).ID==0)
+                    LH.List[i]=a;
+            }
 		return 1;
 	}
 }
 
-int RenWu::WearLG(LingGu a)//穿灵骨,-1已有灵骨，0需求不足，1成功
-{
-	
+int RenWu::WearLG(LingGu a){
+
 	if (Ori_Strength < a.Strength || Ori_Agility < a.Agility)
 		return 0;
-	else
-	{
-		switch (a.Type)
-		{
+	else{
+		switch (a.Type){
 		case 1:
-			{
 				if(LG.Head.LV!=0)
 				return -1;
 				LG.Head = a;
 				break;
-			}
 		case 2:
-			{
 				if(LG.Body.LV!=0)
 				return -1;
 				LG.Body = a;
 				break;
-			}
 		case 3:
-			{
                 if(LG.LHand.LV!=0)
 				return -1;
 				LG.LHand = a;
 				break;
-			}
 		case 4:
-			{
 				if(LG.RHand.LV!=0)
 				return -1;
 				LG.RHand = a;
 				break;
-			}
 		case 5:
-			{
 				if(LG.LLeg.LV!=0)
 				return -1;
 				LG.LLeg = a;
 				break;
-			}
 		case 6:
-			{
 				if(LG.RLeg.LV!=0)
 				return -1;
 				LG.RLeg = a;
 				break;
-			}
 		}
 		return 1;
 	}
 }
 
-void RenWu::TakeoffLH(int a)//a is ID
-{
-    for(int i=1;i<=LH.Count();i++)
+
+void RenWu::TakeoffLH(int a){
+    for(int i=0;i<10;i++)
         if(LH.GetData(i).ID==a)
             LH.Remove(i);
 }
 
-void RenWu::TakeoffLG(int a)// a is Type
-{
-    switch (a)
-    {
+void RenWu::TakeoffLG(int a){
+    switch (a){
     case 1:
         LG.Head.clear();
             break;
     case 2:
- LG.Body.clear();
+        LG.Body.clear();
             break;
     case 3:
         LG.LHand.clear();
             break;
-
     case 4:
-     LG.RHand.clear();
+        LG.RHand.clear();
             break;
-
     case 5:
-      LG.LLeg.clear();
+        LG.LLeg.clear();
             break;
     case 6:
-       LG.RLeg.clear();
+        LG.RLeg.clear();
             break;
-
     }
 }
 
-void RenWu::UpdateBuff()//更新战前Buff
-{
+void RenWu::UpdateBuff(){
 	myBuffList.Clear();
 	Strength = Ori_Strength;
 	Agility = Ori_Agility;
 	Vitality = Ori_Vitality;
 	Energy = Ori_Energy;
 	Sour = Ori_Sour;
-	for (int i = 1; i <= LH.Count(); i++)
+    for (int i = 0; i <10; i++){
+        if(LH.GetData(i).ID!=0)
 		myBuffList.Insert(SystemBuff[LH.GetData(i).DEF_Ski]);
+    }
 	myBuffList.Insert(SystemBuff[LG.Head.DEF_Ski]);
 	myBuffList.Insert(SystemBuff[LG.Body.DEF_Ski]);
 	myBuffList.Insert(SystemBuff[LG.LHand.DEF_Ski]);
@@ -642,19 +667,15 @@ void RenWu::UpdateBuff()//更新战前Buff
 	Strength += LG.LHand.Add_Str;
 	Agility += LG.RHand.Add_Agi;
 
-	for (int i = 1; i <= myBuffList.Count(); i++)
-	{
+	for (int i = 1; i <= myBuffList.Count(); i++){
 		int a = myBuffList.GetData(i).ID;
-		switch (a)
-		{
+		switch (a){
 		case 1:
-			{
 				break;
-			}
 		case 2:
-			{
 				break;
-			}
 		}
 	}
 }
+
+#endif

@@ -1,8 +1,12 @@
+/*灵环*/
+
+#ifndef HL_LINGHUAN
+#define HL_LINGHUAN
 
 #include <QString>
 #include<QList>
-	class LingHuan
-{
+
+class LingHuan{
   public:
 	int LV;
 	int ID;
@@ -13,32 +17,17 @@
 	double Value;
 	double Strength;
 	double Agility;
+    LingHuan(){
+        LV=ID=DEF_Ski=0;
+        Name=Des=Col="空";
+        Value=Strength=Agility=0;
+    }
 };
 
-
-class LHBagList
-{
+class LHList{
   public:
     QList<LingHuan> List;
   public:
-	LHBagList()
-	{
-	}
-	void Remove(int a);
-	LingHuan Take(int a);
-	int Count();
-	void Insert(LingHuan a);
-	LingHuan GetData(int a);
-};
-
-class LHList
-{
-  public:
-    QList<LingHuan> List;
-  public:
-	LHList()
-{
-	}
 	void Remove(int a);
 	LingHuan Replace(LingHuan a, int b);
 	LingHuan Take(int a);
@@ -49,71 +38,38 @@ class LHList
 };
 
 
-void LHBagList::Remove(int a)
-{
-    List.removeAt(a);
-}
-
-LingHuan LHBagList::Take(int a)
-{
-    return List.takeAt(a);
-}
-
-int LHBagList::Count()
-{
-
-    return List.size();
-}
-
-void LHBagList::Insert(LingHuan a)
-{
-    List.append(a);
-}
-
-LingHuan LHBagList::GetData(int a)	// 取数据
-{
-
-    return List[a];
-}
-
-
-LingHuan LHList::Replace(LingHuan a, int b)
-{
+LingHuan LHList::Replace(LingHuan a, int b){
     LingHuan C=List[b];
     List[b]=a;
     return C;
 }
 
-void LHList::Remove(int a)
-{
+void LHList::Remove(int a){
     List.removeAt(a);
 }
 
-LingHuan LHList::Take(int a)
-{
+LingHuan LHList::Take(int a){
       return List.takeAt(a);
 }
 
-int LHList::Count()
-{
+int LHList::Count(){
 
     return List.size();
 }
 
-void LHList::Insert(LingHuan a)
-{
+void LHList::Insert(LingHuan a){
 
     List.append(a);
 }
 
-LingHuan LHList::GetData(int a)	// 取数据
-{
+LingHuan LHList::GetData(int a){
     return List[a];
 }
 
-void LHList::Exchange(int a, int b)
-{
+void LHList::Exchange(int a, int b){
 	LingHuan temp1 = GetData(a);
 	LingHuan temp2 = Replace(temp1, b);
 	Replace(temp2, a);
 }
+
+#endif

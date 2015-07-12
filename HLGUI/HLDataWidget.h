@@ -1,11 +1,16 @@
+/*用于显示魂灵详细信息*/
+
+#ifndef HLDATAWIDGET
+#define HLDATAWIDGET
+
 #include<QString>
 #include<QDialog>
 #include<QLabel>
 #include<QVBoxLayout>
-//#include"HLQTData/HL_HunLing.h"
-//#include"HLQTData/HL_HunJi.h"
-class HLDataWidget: public QDialog
-{
+#include<../HLBase/HL_HunLing.h>
+#include<../HLBase/HL_HunJi.h>
+
+class HLDataWidget: public QDialog{
 	public:
 	HunLing tempHL;
 	QLabel Name;
@@ -30,11 +35,9 @@ class HLDataWidget: public QDialog
     void setData(HunLing a);
     HLDataWidget(HunLing a);
 	~HLDataWidget(){}
-	
 };
 
-HLDataWidget::HLDataWidget(HunLing a)
-{
+HLDataWidget::HLDataWidget(HunLing a){
     tempHL=a;
     Name.setText("名字："+a.Name);
     Des.setText("介绍："+a.Des);
@@ -71,11 +74,9 @@ HLDataWidget::HLDataWidget(HunLing a)
     MainLayout.addWidget(&ATK_Ski);
     MainLayout.addWidget(&DEF_Ski);
     this->setLayout(&MainLayout);
-
 }
 
-void HLDataWidget::setData(HunLing a)
-{
+void HLDataWidget::setData(HunLing a){
     tempHL=a;
     Name.setText("名字："+a.Name);
     Des.setText("介绍："+a.Des);
@@ -96,7 +97,7 @@ void HLDataWidget::setData(HunLing a)
     DEF_Ski.setText("防御技能：<br>"+SystemBuff[a.DEF_Ski].Name+"："+SystemBuff[a.DEF_Ski].Des);
 }
 
-
+#endif
 
 
 

@@ -1,8 +1,13 @@
+/*魂技*/
+#ifndef HL_HUNJI
+#define HL_HUNJI
 
 #include <QString>
 #include <QList>
-	class HunJi
-{
+#include<QFile>
+#include<QTextStream>
+
+class HunJi{
   public:
 	int ID;
 	QString Name;
@@ -13,28 +18,24 @@
 	int Turn;
 	int NowTurn;
 	void Init();
+    HunJi(){
+        ID=Type=Turn=NowTurn=0;
+        Name=Des="空";
+        Energy=Sour=0;
+    }
 } SystemHJ[200];
 
-void HunJi::Init()
-{
+void HunJi::Init(){
     QFile file((DATAPATH+"SaveHJ.str"));
 file.open(QIODevice::ReadOnly);
       QTextStream in(&file);
-         for(int i=1;i<=199;i++)
+         for(int i=0;i<200;i++)
         in>>SystemHJ[i].Name>>SystemHJ[i].Des;
-        for(int i=1;i<=199;i++)
-        if(SystemHJ[i].Name=="")
-        {
-        SystemHJ[i].Name="未编辑";
-        SystemHJ[i].Des="未编辑";
-        }
-      
 
    file.close();
     QFile tmpfile( DATAPATH+"SaveHJ.num" );
     tmpfile.open(QIODevice::ReadOnly);
-    for(int i=1;i<=199;i++)
-    {
+    for(int i=0;i<200;i++){
     int a=sizeof(int);
     tmpfile.read(( char *)&SystemHJ[i].ID,a);
     tmpfile.read(( char *)&SystemHJ[i].Energy,a);
@@ -46,36 +47,29 @@ file.open(QIODevice::ReadOnly);
     tmpfile.close();  
 }
 
-class Buff
-{
+class Buff{
   public:
 	int ID;
 	QString Des;
 	QString Name;
     int type;//1战前，2战中
 	void Init();
+    Buff(){
+        ID=type=0;
+        Name=Des="空";
+    }
 } SystemBuff[200];
 
-void Buff::Init()
-{
+void Buff::Init(){
     QFile file((DATAPATH+"SaveBuff.str"));
-file.open(QIODevice::ReadOnly);
+    file.open(QIODevice::ReadOnly);
       QTextStream in(&file);
-         for(int i=1;i<=199;i++)
+         for(int i=0;i<200;i++)
         in>>SystemBuff[i].Name>>SystemBuff[i].Des;
-        for(int i=1;i<=199;i++)
-        if(SystemBuff[i].Name=="")
-        {
-        SystemBuff[i].Name="未编辑";
-        SystemBuff[i].Des="未编辑";
-        }
-
-
    file.close();
     QFile tmpfile( DATAPATH+"SaveBuff.num" );
     tmpfile.open(QIODevice::ReadOnly);
-    for(int i=1;i<=199;i++)
-    {
+    for(int i=0;i<200;i++){
     int a=sizeof(int);
     tmpfile.read(( char *)&SystemBuff[i].ID,a);
     tmpfile.read(( char *)&SystemBuff[i].type,a);
@@ -84,15 +78,10 @@ file.open(QIODevice::ReadOnly);
 }
 
 
-class BuffList
-{
+class BuffList{
   public:
     QList<Buff> List;
   public:
-	BuffList()
-	{
-
-	}
 	void Insert(Buff a);
 	void Remove(int a);
 	Buff GetData(int a);
@@ -100,28 +89,25 @@ class BuffList
 	int Count();
 };
 
-void BuffList::Clear()
-{
+void BuffList::Clear(){
     List.clear();
 }
 
 
-void BuffList::Remove(int a)
-{
+void BuffList::Remove(int a){
     List.removeAt(a);
 }
 
-int BuffList::Count()
-{
+int BuffList::Count(){
     return List.size();
 }
 
-void BuffList::Insert(Buff a)
-{
+void BuffList::Insert(Buff a){
     List.append(a);
 }
 
-Buff BuffList::GetData(int a)	// 取数据
-{
+Buff BuffList::GetData(int a){
     return List[a];
 }
+
+#endif

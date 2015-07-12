@@ -1,8 +1,13 @@
+/*任务*/
+#ifndef HL_TASK
+#define HL_TASK
+
 #include<QFile>
 #include<QTextStream>
-#include <QString>
+#include<QString>
 #include<QList>
-	class Task
+
+class Task
 {
   public:
 	QString Name;
@@ -21,29 +26,28 @@
 	int A_Item;
 	int A_Count;
 	public:
-	Task()
-	{
-	ID=0;
-	Des="空";
-	Need_ID=0;
-	Name="空";
-    IsFinish=0;
-	MB=0;
-	FMB=0;
-	NKillHL=0;
-	NKillNPC=0;
-	NTalkNPC=0;
-    NGetItem=0;
-	A_Coin=0;
-	A_Exp=0;
-	A_Item=0;
-	A_Count=0;
+	Task(){
+       ID=0;
+       Des="空";
+       Need_ID=0;
+       Name="空";
+       IsFinish=1;
+       MB=0;
+       FMB=0;
+       NKillHL=0;
+       NKillNPC=0;
+       NTalkNPC=0;
+       NGetItem=0;
+       A_Coin=0;
+       A_Exp=0;
+       A_Item=0;
+       A_Count=0;
 	}
     void Save();
     void Init();
 } SystemTask[200];
-void Task::Save()
-{
+
+void Task::Save(){
 		QFile file((DATAPATH+"SaveTask.str"));
 file.open(QIODevice::WriteOnly);
       QTextStream in(&file);
@@ -52,8 +56,7 @@ file.open(QIODevice::WriteOnly);
 file.close();
 	 QFile tmpfile( DATAPATH+"SaveTask.num" );  
     tmpfile.open(QIODevice::WriteOnly);
-    for(int i=1;i<=199;i++)
-    {
+    for(int i=1;i<=199;i++){
     int a=sizeof(int);
     tmpfile.write(( char *)&SystemTask[i].ID,a);
     tmpfile.write(( char *)&SystemTask[i].Need_ID,a);
@@ -68,24 +71,21 @@ file.close();
     tmpfile.write(( char *)&SystemTask[i].A_Exp,a);
     tmpfile.write(( char *)&SystemTask[i].A_Item,a);
     tmpfile.write(( char *)&SystemTask[i].A_Count,a);
- 
     }
     tmpfile.close();  
 }
-void Task::Init()
-{
+
+void Task::Init(){
 	QFile file((DATAPATH+"SaveTask.str"));
 file.open(QIODevice::ReadOnly);
       QTextStream in(&file);
          for(int i=1;i<=199;i++)
     	in>>SystemTask[i].Name>>SystemTask[i].Des;
-      
+       file.close();
 
-   file.close();
     QFile tmpfile( DATAPATH+"SaveTask.num" );  
     tmpfile.open(QIODevice::ReadOnly);
-    for(int i=1;i<=199;i++)
-    {
+    for(int i=1;i<=199;i++){
     int a=sizeof(int); 
 	tmpfile.read(( char *)&SystemTask[i].ID,a);
 	tmpfile.read(( char *)&SystemTask[i].Need_ID,a);
@@ -100,7 +100,6 @@ file.open(QIODevice::ReadOnly);
 	tmpfile.read(( char *)&SystemTask[i].A_Exp,a);
 	tmpfile.read(( char *)&SystemTask[i].A_Item,a);
 	tmpfile.read(( char *)&SystemTask[i].A_Count,a);
- SystemTask[i].IsFinish=0;//important
     }
     tmpfile.close();  
 }
@@ -108,15 +107,10 @@ file.open(QIODevice::ReadOnly);
 
 
 
-class TaskList
-{
+class TaskList{
   public:
     QList<Task> List;
   public:
-	TaskList()
-	{
-
-	}
 	Task TakeByIndex(int a);
 	Task TakeByID(int a);
 	int Count();
@@ -124,38 +118,31 @@ class TaskList
 	Task GetData(int a);
 };
 
-Task TaskList::TakeByIndex(int a)
-{
-
+Task TaskList::TakeByIndex(int a){
     return List.takeAt(a);
 }
 
-Task TaskList::TakeByID(int a)
-{
-    for(int i=1;i<=Count();i++)
-    {
+Task TaskList::TakeByID(int a){
+    for(int i=1;i<=Count();i++){
         if(List[i].ID==a)
     return List[i];
-        }
+       }
     return SystemTask[0];
 }
 
 
 
 
-int TaskList::Count()
-{
-
+int TaskList::Count(){
     return List.size();
 }
 
-void TaskList::Insert(Task a)
-{
+void TaskList::Insert(Task a){
     List.append(a);
 }
 
-Task TaskList::GetData(int a)	// 取数据
-{
-
+Task TaskList::GetData(int a){
     return List[a];
 }
+
+#endif
