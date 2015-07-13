@@ -34,8 +34,8 @@ TaskWidget::TaskWidget(RenWu* a){
     Layout1=new QVBoxLayout;
     MainLayout=new QHBoxLayout;
     Me=a;
-    for(int i=0;i<a->myTaskList.Count();i++)
-        List.addItem(a->myTaskList.GetData(i).Name);//将任务名字添加到列表中
+    for(int i=0;i<a->myTaskList.size();i++)
+        List.addItem(a->myTaskList[i].Name);//将任务名字添加到列表中
     Title.setText("任务列表");
     Name.setText("任务名称：");
     Des.setText("任务简介：");
@@ -56,7 +56,7 @@ TaskWidget::TaskWidget(RenWu* a){
 
 void TaskWidget::Finish_Click(){
     int a=List.currentRow();
-    int b=Me->myTaskList.GetData(a).ID;
+    int b=Me->myTaskList[a].ID;
     Me->FinishTask(SystemTask[b]);
     QMessageBox::about(this,"提示","任务完成！");
     List.takeItem(a);//删除
@@ -64,7 +64,7 @@ void TaskWidget::Finish_Click(){
 
 void TaskWidget::ListClick(){
     int a=List.currentRow();
-    Task b=Me->myTaskList.GetData(a);
+    Task b=Me->myTaskList[a];
     Name.setText("任务名称："+b.Name);
     Des.setText("任务简介："+b.Des);
     MB_FMB.setText("任务进度："+QString::number(b.FMB)+"/"+QString::number(b.MB));

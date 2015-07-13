@@ -46,6 +46,7 @@ class MapNPCWidget: public QWidget{
         MainLayout->addWidget(&Talk);
         MainLayout->addWidget(&Attack);
         this->setLayout(MainLayout);
+        this->setEnabled(false);
         connect(&Attack,QPushButton::clicked,this,MapNPCWidget::Attack_Click);
         connect(&Task,QPushButton::clicked,this,MapNPCWidget::Task_Click);
         connect(&Talk,QPushButton::clicked,this,MapNPCWidget::Talk_Click);
@@ -57,6 +58,8 @@ class MapNPCWidget: public QWidget{
 };
 
 void MapNPCWidget::UpDateAll(RenWu* temp,NPC a){
+    this->setEnabled(true);
+
     Me=temp;
     tempNPC=a;
   //Head.setPixmap(QPixmap::load(""));
@@ -67,6 +70,9 @@ void MapNPCWidget::UpDateAll(RenWu* temp,NPC a){
     if(tempNPC.CanATK==0)
         Attack.setEnabled(false);
     Attack.setText("攻击");
+
+    if(tempNPC.Des=="空")
+        this->setEnabled(false);
 }
 
 void MapNPCWidget::Attack_Click(){
@@ -76,16 +82,24 @@ void MapNPCWidget::Attack_Click(){
     if(Battle->WinOrLose==1){
        Me->Exp_Now+=Battle->Reward.Exp;
        Me->Coin+=Battle->Reward.Coin;
+       for(int i=0;i<Battle->Reward.Item.size();i++){
+           int stop=0;
+          for(int j=0;j<Me->Bag.size();j++)
+             if(Me->Bag[j].ID==Battle->Reward.Item[i].ID){
+                 Me->Bag[j].Count++;
+                 stop=1;
+                 break;
+             }
+          if(stop==0){
+          Me->Bag.append(Battle->Reward.Item[i]);
+          Me->Bag.last().Count=1;
+          }
+       }
+    for(int i=0;i<Battle->Reward.LG.size();i++)
+       Me->LGBag.append(Battle->Reward.LG[i]);
 
-       for(int i=0;i<Battle->Reward.Item.Count();i++)
-          for(int j=0;j<Battle->Reward.Item.GetCount(i);j++)
-             Me->Bag.Insert(Battle->Reward.Item.GetData(i));
-
-    for(int i=0;i<Battle->Reward.LG.Count();i++)
-       Me->LGBag.Insert(Battle->Reward.LG.GetData(i));
-
-    for(int i=0;i<Battle->Reward.LH.Count();i++)
-       Me->LHBag.Insert(Battle->Reward.LH.GetData(i));
+    for(int i=0;i<Battle->Reward.LH.size();i++)
+       Me->LHBag.append(Battle->Reward.LH[i]);
 
     int UL=Me->UpdateLV();
     if(UL>0)
@@ -105,9 +119,9 @@ void MapNPCWidget::Task_Click(){
 }
 
 void MapNPCWidget::Talk_Click(){
-   MessageList temp=GameSystem::CanTalkList(tempNPC,Me);
-   for(int i=0;i<temp.Count();i++)
-       QMessageBox::about(this,"对话中",temp.GetData(i).Msg);
+   QList<Message> temp=GameSystem::CanTalkList(tempNPC,Me);
+   for(int i=0;i<temp.size();i++)
+       QMessageBox::about(this,"对话中",temp[i].Msg);
 }
 
 

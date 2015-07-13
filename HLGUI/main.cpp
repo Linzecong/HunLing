@@ -18,7 +18,9 @@
 #include<QTextCodec>
 
 int main(int argc, char *argv[]){
-    //QTextCodec::setCodecForLocale(QTextCodec::codecForName("UTF-8"));
+    QTime rankt= QTime::currentTime();
+    qsrand(rankt.msecsSinceStartOfDay());
+    QTextCodec::setCodecForLocale(QTextCodec::codecForName("UTF-8"));
     QApplication a(argc, argv);
     BeginWidget b;
     b.show();

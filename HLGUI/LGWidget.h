@@ -53,8 +53,8 @@ LGWidget::LGWidget(RenWu* a){
      Layout3=new QVBoxLayout;
      MainLayout=new QHBoxLayout;
      Me=a;
-     for(int i=0;i<Me->LGBag.Count();i++)
-       Bag.addItem(Me->LGBag.GetData(i).Name);
+     for(int i=0;i<Me->LGBag.size();i++)
+       Bag.addItem(Me->LGBag[i].Name);
      Wear.addItem(Me->LG.Head.Name);
      Wear.addItem(Me->LG.Body.Name);
      Wear.addItem(Me->LG.LHand.Name);
@@ -108,37 +108,38 @@ void LGWidget::Putoff_Click(){
     QString temp=Wear.item(Wear.currentRow())->text();
     if(temp!="空"){
        if(Me->LG.Head.Name==temp){
-        Me->LGBag.Insert(Me->LG.Head);
+        Me->LGBag.append(Me->LG.Head);
         Me->TakeoffLG(1);
        }
        if(Me->LG.Body.Name==temp){
-        Me->LGBag.Insert(Me->LG.Body);
+        Me->LGBag.append(Me->LG.Body);
         Me->TakeoffLG(2);
        }
        if(Me->LG.LHand.Name==temp){
-        Me->LGBag.Insert(Me->LG.LHand);
+        Me->LGBag.append(Me->LG.LHand);
         Me->TakeoffLG(3);
        }
        if(Me->LG.RHand.Name==temp){
-        Me->LGBag.Insert(Me->LG.RHand);
+        Me->LGBag.append(Me->LG.RHand);
         Me->TakeoffLG(4);
        }
        if(Me->LG.LLeg.Name==temp){
-        Me->LGBag.Insert(Me->LG.LLeg);
+        Me->LGBag.append(Me->LG.LLeg);
         Me->TakeoffLG(5);
        }
        if(Me->LG.RLeg.Name==temp){
-        Me->LGBag.Insert(Me->LG.RLeg);
+        Me->LGBag.append(Me->LG.RLeg);
         Me->TakeoffLG(6);
        }
+           UpDate();
     }
-    UpDate();
+
 }
 
 void LGWidget::WearButton_Click(){
     int a=Bag.currentRow();
 
-    switch(Me->WearLG(Me->LGBag.GetData(a)))
+    switch(Me->WearLG(Me->LGBag[a]))
     {
     case -1:
         QMessageBox::about(this,"提示","请先脱下该位置的灵骨！");
@@ -148,7 +149,7 @@ void LGWidget::WearButton_Click(){
         break;
     case 1:
         QMessageBox::about(this,"提示","穿着成功！");
-        Me->LGBag.Remove(a);
+        Me->LGBag.removeAt(a);
         break;
 
     }
@@ -157,8 +158,10 @@ void LGWidget::WearButton_Click(){
 
 void LGWidget::Wear_Click(){
     WearButton.setEnabled(false);
-    Putoff.setEnabled(true);
+
     QString temp=Wear.item(Wear.currentRow())->text();
+    if(temp!="空"){
+        Putoff.setEnabled(true);
     if(Me->LG.Head.Name==temp)
       SetData(Me->LG.Head);
     if(Me->LG.Body.Name==temp)
@@ -171,20 +174,21 @@ void LGWidget::Wear_Click(){
     SetData(Me->LG.LLeg);
     if(Me->LG.RLeg.Name==temp)
     SetData(Me->LG.RLeg);
+        }
 }
 
 void LGWidget::Bag_Click(){
     WearButton.setEnabled(true);
     Putoff.setEnabled(false);
     int a=Bag.currentRow();
-    SetData(Me->LGBag.GetData(a));
+    SetData(Me->LGBag[a]);
 }
 
 void LGWidget::UpDate(){
     Wear.clear();
     Bag.clear();
-    for(int i=0;i<Me->LGBag.Count();i++)
-      Bag.addItem(Me->LGBag.GetData(i).Name);
+    for(int i=0;i<Me->LGBag.size();i++)
+      Bag.addItem(Me->LGBag[i].Name);
     Wear.addItem(Me->LG.Head.Name);
     Wear.addItem(Me->LG.Body.Name);
     Wear.addItem(Me->LG.LHand.Name);

@@ -16,7 +16,7 @@
 
 class ItemWidget:public QDialog{
 	public:
-    ItemList* Bag;
+    QList<Item*> Bag;
     RenWu* Me;
 	QLabel Title;
 	QPushButton Use;
@@ -33,17 +33,20 @@ class ItemWidget:public QDialog{
 	void Use_Click();
     void UpDate();
     void UpDateList();
+    void change(){Use.setEnabled(true);}
 };
 
 ItemWidget::ItemWidget(RenWu* a){
     MainLayout=new QHBoxLayout;
     LabelLayout=new QVBoxLayout;
     Me=a;
-    Bag=&Me->Bag;
+    for(int i=0;i<a->Bag.size();i++)
+    Bag.append(&Me->Bag[i]);
     Title.setText("背包");
     Use.setText("使用");
-    for(int i=0;i<Bag->Count();i++)
-      Item_List.addItem(Bag->GetData(i).Name);
+    Use.setEnabled(false);
+    for(int i=0;i<Bag.size();i++)
+      Item_List.addItem(Bag[i]->Name);
 
     Name.setText("名字：");
     Des.setText("作用：");
@@ -59,14 +62,16 @@ ItemWidget::ItemWidget(RenWu* a){
     MainLayout->addLayout(LabelLayout);
     connect(&Item_List,&Item_List.clicked,this,&ItemWidget::UpDate);
     connect(&Use,&Use.clicked,this,&ItemWidget::Use_Click);
+    connect(&Item_List,&QListWidget::currentRowChanged,this,&ItemWidget::change);
     this->setLayout(MainLayout);
 }
 
 void ItemWidget::Use_Click(){
     int temp=Item_List.currentRow();
-    Item a=Bag->GetData(temp);
+
+    Item a=*(Bag[temp]);
     if(a.Type==1){
-    Bag->Remove(temp);
+    Bag.removeAt(temp);
     Me->UseItem(a);
     QMessageBox::about(this,"提示","使用成功！");
     }
@@ -79,17 +84,17 @@ void ItemWidget::Use_Click(){
 
 void ItemWidget::UpDate(){
      int temp=Item_List.currentRow();
-     Item a=Bag->GetData(temp);
+     Item a=*(Bag[temp]);
      Name.setText("名字："+a.Name);
      Des.setText("作用："+a.Des);
      Value.setText("价值："+a.Value);
-     Count.setText("数量："+Bag->GetCount(temp));
+     Count.setText("数量："+Bag[temp]->Count);
 }
 
 void ItemWidget::UpDateList(){
      Item_List.clear();
-     for(int i=0;i<Bag->Count();i++)
-       Item_List.addItem(Bag->GetData(i).Name);
+     for(int i=0;i<Bag.size();i++)
+       Item_List.addItem(Bag[i]->Name);
 }
 
 #endif

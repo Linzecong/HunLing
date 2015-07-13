@@ -59,10 +59,10 @@ LHWidget::LHWidget(RenWu* a){
     Layout3=new QVBoxLayout;
     MainLayout=new QHBoxLayout;
     Me=a;
-    for(int i=0;i<Me->LHBag.Count();i++)
-      Bag.addItem(Me->LHBag.GetData(i).Name);
-    for(int i=0;i<Me->LH.Count();i++)
-      Wear.addItem(Me->LH.GetData(i).Name);
+    for(int i=0;i<Me->LHBag.size();i++)
+      Bag.addItem(Me->LHBag[i].Name);
+    for(int i=0;i<Me->LH.size();i++)
+      Wear.addItem(Me->LH[i].Name);
     WearButton.setText("带上");
     Putoff.setText("取下");
     WearButton.setEnabled(false);
@@ -123,7 +123,7 @@ void LHWidget::Data_Click(){
 
 void LHWidget::Putoff_Click(){
     Me->TakeoffLH(tempLH.ID);
-    Me->LHBag.Insert(tempLH);
+    Me->LHBag.append(tempLH);
     UpDate();
 }
 
@@ -141,7 +141,7 @@ void LHWidget::WearButton_Click(){
         break;
     case 1:
         QMessageBox::about(this,"提示","成功！");
-        Me->LHBag.Remove(Bag.currentRow()+1);
+        Me->LHBag.removeAt(Bag.currentRow());
         break;
 
     }
@@ -152,7 +152,7 @@ void LHWidget::Wear_Click(){
     WearButton.setEnabled(false);
     Putoff.setEnabled(true);
     int a=Wear.currentRow();
-    tempLH=Me->LH.GetData(a);
+    tempLH=Me->LH[a];
     SetData(tempLH);
 }
 
@@ -160,7 +160,7 @@ void LHWidget::Bag_Click(){
     WearButton.setEnabled(true);
     Putoff.setEnabled(false);
     int a=Wear.currentRow();
-    tempLH=Me->LHBag.GetData(a);
+    tempLH=Me->LHBag[a];
     SetData(tempLH);
 }
 
@@ -178,10 +178,10 @@ void LHWidget::SetData(LingHuan a){
 void LHWidget::UpDate(){
     Wear.clear();
     Bag.clear();
-    for(int i=0;i<Me->LHBag.Count();i++)
-      Bag.addItem(Me->LHBag.GetData(i).Name);
-    for(int i=0;i<Me->LH.Count();i++)
-      Wear.addItem(Me->LH.GetData(i).Name);
+    for(int i=0;i<Me->LHBag.size();i++)
+      Bag.addItem(Me->LHBag[i].Name);
+    for(int i=0;i<Me->LH.size();i++)
+      Wear.addItem(Me->LH[i].Name);
 }
 
 #endif

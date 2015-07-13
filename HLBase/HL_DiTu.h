@@ -16,9 +16,8 @@ return sum;
 int GetNumber(int a, int b){//获得随机数
     if(a==b)
         return a;
-    QTime t;
-    t= QTime::currentTime();
-    qsrand(t.msec()+t.second()*1000);
+
+
     int sum=a + qrand() % (b - a);
 return sum;
 }

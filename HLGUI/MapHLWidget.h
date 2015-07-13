@@ -18,7 +18,7 @@
 class MapHLWidget: public QWidget{
 	public:
     RenWu* Me;
-    LHList EnemyList;
+    QList<LingHuan> EnemyList;
     QLabel Head;
 	QLabel Name;
 	QLabel LV;
@@ -30,8 +30,9 @@ class MapHLWidget: public QWidget{
     MapHLWidget(){
         MainLayout=new QVBoxLayout;
       //Head.setPixmap(QPixmap::load(""));
-        LV.setText("等级：");
-        Count.setText("数量：");
+        Name.setText("空");
+        LV.setText("等级：0");
+        Count.setText("数量：0");
         Attack.setText("攻击");
         MainLayout->addWidget(&Head);
         MainLayout->addWidget(&Name);
@@ -40,18 +41,27 @@ class MapHLWidget: public QWidget{
         MainLayout->addWidget(&Attack);
         connect(&Attack,QPushButton::clicked,this,MapHLWidget::Attack_Click);
         this->setLayout(MainLayout);
+        this->setEnabled(false);
     }
     ~MapHLWidget(){}
-    void UpDateAll(RenWu* temp,LHList tempList);
+    void UpDateAll(RenWu* temp,QList<LingHuan> tempList);
 
 };
 
-void MapHLWidget::UpDateAll(RenWu* temp, LHList tempList){
+void MapHLWidget::UpDateAll(RenWu* temp, QList<LingHuan> tempList){
+    this->setEnabled(true);
     Me=temp;
     EnemyList=tempList;
-    Name.setText(tempList.GetData(0).Name);
-    LV.setText("等级："+QString::number(tempList.GetData(1).LV));
-    Count.setText("数量："+QString::number(EnemyList.Count()));
+    Name.setText(tempList[0].Name);
+    LV.setText("等级："+QString::number(tempList[0].LV));
+    Count.setText("数量："+QString::number(EnemyList.size()));
+
+    if(EnemyList[0].Name=="空"){
+        this->setEnabled(false);
+        LV.setText("等级：0");
+        Count.setText("数量：0");
+
+    }
 }
 
 void MapHLWidget::Attack_Click(){
@@ -63,15 +73,24 @@ void MapHLWidget::Attack_Click(){
        Me->Exp_Now+=Battle->Reward.Exp;
        Me->Coin+=Battle->Reward.Coin;
 
-       for(int i=0;i<Battle->Reward.Item.Count();i++)
-          for(int j=0;j<Battle->Reward.Item.GetCount(i);j++)
-             Me->Bag.Insert(Battle->Reward.Item.GetData(i));
+       for(int i=0;i<Battle->Reward.Item.size();i++){
+           int stop=0;
+          for(int j=0;j<Me->Bag.size();j++)
+             if(Me->Bag[j].ID==Battle->Reward.Item[i].ID){
+                 Me->Bag[j].Count++;
+                 stop=1;
+                 break;
+             }
+          if(stop==0){
+          Me->Bag.append(Battle->Reward.Item[i]);
+          Me->Bag.last().Count=1;
+          }
+       }
+    for(int i=0;i<Battle->Reward.LG.size();i++)
+       Me->LGBag.append(Battle->Reward.LG[i]);
 
-    for(int i=0;i<Battle->Reward.LG.Count();i++)
-       Me->LGBag.Insert(Battle->Reward.LG.GetData(i));
-
-    for(int i=0;i<Battle->Reward.LH.Count();i++)
-       Me->LHBag.Insert(Battle->Reward.LH.GetData(i));
+    for(int i=0;i<Battle->Reward.LH.size();i++)
+       Me->LHBag.append(Battle->Reward.LH[i]);
 
     int UL=Me->UpdateLV();
     if(UL>0)

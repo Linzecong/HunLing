@@ -26,7 +26,7 @@ class GameSystem{
 	RenWu Me;
   public:
     GameSystem(){
-       /* Me.Init();
+        //Me.Init();
         SystemMap[0][0].Init();
         SystemHJ[0].Init();
         SystemHL[0].Init();
@@ -34,7 +34,7 @@ class GameSystem{
         SystemNPC[0].Init();
         SystemTask[0].Init();
         SystemMessage[0].Init();
-        SystemBuff[0].Init();*/
+        SystemBuff[0].Init();
 
         /*测试用*/
 
@@ -162,7 +162,7 @@ NPC GameSystem::CreateNPC(QList<LingHuan> a){//通过灵环列表生成NPC，为
 }
 
 QList<LingHuan> GameSystem::CreateLHList(DiTu a){//通过地图，生成灵环列表
-    int LHCount = GetNumber(0, 9);//数量
+    int LHCount = GetNumber(1, 9);//数量
     QList<LingHuan> tempList;
 	for (int i = 1; i <= LHCount; i++){
 		LingHuan temp;

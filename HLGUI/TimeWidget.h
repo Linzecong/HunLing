@@ -9,6 +9,7 @@
 #include<QVBoxLayout>
 #include<QTime>
 #include<QTimer>
+
 class TimeWidget: public QWidget{
 	public:
 	QTimer timer;

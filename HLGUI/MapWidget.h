@@ -21,8 +21,8 @@ class MapWidget: public QWidget{
     RenWu* Me;
     DiTu Map;
 
-    NPCList NPC_List;
-    QList<LHList> Enemy_List;//列表内含有很多魂灵列表
+    QList<NPC> NPC_List;
+    QList<QList<LingHuan> > Enemy_List;//列表内含有很多魂灵列表
 
     MapHLWidget MapHL[10];
     MapNPCWidget MapNPC[10];
@@ -47,11 +47,12 @@ MapWidget::MapWidget(DiTu a,RenWu* b){
     for(int i=0;i<GetNumber(0,9);i++)
     Enemy_List.append(GameSystem::CreateLHList(Map));//初始化魂灵列表的列表
 
-    for(int i=0;i<NPC_List.Count();i++)
-        MapNPC[i].UpDateAll(Me,NPC_List.GetData(i));
+    for(int i=0;i<NPC_List.size();i++)
+        MapNPC[i].UpDateAll(Me,NPC_List[i]);
 
     for(int i=0;i<Enemy_List.size();i++)
         MapHL[i].UpDateAll(Me,Enemy_List[i]);
+
 
     Title.setText(Map.Name+"<br>"+Map.Des);
     for(int i=0;i<9;i++)
@@ -69,14 +70,18 @@ void MapWidget::UpDate(DiTu a){
     Map=a;
     NPC_List=GameSystem::CanShowList(Map,Me);
 
+    Enemy_List.clear();
+
     for(int i=0;i<GetNumber(0,9);i++)
     Enemy_List.append(GameSystem::CreateLHList(Map));
 
-    for(int i=0;i<NPC_List.Count();i++)
-        MapNPC[i].UpDateAll(Me,NPC_List.GetData(i));
+    for(int i=0;i<NPC_List.size();i++)
+        MapNPC[i].UpDateAll(Me,NPC_List[i]);
 
     for(int i=0;i<Enemy_List.size();i++)
         MapHL[i].UpDateAll(Me,Enemy_List[i]);
+
+
 
     Title.setText(Map.Name+"<br>"+Map.Des);
 }

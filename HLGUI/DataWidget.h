@@ -13,42 +13,42 @@
 
 class BuffWidget: public QWidget{
     public:
-    BuffList List;
+    QList<Buff> List;
     QLabel Buff1;
     QLabel Buff2;
     QVBoxLayout MainLayout;
     public:
-    void UpDate(BuffList a);
-    BuffWidget(BuffList a);
+    void UpDate(QList<Buff> a);
+    BuffWidget(QList<Buff> a);
     ~BuffWidget(){}
 
 };
 
-BuffWidget::BuffWidget(BuffList a){
+BuffWidget::BuffWidget(QList<Buff> a){
     List=a;
     Buff1.setText("战前Buff：<br>");
-    for(int i=0;i<a.Count();i++)
-        if(a.GetData(i).type==1)
-            Buff1.setText(Buff1.text()+a.GetData(i).Name+"："+a.GetData(i).Des+"<br>");
+    for(int i=0;i<a.size();i++)
+        if(a[i].type==1)
+            Buff1.setText(Buff1.text()+a[i].Name+"："+a[i].Des+"<br>");
     Buff2.setText("战中Buff：<br>");
-    for(int i=0;i<a.Count();i++)
-        if(a.GetData(i).type==2)
-            Buff1.setText(Buff1.text()+a.GetData(i).Name+"："+a.GetData(i).Des+"<br>");
+    for(int i=0;i<a.size();i++)
+        if(a[i].type==2)
+            Buff1.setText(Buff1.text()+a[i].Name+"："+a[i].Des+"<br>");
     MainLayout.addWidget(&Buff1);
     MainLayout.addWidget(&Buff2);
     this->setLayout(&MainLayout);
 
 }
-void BuffWidget::UpDate(BuffList a){
+void BuffWidget::UpDate(QList<Buff> a){
     List=a;
     Buff1.setText("战前Buff：<br>");
-    for(int i=0;i<a.Count();i++)
-        if(a.GetData(i).type==1)
-            Buff1.setText(Buff1.text()+a.GetData(i).Name+"："+a.GetData(i).Des+"<br>");
+    for(int i=0;i<a.size();i++)
+        if(a[i].type==1)
+            Buff1.setText(Buff1.text()+a[i].Name+"："+a[i].Des+"<br>");
     Buff2.setText("战中Buff：<br>");
-    for(int i=0;i<a.Count();i++)
-        if(a.GetData(i).type==2)
-            Buff1.setText(Buff1.text()+a.GetData(i).Name+"："+a.GetData(i).Des+"<br>");
+    for(int i=0;i<a.size();i++)
+        if(a[i].type==2)
+            Buff1.setText(Buff1.text()+a[i].Name+"："+a[i].Des+"<br>");
 }
 
 class DataWidget: public QWidget{
@@ -79,8 +79,8 @@ DataWidget::DataWidget(RenWu* a){
     Name.setText("名字："+Me->Name);
     Level.setText("等级："+QString::number(Me->LV)+"级");
     Exp.setText("经验："+QString::number(Me->Exp_Now)+"/"+QString::number(Me->Exp_Need));
-    for(int i=0;i<Me->LH.Count();i++)
-    LingHuan.setText(LingHuan.text()+Me->LH.GetData(i).Col);
+    for(int i=0;i<Me->LH.size();i++)
+    LingHuan.setText(LingHuan.text()+Me->LH[i].Col);
     LingHuan.setText("灵环："+LingHuan.text());
     Strength.setText("力量："+QString::number(Me->Strength)+"("+QString::number(Me->Ori_Strength)+")");
     Agility.setText("敏捷："+QString::number(Me->Agility)+"("+QString::number(Me->Ori_Agility)+")");
@@ -109,8 +109,8 @@ void DataWidget::UpDate(){
     Level.setText("等级："+QString::number(Me->LV)+"级");
     Exp.setText("经验："+QString::number(Me->Exp_Now)+"/"+QString::number(Me->Exp_Need));
     LingHuan.setText("");
-    for(int i=0;i<Me->LH.Count();i++)
-    LingHuan.setText(LingHuan.text()+Me->LH.GetData(i).Col);
+    for(int i=0;i<Me->LH.size();i++)
+    LingHuan.setText(LingHuan.text()+Me->LH[i].Col);
     LingHuan.setText("灵环："+LingHuan.text());
     Strength.setText("力量："+QString::number(Me->Strength)+"("+QString::number(Me->Ori_Strength)+")");
     Agility.setText("敏捷："+QString::number(Me->Agility)+"("+QString::number(Me->Ori_Agility)+")");

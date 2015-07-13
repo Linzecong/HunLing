@@ -13,8 +13,8 @@
 #include<../HLBase/HL_Task.h>
 class TaskMsgWidget: public QDialog{
 	public:
-    TaskList* Me;//自己的任务列表
-    TaskList tempTask;//能接受的任务列表
+    QList<Task>* Me;//自己的任务列表
+    QList<Task> tempTask;//能接受的任务列表
     QListWidget List;
     QLabel Title;
 	QLabel Name;
@@ -27,20 +27,20 @@ class TaskMsgWidget: public QDialog{
     QVBoxLayout* MainLayout;
 
 	public:
-    TaskMsgWidget(TaskList a,TaskList* b);
+    TaskMsgWidget(QList<Task> a,QList<Task>* b);
     void Except_Click();
     void ListClick();
     ~TaskMsgWidget(){}
 };
 
-TaskMsgWidget::TaskMsgWidget(TaskList a,TaskList* b){
+TaskMsgWidget::TaskMsgWidget(QList<Task> a, QList<Task> *b){
     Layout1=new QVBoxLayout;
     Layout2=new QHBoxLayout;
     MainLayout=new QVBoxLayout;
     tempTask=a;
     Me=b;
-    for(int i=0;i<tempTask.Count();i++)
-        List.addItem(tempTask.GetData(i).Name);
+    for(int i=0;i<tempTask.size();i++)
+        List.addItem(tempTask[i].Name);
     Title.setText("任务列表：");
     Name.setText("任务名称：");
     Des.setText("任务简介：");
@@ -60,17 +60,17 @@ TaskMsgWidget::TaskMsgWidget(TaskList a,TaskList* b){
 
 void TaskMsgWidget::Except_Click(){
     int a=List.currentRow();
-    int b=tempTask.GetData(a).ID;
-    Me->Insert(SystemTask[b]);
+    int b=tempTask[a].ID;
+    Me->append(SystemTask[b]);
     Except.setEnabled(false);
     QMessageBox::about(this,"提示","接受成功！");
     List.takeItem(a);
-    tempTask.TakeByIndex(a);
+    tempTask.takeAt(a);
 }
 
 void TaskMsgWidget::ListClick(){
     int a=List.currentRow();
-    Task b=tempTask.GetData(a);
+    Task b=tempTask[a];
     Name.setText("任务名称："+b.Name);
     Des.setText("任务简介："+b.Des);
     MB_FMB.setText("任务进度："+QString::number(b.FMB)+"/"+QString::number(b.MB));

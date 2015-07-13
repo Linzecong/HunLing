@@ -497,19 +497,18 @@ int RenWu::FinishTask(Task a){
 	Exp_Now += a.A_Exp;
 	Coin += a.A_Coin;
     if (a.A_Item != 0){
+        int stop=0;
         for (int i = 1; i <= a.A_Count; i++){
             for(int i=0;i<Bag.size();i++)
                 if(Bag[i].ID==SystemItem[a.A_Item].ID){
                     Bag[i].Count++;
+                    stop=1;
                     break;
                     }
-                else{
-                if(Bag[i].ID==0){
-                    Bag[i]=SystemItem[a.A_Item];
-                    Bag[i].Count=1;
-                    break;
-                    }
-                }
+        }
+        if(stop==0){
+            Bag.append(SystemItem[a.A_Item]);
+            Bag.last().Count=a.A_Count;
         }
         return 1;
     }
