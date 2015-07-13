@@ -13,7 +13,7 @@ class NPC
     int Ori_Energy;
     int Ori_Sour;
 	int CanATK;
-    int CanShow;
+    int TaskShow;
 	int LHID[10];
 	int LHLV[10];
     int LGID[7];
@@ -23,6 +23,19 @@ class NPC
 	public:
 void Save();
 void Init();
+    NPC(){
+    Name=Des="空";CanATK=0;TaskShow=0;ID=LV=0;
+    Ori_Strength=Ori_Agility=Ori_Vitality=Ori_Energy=Ori_Sour=0;
+    for(int i=0;i<10;i++){
+        LHID[i]=0;LHLV[i]=0;Task[i]=0;
+    }
+    for(int i=0;i<7;i++){
+        LGID[i]=0;LGLV[i]=0;
+    }
+    for(int i=0;i<20;i++){
+        CanTalk[i]=0;
+    }
+}
 }SystemNPC[200];
 
 void NPC::Save()
@@ -30,12 +43,12 @@ void NPC::Save()
         QFile file((DATAPATH+"SaveNPC.str"));
 file.open(QIODevice::WriteOnly);
       QTextStream in(&file);
-         for(int i=1;i<=199;i++)
+         for(int i=0;i<200;i++)
         in<<SystemNPC[i].Name<<" "<<SystemNPC[i].Des<<endl;
 
      QFile tmpfile( DATAPATH+"SaveNPC.num" );
     tmpfile.open(QIODevice::WriteOnly);
-    for(int i=1;i<=199;i++)
+    for(int i=0;i<200;i++)
     {
     int a=sizeof(i);
     tmpfile.write(( char *)&SystemNPC[i].ID,a);
@@ -46,7 +59,7 @@ file.open(QIODevice::WriteOnly);
     tmpfile.write(( char *)&SystemNPC[i].Ori_Energy,a);
     tmpfile.write(( char *)&SystemNPC[i].Ori_Sour,a);
     tmpfile.write(( char *)&SystemNPC[i].CanATK,a);
-    tmpfile.write(( char *)&SystemNPC[i].CanShow,a);
+    tmpfile.write(( char *)&SystemNPC[i].TaskShow,a);
     tmpfile.write(( char *)&SystemNPC[i].LHID,sizeof(LHID));
     tmpfile.write(( char *)&SystemNPC[i].LHLV,sizeof(LHLV));
     tmpfile.write(( char *)&SystemNPC[i].LGID,sizeof(LGID));
@@ -61,20 +74,14 @@ void NPC::Init()
     QFile file((DATAPATH+"SaveNPC.str"));
 file.open(QIODevice::ReadOnly);
       QTextStream in(&file);
-         for(int i=1;i<=199;i++)
+         for(int i=0;i<200;i++)
         in>>SystemNPC[i].Name>>SystemNPC[i].Des;
-        for(int i=1;i<=199;i++)
-        if(SystemNPC[i].Name=="")
-        {
-        SystemNPC[i].Name="未编辑";
-        SystemNPC[i].Des="未编辑";
-        }
 
 
    file.close();
     QFile tmpfile( DATAPATH+"SaveNPC.num" );
     tmpfile.open(QIODevice::ReadOnly);
-    for(int i=1;i<=199;i++)
+    for(int i=0;i<200;i++)
     {
         int a=sizeof(i);
         tmpfile.read(( char *)&SystemNPC[i].ID,a);
@@ -85,7 +92,7 @@ file.open(QIODevice::ReadOnly);
         tmpfile.read(( char *)&SystemNPC[i].Ori_Energy,a);
         tmpfile.read(( char *)&SystemNPC[i].Ori_Sour,a);
         tmpfile.read(( char *)&SystemNPC[i].CanATK,a);
-        tmpfile.read(( char *)&SystemNPC[i].CanShow,a);
+        tmpfile.read(( char *)&SystemNPC[i].TaskShow,a);
         tmpfile.read(( char *)&SystemNPC[i].LHID,sizeof(LHID));
         tmpfile.read(( char *)&SystemNPC[i].LHLV,sizeof(LHLV));
         tmpfile.read(( char *)&SystemNPC[i].LGID,sizeof(LGID));
@@ -114,7 +121,7 @@ class NPCWidget:public QWidget
     QSpinBox* Ori_Energy;
     QSpinBox* Ori_Sour;
     QSpinBox* CanATK;
-    QSpinBox* CanShow;
+    QSpinBox* TaskShow;
     QSpinBox* LHID[10];
     QSpinBox* LHLV[10];
     QSpinBox* LGID[7];
@@ -206,7 +213,7 @@ void NPCWidget::read()
     Ori_Energy->setValue(SystemNPC[a].Ori_Energy);
     Ori_Sour->setValue(SystemNPC[a].Ori_Sour);
     CanATK->setValue(SystemNPC[a].CanATK);
-    CanShow->setValue(SystemNPC[a].CanShow);
+    TaskShow->setValue(SystemNPC[a].TaskShow);
     for(int j=1;j<=9;j++)
     {
     LHID[j]->setValue(SystemNPC[a].LHID[j]);
@@ -243,7 +250,7 @@ NPCWidget::NPCWidget()
     Ori_Energy=new QSpinBox;
     Ori_Sour=new QSpinBox;
     CanATK=new QSpinBox;
-    CanShow=new QSpinBox;
+    TaskShow=new QSpinBox;
     for(int j=1;j<=9;j++)
     {
     LHID[j]=new QSpinBox;
@@ -264,7 +271,7 @@ NPCWidget::NPCWidget()
     Ori_Energy->setRange(100,5000);
     Ori_Sour->setRange(0,1000);
     CanATK->setRange(0,1);
-    CanShow->setRange(0,1);
+    TaskShow->setRange(0,1);
     for(int j=1;j<=9;j++)
     {
     LHID[j]->setRange(0,199);
@@ -343,7 +350,7 @@ NPCWidget::NPCWidget()
 
     DesLayout->addWidget(Des);
     DesLayout->addWidget(CanATK);
-    DesLayout->addWidget(CanShow);
+    DesLayout->addWidget(TaskShow);
 
 SpinLayout1->addWidget(Message);
     for(int j=1;j<=9;j++)
@@ -436,7 +443,7 @@ void NPCWidget::Save()
     SystemNPC[a].Ori_Energy=Ori_Energy->value();
     SystemNPC[a].Ori_Sour=Ori_Sour->value();
     SystemNPC[a].CanATK=CanATK->value();
-    SystemNPC[a].CanShow=CanShow->value();
+    SystemNPC[a].TaskShow=TaskShow->value();
 
     for(int j=1;j<=9;j++)
     {
@@ -458,8 +465,7 @@ void NPCWidget::Init()
     NPCList->clear();
     SystemNPC[1].Init();
 
-    SystemNPC[0].Name="请勿修改这个";
-    SystemNPC[0].Des="请勿修改这个";
+
     for(int i=0;i<200;i++)
     {
     SystemNPC[i].ID=i;

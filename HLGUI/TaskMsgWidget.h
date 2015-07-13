@@ -55,6 +55,8 @@ TaskMsgWidget::TaskMsgWidget(QList<Task> a, QList<Task> *b){
     Layout2->addWidget(&Reward);
     MainLayout->addLayout(Layout1);
     MainLayout->addLayout(Layout2);
+    MainLayout->addWidget(&Except);
+    connect(&Except,&QPushButton::clicked,this,&Except_Click);
     this->setLayout(MainLayout);
 }
 

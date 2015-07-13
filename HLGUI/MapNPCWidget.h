@@ -71,15 +71,28 @@ void MapNPCWidget::UpDateAll(RenWu* temp,NPC a){
         Attack.setEnabled(false);
     Attack.setText("攻击");
 
-    if(tempNPC.Des=="空")
+    if(tempNPC.Name=="空")
         this->setEnabled(false);
 }
 
 void MapNPCWidget::Attack_Click(){
+    if(Me->LH.isEmpty()==true||tempNPC.LH.isEmpty()==true){
+        QMessageBox::about(this,"你没有灵环啊！","你该怎么打架？");
+        return;
+    }
+    if(tempNPC.LH.isEmpty()==true){
+        QMessageBox::about(this,"你的对手没有灵环啊！","别欺负人家！");
+        return;
+    }
     FightWidget* Battle=new FightWidget(Me,tempNPC);
   //Battle->setWindowFlags(Qt::FramelessWindowHint);
     Battle->exec();
     if(Battle->WinOrLose==1){
+
+        for(int i=0;i<Me->myTaskList.size();i++)//完成任务
+                if(Me->myTaskList[i].NTalkNPC==tempNPC.ID)
+                    Me->myTaskList[i].FMB++;
+
        Me->Exp_Now+=Battle->Reward.Exp;
        Me->Coin+=Battle->Reward.Coin;
        for(int i=0;i<Battle->Reward.Item.size();i++){
@@ -113,15 +126,27 @@ void MapNPCWidget::Attack_Click(){
 
 void MapNPCWidget::Task_Click(){
     TaskMsg=new TaskMsgWidget(GameSystem::CanExceptList(tempNPC,Me),&Me->myTaskList);
+    if(TaskMsg->tempTask.isEmpty()==true){
+        QMessageBox::about(this,"没有任务","没有任务");
+        return;
+    }
     TaskMsg->exec();
     delete TaskMsg;
 
 }
 
 void MapNPCWidget::Talk_Click(){
+    for(int i=0;i<Me->myTaskList.size();i++)//完成任务
+            if(Me->myTaskList[i].NTalkNPC==tempNPC.ID)
+                Me->myTaskList[i].FMB++;
+
    QList<Message> temp=GameSystem::CanTalkList(tempNPC,Me);
+   if(temp.isEmpty()==true)
+       QMessageBox::about(this,"你好！","你好！");
    for(int i=0;i<temp.size();i++)
        QMessageBox::about(this,"对话中",temp[i].Msg);
+
+
 }
 
 

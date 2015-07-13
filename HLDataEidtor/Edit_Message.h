@@ -14,7 +14,7 @@ void Message::Save()
     QFile file((DATAPATH+"SaveMessage.str"));
 	file.open(QIODevice::WriteOnly);
 	QTextStream in(&file);
-	for (int i = 1; i <= 499; i++)
+    for (int i = 0; i <= 499; i++)
 		in << SystemMessage[i].NTask << " " << SystemMessage[i].Msg << endl;
      file.close();
 }
@@ -24,16 +24,8 @@ void Message::Init()
     QFile file((DATAPATH+"SaveMessage.str"));
 	file.open(QIODevice::ReadOnly);
 	QTextStream in(&file);
-	for (int i = 1; i <= 499; i++)
-	{
+    for (int i = 0; i <= 499; i++)
 		in >> SystemMessage[i].NTask >> SystemMessage[i].Msg;
-
-		if (SystemMessage[i].Msg == "")
-		{
-			SystemMessage[i].Msg = "未编辑";
-			SystemMessage[i].NTask = 0;
-		}
-	}
 
 	file.close();
 }  

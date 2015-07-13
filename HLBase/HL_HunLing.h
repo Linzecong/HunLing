@@ -52,6 +52,8 @@ class HunLing{
 } SystemHL[200];
 
 void HunLing::Update(){
+    if(Agility==0&&Strength==0)
+        return;
 		int AgiP =LV * 5 * Agility / (Agility +Strength);
 		Strength = Strength + LV * 5 - AgiP;
 		Agility = Agility + AgiP;	
@@ -90,6 +92,7 @@ void HunLing::Init(){
         tmpfile.read(( char *)&Hjtemp,a);
         SystemHL[i].ATK_Ski=SystemHJ[Hjtemp];
         tmpfile.read(( char *)&SystemHL[i].DropItem,sizeof(DropItem));
+
     }
     tmpfile.close();
 }

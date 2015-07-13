@@ -1,4 +1,4 @@
-
+#include<QString>
 class HunLing
 {
 public:
@@ -27,6 +27,17 @@ int VIT_Vit;
 int DEF_Ski;
 int ATK_Ski;
 int DropItem[10];
+HunLing(){
+    LV=ID=0;
+    Name=Des="空";
+    Strength=Agility=ATK=DEF=VIT=0;
+    K_Fire=K_Ice=K_Lig=K_Tox=0;
+    G_Fire=G_Ice=G_Lig=G_Tox=ATK_Str=ATK_Agi=0;
+    DEF_Str= DEF_Agi=VIT_Vit=DEF_Ski=0;
+    ATK_Ski=0;
+    for(int i=0;i<10;i++)
+        DropItem[i]=0;
+}
 public:
 void Save();
 void Init();
@@ -37,12 +48,12 @@ void HunLing::Save()
         QFile file((DATAPATH+"SaveHL.str"));
 file.open(QIODevice::WriteOnly);
       QTextStream in(&file);
-         for(int i=1;i<=199;i++)
+         for(int i=0;i<200;i++)
         in<<SystemHL[i].Name<<" "<<SystemHL[i].Des<<endl;
 
      QFile tmpfile( DATAPATH+"SaveHL.num" );
     tmpfile.open(QIODevice::WriteOnly);
-    for(int i=1;i<=199;i++)
+    for(int i=0;i<200;i++)
     {
     int a=sizeof(i);
     tmpfile.write(( char *)&SystemHL[i].ID,a);
@@ -72,20 +83,15 @@ void HunLing::Init()
     QFile file((DATAPATH+"SaveHL.str"));
 file.open(QIODevice::ReadOnly);
       QTextStream in(&file);
-         for(int i=1;i<=199;i++)
+         for(int i=0;i<200;i++)
         in>>SystemHL[i].Name>>SystemHL[i].Des;
-        for(int i=1;i<=199;i++)
-        if(SystemHL[i].Name=="")
-        {
-        SystemHL[i].Name="未编辑";
-        SystemHL[i].Des="未编辑";
-        }
+
 
 
    file.close();
     QFile tmpfile( DATAPATH+"SaveHL.num" );
     tmpfile.open(QIODevice::ReadOnly);
-    for(int i=1;i<=199;i++)
+    for(int i=0;i<200;i++)
     {
         int a=sizeof(i);
         tmpfile.read(( char *)&SystemHL[i].ID,a);
@@ -393,8 +399,6 @@ void HLWidget::Init()
     HLList->clear();
     SystemHL[1].Init();
 
-    SystemHL[0].Name="请勿修改这个";
-    SystemHL[0].Des="请勿修改这个";
     for(int i=0;i<200;i++)
     {
     SystemHL[i].ID=i;

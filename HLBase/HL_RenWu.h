@@ -4,6 +4,7 @@
 
 #include <QString>
 #include <QList>
+#include<QMessageBox>
 #include "HL_DiTu.h"
 #include "HL_HunJi.h"
 #include "HL_HunLing.h"
@@ -450,7 +451,7 @@ int RenWu::UpdateLV(){
 		{
             sum += 1;
 			LV++;
-			Exp_Need = 100 * pow(1.2, LV + 1);//等级公式
+            Exp_Need = 100 * pow(1.2, LV + 1);//等级公式
             Ori_Strength+=2;
             Ori_Agility+=2;
             Ori_Vitality+=1;
@@ -479,7 +480,7 @@ return -1;
 }
 
 bool RenWu::IsHaveTaskFinish(){
-    for (int i = 0; i <200; i++)
+    for (int i = 0; i <myTaskList.size(); i++)
         if (myTaskList[i].FMB >= myTaskList[i].MB)
 			return true;
 	return false;
@@ -490,7 +491,7 @@ int RenWu::FinishTask(Task a){
         return -1;
     else{
 	SystemTask[a.ID].IsFinish = 1;
-    for(int i=0;i<myTaskList.size();i++)
+    for(int i=0;i<myTaskList.size();i++)//删除
     if(myTaskList[i].ID==a.ID)
         myTaskList.removeAt(i);
 
@@ -524,7 +525,9 @@ void RenWu::UseItem(Item a)
 	Ori_Energy += a.Ene;
 	Ori_Sour += a.Sour;
 	Exp_Now += a.Exp;
-	UpdateLV();//判断LV
+    int UL=UpdateLV();
+    if(UL>0)
+       QMessageBox::about(NULL,"提示","恭喜！你升级了！");
 }
 
 int RenWu::WearLH(LingHuan a){
@@ -626,11 +629,17 @@ void RenWu::UpdateBuff(){
         if(LH[i].ID!=0)
         myBuffList.append(SystemBuff[LH[i].DEF_Ski]);
     }
+    if(LG.Head.ID!=0)
     myBuffList.append(SystemBuff[LG.Head.DEF_Ski]);
+    if(LG.Body.ID!=0)
     myBuffList.append(SystemBuff[LG.Body.DEF_Ski]);
+    if(LG.LHand.ID!=0)
     myBuffList.append(SystemBuff[LG.LHand.DEF_Ski]);
+    if(LG.RHand.ID!=0)
     myBuffList.append(SystemBuff[LG.RHand.DEF_Ski]);
+    if(LG.LLeg.ID!=0)
     myBuffList.append(SystemBuff[LG.LLeg.DEF_Ski]);
+    if(LG.RLeg.ID!=0)
     myBuffList.append(SystemBuff[LG.RLeg.DEF_Ski]);
 
 	Strength += LG.Head.Add_Str;

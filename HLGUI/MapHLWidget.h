@@ -28,11 +28,11 @@ class MapHLWidget: public QWidget{
 	public:
     void Attack_Click();
     MapHLWidget(){
+        this->setEnabled(false);
         MainLayout=new QVBoxLayout;
       //Head.setPixmap(QPixmap::load(""));
-        Name.setText("空");
-        LV.setText("等级：0");
-        Count.setText("数量：0");
+        LV.setText("等级：");
+        Count.setText("数量：");
         Attack.setText("攻击");
         MainLayout->addWidget(&Head);
         MainLayout->addWidget(&Name);
@@ -41,7 +41,6 @@ class MapHLWidget: public QWidget{
         MainLayout->addWidget(&Attack);
         connect(&Attack,QPushButton::clicked,this,MapHLWidget::Attack_Click);
         this->setLayout(MainLayout);
-        this->setEnabled(false);
     }
     ~MapHLWidget(){}
     void UpDateAll(RenWu* temp,QList<LingHuan> tempList);
@@ -49,6 +48,8 @@ class MapHLWidget: public QWidget{
 };
 
 void MapHLWidget::UpDateAll(RenWu* temp, QList<LingHuan> tempList){
+    if(tempList.isEmpty()==true)
+        return;
     this->setEnabled(true);
     Me=temp;
     EnemyList=tempList;
@@ -56,20 +57,36 @@ void MapHLWidget::UpDateAll(RenWu* temp, QList<LingHuan> tempList){
     LV.setText("等级："+QString::number(tempList[0].LV));
     Count.setText("数量："+QString::number(EnemyList.size()));
 
-    if(EnemyList[0].Name=="空"){
+    if(EnemyList.isEmpty()==true){
         this->setEnabled(false);
-        LV.setText("等级：0");
-        Count.setText("数量：0");
+        Name.setText("");
+        LV.setText("等级：");
+        Count.setText("数量：");
 
     }
 }
 
 void MapHLWidget::Attack_Click(){
     NPC tempNPC=GameSystem::CreateNPC(EnemyList);
+
+    if(Me->LH.isEmpty()==true||tempNPC.LH.isEmpty()==true){
+        QMessageBox::about(this,"你没有灵环啊！","你该怎么打架？");
+        return;
+    }
+    if(tempNPC.LH.isEmpty()==true){
+        QMessageBox::about(this,"你的对手没有灵环啊！","别欺负人家！");
+        return;
+    }
     FightWidget* Battle=new FightWidget(Me,tempNPC);
   //Battle->setWindowFlags(Qt::FramelessWindowHint);
     Battle->exec();
     if(Battle->WinOrLose==1){
+
+        for(int i=0;i<Me->myTaskList.size();i++)//完成任务
+            for(int j=0;j<EnemyList.size();j++)
+                if(Me->myTaskList[i].NKillHL==EnemyList[j].ID)
+                    Me->myTaskList[i].FMB++;
+
        Me->Exp_Now+=Battle->Reward.Exp;
        Me->Coin+=Battle->Reward.Coin;
 

@@ -127,8 +127,10 @@ void NPC::Update(){
     for(int i=0;i<10;i++){
 		int a=LHID[i];
 		if(a==0)
-		break;
+        continue;
 		int b=LHLV[i];
+        if(b==0)
+            continue;
 		HunLing tempHL=SystemHL[a];
 		tempHL.LV=b;
 	    tempHL.Update();
@@ -156,15 +158,15 @@ void NPC::Update(){
 		if (temp.LV >= 95 && temp.LV < 100)
 			temp.Col = "金";
 		temp.Value = 0;
-        for(int i=0;i<10;i++)
-            if(LH[i].ID==0)
-               LH[i]=temp;
+        LH.append(temp);
 	}
 	for(int i=1;i<=6;i++){
 		int aID=LGID[i];
 		if(aID==0)
 		continue;
 		int aLV=LGLV[i];
+        if(aLV==0)
+            continue;
 		HunLing a=SystemHL[aID];
 		a.LV=aLV;
 	    a.Update();
@@ -208,8 +210,10 @@ void NPC::Update(){
 		
 	}
 
-    for(int i=0;i<10;i++)
+    for(int i=0;i<10;i++){
+        if(Task[i]!=0)
         myTaskList.append(SystemTask[Task[i]]);//Attention
+    }
     UpdateBuff();
 }
 

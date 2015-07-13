@@ -1,5 +1,15 @@
-
-    class HJ
+#include<QFile>
+#include<QLineEdit>
+#include<QLabel>
+#include<QSpinBox>
+#include<QWidget>
+#include<QListWidget>
+#include<QPushButton>
+#include<QTextStream>
+#include<QVBoxLayout>
+#include<QHBoxLayout>
+#include<QComboBox>
+class HJ
 {
   public:
 	int ID;
@@ -10,6 +20,11 @@
 	int Type;
 	int Turn;
 	int NowTurn;
+    HJ(){
+        ID=Type=Turn=NowTurn=0;
+        Name=Des="空";
+        Energy=Sour=0;
+    }
 	void Save();
 	void Init();
 } SystemHJ[200];
@@ -18,13 +33,12 @@ void HJ::Save()
         QFile file((DATAPATH+"SaveHJ.str"));
 file.open(QIODevice::WriteOnly);
       QTextStream in(&file);
-         for(int i=1;i<=199;i++)
+         for(int i=0;i<200;i++)
         in<<SystemHJ[i].Name<<" "<<SystemHJ[i].Des<<endl;
 
      QFile tmpfile( DATAPATH+"SaveHJ.num" );
     tmpfile.open(QIODevice::WriteOnly);
-    for(int i=1;i<=199;i++)
-    {
+    for(int i=0;i<200;i++){
     int a=sizeof(i);
     tmpfile.write(( char *)&SystemHJ[i].ID,a);
     tmpfile.write(( char *)&SystemHJ[i].Energy,a);
@@ -39,20 +53,13 @@ void HJ::Init()
     QFile file((DATAPATH+"SaveHJ.str"));
 file.open(QIODevice::ReadOnly);
       QTextStream in(&file);
-         for(int i=1;i<=199;i++)
+         for(int i=0;i<200;i++)
         in>>SystemHJ[i].Name>>SystemHJ[i].Des;
-        for(int i=1;i<=199;i++)
-        if(SystemHJ[i].Name=="")
-        {
-        SystemHJ[i].Name="未编辑";
-        SystemHJ[i].Des="未编辑";
-        }
-      
 
    file.close();
     QFile tmpfile( DATAPATH+"SaveHJ.num" );
     tmpfile.open(QIODevice::ReadOnly);
-    for(int i=1;i<=199;i++)
+    for(int i=0;i<200;i++)
     {
     int a=sizeof(int);
     tmpfile.read(( char *)&SystemHJ[i].ID,a);
@@ -73,6 +80,10 @@ class Buff
 	int type;
     void Save();
     void Init();
+    Buff(){
+        ID=type=0;
+        Name=Des="空";
+    }
 } SystemBuff[200];
 
 void Buff::Save()
@@ -80,12 +91,12 @@ void Buff::Save()
         QFile file((DATAPATH+"SaveBuff.str"));
 file.open(QIODevice::WriteOnly);
       QTextStream in(&file);
-         for(int i=1;i<=199;i++)
+         for(int i=0;i<200;i++)
         in<<SystemBuff[i].Name<<" "<<SystemBuff[i].Des<<endl;
 
      QFile tmpfile( DATAPATH+"SaveBuff.num" );
     tmpfile.open(QIODevice::WriteOnly);
-    for(int i=1;i<=199;i++)
+    for(int i=0;i<200;i++)
     {
     int a=sizeof(i);
     tmpfile.write(( char *)&SystemBuff[i].ID,a);
@@ -98,20 +109,14 @@ void Buff::Init()
     QFile file((DATAPATH+"SaveBuff.str"));
 file.open(QIODevice::ReadOnly);
       QTextStream in(&file);
-         for(int i=1;i<=199;i++)
+         for(int i=0;i<200;i++)
         in>>SystemBuff[i].Name>>SystemBuff[i].Des;
-        for(int i=1;i<=199;i++)
-        if(SystemBuff[i].Name=="")
-        {
-        SystemBuff[i].Name="未编辑";
-        SystemBuff[i].Des="未编辑";
-        }
 
 
    file.close();
     QFile tmpfile( DATAPATH+"SaveBuff.num" );
     tmpfile.open(QIODevice::ReadOnly);
-    for(int i=1;i<=199;i++)
+    for(int i=0;i<200;i++)
     {
     int a=sizeof(int);
     tmpfile.read(( char *)&SystemBuff[i].ID,a);
@@ -326,8 +331,7 @@ void SkillWidget::Init()
 {
     
     SystemHJ[1].Init();
-    SystemHJ[0].Name = "请勿修改这个";
-    SystemHJ[0].Des = "请勿修改这个";
+
     for (int i = 0; i < 200; i++)
     {
         SystemHJ[i].ID = i;
@@ -336,8 +340,7 @@ void SkillWidget::Init()
 
     
     SystemBuff[1].Init();
-    SystemBuff[0].Name = "请勿修改这个";
-    SystemBuff[0].Des = "请勿修改这个";
+
     for (int i = 0; i < 200; i++)
     {
         SystemBuff[i].ID = i;

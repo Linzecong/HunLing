@@ -44,12 +44,12 @@ void Task::Save()
         QFile file((DATAPATH+"SaveTask.str"));
 file.open(QIODevice::WriteOnly);
       QTextStream in(&file);
-         for(int i=1;i<=199;i++)
+         for(int i=0;i<=199;i++)
     	in<<SystemTask[i].Name<<" "<<SystemTask[i].Des<<endl;
 
      QFile tmpfile( DATAPATH+"SaveTask.num" );
     tmpfile.open(QIODevice::WriteOnly);
-    for(int i=1;i<=199;i++)
+    for(int i=0;i<=199;i++)
     {
     int a=sizeof(i);
     tmpfile.write(( char *)&SystemTask[i].ID,a);  
@@ -74,20 +74,15 @@ void Task::Init()
     QFile file((DATAPATH+"SaveTask.str"));
 file.open(QIODevice::ReadOnly);
       QTextStream in(&file);
-         for(int i=1;i<=199;i++)
+         for(int i=0;i<=199;i++)
     	in>>SystemTask[i].Name>>SystemTask[i].Des;
-        for(int i=1;i<=199;i++)
-        if(SystemTask[i].Name=="")
-        {
-        SystemTask[i].Name="未编辑";
-        SystemTask[i].Des="未编辑";
-        }
+
       
 
    file.close();
     QFile tmpfile( DATAPATH+"SaveTask.num" );
     tmpfile.open(QIODevice::ReadOnly);
-    for(int i=1;i<=199;i++)
+    for(int i=0;i<=199;i++)
     {
 
     int a=sizeof(int);
@@ -104,8 +99,7 @@ file.open(QIODevice::ReadOnly);
 	tmpfile.read(( char *)&SystemTask[i].A_Exp,a);
 	tmpfile.read(( char *)&SystemTask[i].A_Item,a);
 	tmpfile.read(( char *)&SystemTask[i].A_Count,a);
-	   SystemTask[i].IsFinish=0;
- 
+
     }
     tmpfile.close();  
 }
@@ -288,8 +282,7 @@ TaskWidget::TaskWidget()
     {
     	TaskList->clear();
     	SystemTask[1].Init();
-    	SystemTask[0].Name="请勿修改这个";
-        SystemTask[0].Des="请勿修改这个";
+
     	for(int i=0;i<200;i++)
     	{
     	SystemTask[i].ID=i;

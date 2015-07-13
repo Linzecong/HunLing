@@ -28,11 +28,12 @@ BuffWidget::BuffWidget(QList<Buff> a){
     List=a;
     Buff1.setText("战前Buff：<br>");
     for(int i=0;i<a.size();i++)
-        if(a[i].type==1)
+        if(a[i].type==1&&a[i].ID!=0)
             Buff1.setText(Buff1.text()+a[i].Name+"："+a[i].Des+"<br>");
+
     Buff2.setText("战中Buff：<br>");
     for(int i=0;i<a.size();i++)
-        if(a[i].type==2)
+        if(a[i].type==2&&a[i].ID!=0)
             Buff1.setText(Buff1.text()+a[i].Name+"："+a[i].Des+"<br>");
     MainLayout.addWidget(&Buff1);
     MainLayout.addWidget(&Buff2);
@@ -43,11 +44,11 @@ void BuffWidget::UpDate(QList<Buff> a){
     List=a;
     Buff1.setText("战前Buff：<br>");
     for(int i=0;i<a.size();i++)
-        if(a[i].type==1)
+        if(a[i].type==1&&a[i].ID!=0)
             Buff1.setText(Buff1.text()+a[i].Name+"："+a[i].Des+"<br>");
     Buff2.setText("战中Buff：<br>");
     for(int i=0;i<a.size();i++)
-        if(a[i].type==2)
+        if(a[i].type==2&&a[i].ID!=0)
             Buff1.setText(Buff1.text()+a[i].Name+"："+a[i].Des+"<br>");
 }
 
@@ -117,6 +118,7 @@ void DataWidget::UpDate(){
     Vitality.setText("体力："+QString::number(Me->Vitality)+"("+QString::number(Me->Ori_Vitality)+")");
     Energy.setText("魂力："+QString::number(Me->Energy)+"("+QString::number(Me->Ori_Energy)+")");
     Sour.setText("灵力："+QString::number(Me->Sour)+"("+QString::number(Me->Ori_Sour)+")");
+    Me->UpdateBuff();
     myBuff->UpDate(Me->myBuffList);
 }
 

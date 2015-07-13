@@ -1,4 +1,15 @@
-
+#include<QString>
+#include<QFile>
+#include<QLineEdit>
+#include<QLabel>
+#include<QSpinBox>
+#include<QWidget>
+#include<QListWidget>
+#include<QPushButton>
+#include<QTextStream>
+#include<QVBoxLayout>
+#include<QHBoxLayout>
+#include<QComboBox>
 
 class DiTu
 {
@@ -15,9 +26,22 @@ class DiTu
     int HLCount;
     void Save();
     void Init();
+    DiTu(){
+        Name=Des="空";
+        for(int i=0;i<10;i++)
+            IndexHL[i]=IndexNPC[i]=0;
+        MaxLV=MinLV=NTask=0;
+        PosX=PosY=0;
+        HLCount=0;
+    }
 }SystemMap[26][26];
 void DiTu::Save()
 {
+    for (int i = 0; i <= 25; i++)
+        for (int j = 0; j <= 25; j++)
+        if(SystemMap[i][j].Name=="")
+            SystemMap[i][j].Name=SystemMap[i][j].Des="空";
+
     QFile file((DATAPATH+"SaveMap.str"));
     file.open(QIODevice::WriteOnly);
     QTextStream in(&file);
@@ -51,14 +75,6 @@ void DiTu::Init()
     for (int i = 0; i <= 25; i++)
         for (int j = 0; j <= 25; j++)
         in >> SystemMap[i][j].Name >> SystemMap[i][j].Des;
-
-    for (int i = 0; i <= 25; i++)
-        for (int j = 0; j <= 25; j++)
-        if (SystemMap[i][j].Name == "")
-        {
-            SystemMap[i][j].Name = "未编辑";
-            SystemMap[i][j].Des = "未编辑";
-        }
 
 
     file.close();
@@ -174,7 +190,7 @@ void MapWidget::read()
     IndexHL7->setValue(SystemMap[x][y].IndexHL[7]);
     IndexHL8->setValue(SystemMap[x][y].IndexHL[8]);
     IndexHL9->setValue(SystemMap[x][y].IndexHL[9]);
-        Name->setText(SystemMap[x][y].Name);
+    Name->setText(SystemMap[x][y].Name);
     Des->setText(SystemMap[x][y].Des);
 }
 

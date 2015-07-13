@@ -26,8 +26,7 @@ class GameSystem{
 	RenWu Me;
   public:
     GameSystem(){
-        //Me.Init();
-        SystemMap[0][0].Init();
+       SystemMap[0][0].Init();
         SystemHJ[0].Init();
         SystemHL[0].Init();
         SystemItem[0].Init();
@@ -35,10 +34,38 @@ class GameSystem{
         SystemTask[0].Init();
         SystemMessage[0].Init();
         SystemBuff[0].Init();
+      //  Me.Init();
 
-        /*测试用*/
 
-        /*-----*/
+        // 测试用
+        Me.LV=45;
+        Me.Exp_Need=100;
+        Me.Exp_Now=10;
+        Me.Name="傻逼";
+        Me.Coin=100000000;
+        Me.PosX=1;
+        Me.PosY=1;
+        Me.Ori_Agility=10;
+        Me.Ori_Energy=100;
+        Me.Ori_Strength=10;
+        Me.Ori_Vitality=100;
+        Me.Ori_Sour=100;
+        SystemHL[1].LV=80;
+        LingHuan a=CreateLH(SystemHL[1]);
+        Me.LH.append(a);
+        SystemHL[2].LV=20;
+        a=CreateLH(SystemHL[2]);
+        Me.LH.append(a);
+        Me.Bag.append(SystemItem[1]);
+        Me.Bag.append(SystemItem[2]);
+        SystemHL[3].LV=60;
+        a=CreateLH(SystemHL[3]);
+        Me.LHBag.append(a);
+        Me.UpdateBuff();
+
+
+
+       // -----*/
 
     }
 
@@ -48,8 +75,7 @@ class GameSystem{
     static QList<LingHuan> CreateLHList(DiTu a);
     static bool CanExcept(Task a,RenWu* b);
 	bool CanGoTo(DiTu a);
-    void FinishTask(Task *a, HunLing b);
-    void FinishTask(Task *a, NPC b, int type);
+
     static QList<Message> CanTalkList(NPC a,RenWu* b);
     static QList<Task> CanExceptList(NPC a,RenWu* b);
     static QList<NPC> CanShowList(DiTu a,RenWu* b);
@@ -134,6 +160,8 @@ LingGu GameSystem::CreateLG(HunLing a,int type){
 
 NPC GameSystem::CreateNPC(QList<LingHuan> a){//通过灵环列表生成NPC，为了让魂灵和NPC整合
 	NPC temp;
+    if(a.isEmpty()==true)
+        return temp;
 	temp.LH = a;
     temp.Des="魂灵";//判断是否有灵骨技能的依据
 	int tempLV = 0;
@@ -162,11 +190,13 @@ NPC GameSystem::CreateNPC(QList<LingHuan> a){//通过灵环列表生成NPC，为
 }
 
 QList<LingHuan> GameSystem::CreateLHList(DiTu a){//通过地图，生成灵环列表
-    int LHCount = GetNumber(1, 9);//数量
+    int LHCount = GetNumber(1, a.HLCount);//一个格子的魂灵数量
     QList<LingHuan> tempList;
 	for (int i = 1; i <= LHCount; i++){
 		LingHuan temp;
         int aaa = a.IndexHL[GetNumber(1, 9)];
+        if(aaa==0)
+            continue;
 		HunLing tempHL = SystemHL[aaa];
 		tempHL.LV = GetNumber(a.MinLV, a.MaxLV);
 		temp.LV = tempHL.LV;
@@ -210,19 +240,7 @@ bool GameSystem::CanGoTo(DiTu a){//判断能否去那个地方
 	return SystemTask[a.NTask].IsFinish;
 }
 
-void GameSystem::FinishTask(Task* a, HunLing b){//完成杀死魂灵任务+1
-    if (a->NKillHL == b.ID)
-        a->FMB++;
-}
 
-void GameSystem::FinishTask(Task* a, NPC b, int type){//完成 1杀NPC 2谈NPC +1
-    if (type == 1)
-        if (a->NTalkNPC == b.ID)
-            a->FMB++;
-	if (type == 2)
-        if (a->NKillNPC == b.ID)
-            a->FMB++;
-}
 
 QList<Message> GameSystem::CanTalkList(NPC a, RenWu *b){//返回一个NPC所能说的话的列表
     QList<Message> tempList;
@@ -230,9 +248,8 @@ QList<Message> GameSystem::CanTalkList(NPC a, RenWu *b){//返回一个NPC所能�
 		int aaa = a.CanTalk[i];
 		if (aaa == 0)
 			continue;
-		Task temp = SystemTask[SystemMessage[aaa].NTask];//说话所需任务
-        for (int j = 0; j < 200; j++)
-            if (b->myTaskList[j].ID == temp.ID){
+        Task temp = SystemTask[SystemMessage[aaa].NTask];//说话所需任务(已完成的任务)
+            if (SystemTask[temp.ID].IsFinish==1){
                 tempList.append(SystemMessage[aaa]);
                 break;
             }
@@ -244,7 +261,7 @@ QList<Task> GameSystem::CanExceptList(NPC a, RenWu *b){//返回当前可以接�
     QList<Task> tempList;
     for (int i = 0; i <a.myTaskList.size(); i++){
         Task temp = a.myTaskList[i];
-        if (temp.IsFinish == 0 && CanExcept(temp,b) == true)
+        if (CanExcept(temp,b) == 1)
             tempList.append(temp);
 	}
 	return tempList;
@@ -253,8 +270,7 @@ QList<Task> GameSystem::CanExceptList(NPC a, RenWu *b){//返回当前可以接�
 QList<NPC> GameSystem::CanShowList(DiTu a, RenWu *b){//返回目前可以显示的NPC
     QList<NPC>  tempList;
     for (int i = 0; i <10; i++){
-        for(int j=0;j<b->myTaskList.size();j++)
-        if (SystemNPC[a.IndexNPC[i]].TaskShow==b->myTaskList[j].ID&&a.IndexNPC[i]!=0){
+        if (SystemTask[SystemNPC[a.IndexNPC[i]].TaskShow].IsFinish==1&&a.IndexNPC[i]!=0){
             tempList.append(SystemNPC[a.IndexNPC[i]]);
             break;
         }

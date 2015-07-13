@@ -124,6 +124,7 @@ void LHWidget::Data_Click(){
 void LHWidget::Putoff_Click(){
     Me->TakeoffLH(tempLH.ID);
     Me->LHBag.append(tempLH);
+    QMessageBox::about(this,"成功！","成功脱下！");
     UpDate();
 }
 
@@ -159,7 +160,7 @@ void LHWidget::Wear_Click(){
 void LHWidget::Bag_Click(){
     WearButton.setEnabled(true);
     Putoff.setEnabled(false);
-    int a=Wear.currentRow();
+    int a=Bag.currentRow();
     tempLH=Me->LHBag[a];
     SetData(tempLH);
 }

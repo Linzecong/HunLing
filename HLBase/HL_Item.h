@@ -27,7 +27,8 @@ class Item{
     Item(){
         ID=Type=ATKType=Value=0;
         Des=Name="空";
-        Str=Agi=Vit=Ene=Sour=Exp=Count=0;
+        Str=Agi=Vit=Ene=Sour=Exp=0;
+        Count=1;
     }
 } SystemItem[200];
 
@@ -53,7 +54,7 @@ void Item::Init(){
 		tmpfile.read((char *)&SystemItem[i].Ene, a);
 		tmpfile.read((char *)&SystemItem[i].Sour, a);
 		tmpfile.read((char *)&SystemItem[i].Exp, a);
-        tmpfile.read((char *)&SystemItem[i].Count, a);
+
 	}
 	tmpfile.close();
 }  

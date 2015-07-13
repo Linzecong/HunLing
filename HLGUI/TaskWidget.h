@@ -52,6 +52,11 @@ TaskWidget::TaskWidget(RenWu* a){
     MainLayout->addWidget(&List);
     MainLayout->addLayout(Layout1);
     this->setLayout(MainLayout);
+
+    for(int i=0;i<Me->myTaskList.size();i++)//完成任务
+        for(int j=0;j<Me->Bag.size();j++)
+            if(Me->myTaskList[i].NGetItem==Me->Bag[j].ID)
+                Me->myTaskList[i].FMB=Me->Bag[j].Count;
 }
 
 void TaskWidget::Finish_Click(){
@@ -69,7 +74,7 @@ void TaskWidget::ListClick(){
     Des.setText("任务简介："+b.Des);
     MB_FMB.setText("任务进度："+QString::number(b.FMB)+"/"+QString::number(b.MB));
     Reward.setText("任务奖励：<br>金钱："+QString::number(b.A_Coin)+"<br>经验："+QString::number(b.A_Exp)+"<br>"+SystemItem[b.A_Item].Name+"x"+QString::number(b.A_Count)+"个");
-    if(b.MB>=b.FMB)//如果任务已完成
+    if(b.MB>=b.FMB&&a>=0)//如果任务已完成
         Finish.setEnabled(true);
 }
 

@@ -14,6 +14,12 @@ class Item
 	int Ene;
 	int Sour;
 	int Exp;
+    int Count;
+    Item(){
+        ID=Type=ATKType=Value=0;
+        Des=Name="空";
+        Str=Agi=Vit=Ene=Sour=Exp=Count=0;
+    }
 	void Save();
 	void Init();
 } SystemItem[200];
@@ -22,12 +28,12 @@ void Item::Save()
     QFile file((DATAPATH+"SaveItem.str"));
 	file.open(QIODevice::WriteOnly);
 	QTextStream in(&file);
-	for (int i = 1; i <= 199; i++)
+    for (int i = 0; i <200; i++)
 		in << SystemItem[i].Name << " " << SystemItem[i].Des << endl;
 
     QFile tmpfile(DATAPATH+"SaveItem.num");
 	tmpfile.open(QIODevice::WriteOnly);
-	for (int i = 1; i <= 199; i++)
+    for (int i = 0; i <200; i++)
 	{
 		int a = sizeof(i);
 		tmpfile.write((char *)&SystemItem[i].ID, a);
@@ -40,6 +46,7 @@ void Item::Save()
 		tmpfile.write((char *)&SystemItem[i].Ene, a);
 		tmpfile.write((char *)&SystemItem[i].Sour, a);
 		tmpfile.write((char *)&SystemItem[i].Exp, a);
+
 	}
 	tmpfile.close();
 }
@@ -49,20 +56,15 @@ void Item::Init()
     QFile file((DATAPATH+"SaveItem.str"));
 	file.open(QIODevice::ReadOnly);
 	QTextStream in(&file);
-	for (int i = 1; i <= 199; i++)
+    for (int i = 0; i <200; i++)
 		in >> SystemItem[i].Name >> SystemItem[i].Des;
-	for (int i = 1; i <= 199; i++)
-		if (SystemItem[i].Name == "")
-		{
-			SystemItem[i].Name = "未编辑";
-			SystemItem[i].Des = "未编辑";
-		}
+
 
 
 	file.close();
     QFile tmpfile(DATAPATH+"SaveItem.num");
 	tmpfile.open(QIODevice::ReadOnly);
-	for (int i = 1; i <= 199; i++)
+    for (int i = 0; i <200; i++)
 	{
 		int a = sizeof(int);
 		tmpfile.read((char *)&SystemItem[i].ID, a);
@@ -261,8 +263,7 @@ void ItemWidget::Init()
 {
 	ItemList->clear();
 	SystemItem[1].Init();
-	SystemItem[0].Name = "请勿修改这个";
-	SystemItem[0].Des = "请勿修改这个";
+
 	for (int i = 0; i < 200; i++)
 	{
 		SystemItem[i].ID = i;

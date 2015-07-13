@@ -103,7 +103,7 @@ LG_Widget=new LGWidget(&Game->Me);
 LH_Widget=new LHWidget(&Game->Me);
 Task_Widget=new TaskWidget(&Game->Me);
 MapButton_Widget=new MapButtonWidget;
-Map_Widget=new MapWidget(SystemMap[0][0],&Game->Me);
+Map_Widget=new MapWidget(SystemMap[Game->Me.PosX][Game->Me.PosY],&Game->Me);
 
 Layout1->addWidget(Map_Widget);
 Layout1->addWidget(Time_Widget);
