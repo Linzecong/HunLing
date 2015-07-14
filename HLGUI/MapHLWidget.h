@@ -44,8 +44,16 @@ class MapHLWidget: public QWidget{
     }
     ~MapHLWidget(){}
     void UpDateAll(RenWu* temp,QList<LingHuan> tempList);
+    void Clear();
 
 };
+
+void MapHLWidget::Clear(){
+    Name.setText("");
+    LV.setText("等级：");
+    Count.setText("数量：");
+    this->setEnabled(false);
+}
 
 void MapHLWidget::UpDateAll(RenWu* temp, QList<LingHuan> tempList){
     if(tempList.isEmpty()==true)

@@ -67,9 +67,13 @@ void ItemWidget::Use_Click(){
 
     int temp=Item_List.currentRow();
 
+
     if(Me->Bag[temp].Type==1){
     Me->UseItem(Me->Bag[temp]);
+    if(Me->Bag[temp].Count==1)
     Me->Bag.removeAt(temp);
+    else
+    Me->Bag[temp].Count--;
     QMessageBox::about(NULL,"提示","使用成功！");
     UpDateList();
     return;
@@ -102,6 +106,7 @@ void ItemWidget::UpDateList(){
      for(int i=0;i<Me->Bag.size();i++)
        Item_List.addItem(Me->Bag[i].Name);
      Use.setEnabled(false);
+     UpDate();
 }
 
 #endif

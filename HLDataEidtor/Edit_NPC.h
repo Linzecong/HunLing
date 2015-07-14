@@ -440,6 +440,7 @@ void NPCWidget::Save()
     SystemNPC[a].LV=LV->value();
     SystemNPC[a].Ori_Strength=Ori_Strength->value();
     SystemNPC[a].Ori_Agility=Ori_Agility->value();
+    SystemNPC[a].Ori_Vitality=Ori_Vitality->value();
     SystemNPC[a].Ori_Energy=Ori_Energy->value();
     SystemNPC[a].Ori_Sour=Ori_Sour->value();
     SystemNPC[a].CanATK=CanATK->value();

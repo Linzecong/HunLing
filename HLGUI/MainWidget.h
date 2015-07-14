@@ -98,10 +98,7 @@ MainWidget::MainWidget(){
 Game=new GameSystem;
 Data_Widget=new DataWidget(&Game->Me);
 Time_Widget=new TimeWidget;
-Item_Widget=new ItemWidget(&Game->Me);
-LG_Widget=new LGWidget(&Game->Me);
-LH_Widget=new LHWidget(&Game->Me);
-Task_Widget=new TaskWidget(&Game->Me);
+
 MapButton_Widget=new MapButtonWidget;
 Map_Widget=new MapWidget(SystemMap[Game->Me.PosX][Game->Me.PosY],&Game->Me);
 
@@ -118,6 +115,7 @@ connect(&MapButton_Widget->BagButton,QPushButton::clicked,this,MainWidget::ShowI
 connect(&MapButton_Widget->TaskButton,QPushButton::clicked,this,MainWidget::ShowTask);
 connect(&MapButton_Widget->LGButton,QPushButton::clicked,this,MainWidget::ShowLG);
 connect(&MapButton_Widget->LHButton,QPushButton::clicked,this,MainWidget::ShowLH);
+connect(&Time_Widget->timer,&QTimer::timeout,Data_Widget,&DataWidget::UpDate);
 
 this->setLayout(MainLayout);
 
@@ -139,24 +137,32 @@ void MainWidget::Help(){
 }
 
 void MainWidget::ShowItem(){
+    Item_Widget=new ItemWidget(&Game->Me);
     Item_Widget->exec();
-    Data_Widget->UpDate();
+    delete Item_Widget;
+
 }
 
 void MainWidget::ShowTask(){
+    Task_Widget=new TaskWidget(&Game->Me);
     Task_Widget->exec();
-    Data_Widget->UpDate();
+    delete Task_Widget;
+    Map_Widget->UpDateNPC(SystemMap[Game->Me.PosX][Game->Me.PosY]);
 }
 
 void MainWidget::ShowLG(){
+    LG_Widget=new LGWidget(&Game->Me);
     LG_Widget->exec();
-    Data_Widget->UpDate();
+    delete LG_Widget;
+
 
 }
 
 void MainWidget::ShowLH(){
+    LH_Widget=new LHWidget(&Game->Me);
     LH_Widget->exec();
-    Data_Widget->UpDate();
+    delete LH_Widget;
+
 }
 
 void MainWidget::keyPressEvent(QKeyEvent *e){

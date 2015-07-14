@@ -27,7 +27,7 @@ class TaskWidget:public QDialog{
     TaskWidget(RenWu *a);
     ~TaskWidget(){}
 	void Finish_Click();
-    void ListClick();
+    void List_Click();
 };
 
 TaskWidget::TaskWidget(RenWu* a){
@@ -52,6 +52,8 @@ TaskWidget::TaskWidget(RenWu* a){
     MainLayout->addWidget(&List);
     MainLayout->addLayout(Layout1);
     this->setLayout(MainLayout);
+    connect(&Finish,&QPushButton::clicked,this,&Finish_Click);
+    connect(&List,&QListWidget::clicked,this,&List_Click);
 
     for(int i=0;i<Me->myTaskList.size();i++)//完成任务
         for(int j=0;j<Me->Bag.size();j++)
@@ -61,20 +63,28 @@ TaskWidget::TaskWidget(RenWu* a){
 
 void TaskWidget::Finish_Click(){
     int a=List.currentRow();
-    int b=Me->myTaskList[a].ID;
-    Me->FinishTask(SystemTask[b]);
+    int i=Me->FinishTask(Me->myTaskList[a]);
+    if(i==1){
     QMessageBox::about(this,"提示","任务完成！");
     List.takeItem(a);//删除
+    }
+    else
+    QMessageBox::about(this,"提示","异常！");
+
+    Finish.setEnabled(false);
 }
 
-void TaskWidget::ListClick(){
+void TaskWidget::List_Click(){
     int a=List.currentRow();
     Task b=Me->myTaskList[a];
     Name.setText("任务名称："+b.Name);
     Des.setText("任务简介："+b.Des);
+    if(b.FMB>b.MB)
+        b.FMB=b.MB;
     MB_FMB.setText("任务进度："+QString::number(b.FMB)+"/"+QString::number(b.MB));
     Reward.setText("任务奖励：<br>金钱："+QString::number(b.A_Coin)+"<br>经验："+QString::number(b.A_Exp)+"<br>"+SystemItem[b.A_Item].Name+"x"+QString::number(b.A_Count)+"个");
-    if(b.MB>=b.FMB&&a>=0)//如果任务已完成
+
+    if(b.FMB>=b.MB&&a>=0)//如果任务已完成
         Finish.setEnabled(true);
 }
 

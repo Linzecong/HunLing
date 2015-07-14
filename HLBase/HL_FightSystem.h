@@ -42,21 +42,21 @@ EnergyBar::EnergyBar(QList<HunLing*> a, QList<HunLing*> b){
 void EnergyBar::next(){
     int stop=0;
     while(stop!=1){
-        for(int i=0;i<=List.size();i++){
+        for(int i=0;i<List.size();i++){
             if(i<Enemy.size())//判断是加敌人还是自己的敏捷值
             List[i]+=Enemy[i]->Agility;
             else
             List[i]+=Me[i-Enemy.size()]->Agility;
         }
-   for(int i=0;i<=List.size();i++){
+   for(int i=0;i<List.size();i++){
    if(List[i]>=totle){//如果大于能量最大值
        List[i]-=totle;//循环
-       if(i>Me.size()){
-           type=0;
-           index=i-Me.size();
+       if(i>=Enemy.size()){
+           type=1;
+           index=i-Enemy.size();
        }
        else{
-           type=1;
+           type=0;
            index=i;
        }
 
@@ -150,14 +150,14 @@ int FightSystem::CanGoOn(){// 判断能否继续。0我输，1继续，-1赢了,
     if(Turn>=30)
         return -2;
 	int n = 0;
-    for (int i = 1; i <= MyHL.size(); i++)
-        if (MyHL[i]->VIT != 0)
+    for (int i = 0; i < MyHL.size(); i++)
+        if (MyHL[i]->VITNOW != 0)
 			n = 1;
 
 	if (n == 1){
 		n = -1;
-        for (int i = 1; i <= EnemyHL.size(); i++)
-            if (EnemyHL[i]->VIT != 0)
+        for (int i = 0; i < EnemyHL.size(); i++)
+            if (EnemyHL[i]->VITNOW != 0)
 				n = 1;
 	}
     return n;//注意初始化掉落
@@ -168,9 +168,11 @@ QString FightSystem::Attack(HunLing * a, HunLing * b){
 	if (ATKPoint < 0)
 		return a->Name+"的攻击太低了！起不了作用！";
     else{
-        b->VIT -= ATKPoint;//important
-		if (b->VIT <= 0)
-			b->VIT = 0;
+        b->VITNOW -= ATKPoint;//important
+        if (b->VITNOW <= 0){
+            b->VITNOW = 0;
+            b->Agility=0;
+        }
 		return a->Name+"对对方"+b->Name+"造成"+QString::number(ATKPoint)+"点伤害！";
 	}
 }
@@ -187,12 +189,12 @@ QString FightSystem::Skill(HunLing * a, HunLing * b, HunJi * skill){//注意技�
 
 
 
-    if (b->VIT <= 0){
-        b->VIT = 0;
+    if (b->VITNOW <= 0){
+        b->VITNOW = 0;
         b->Agility=0;
     }
-    if (a->VIT <= 0){
-        a->VIT = 0;
+    if (a->VITNOW <= 0){
+        a->VITNOW = 0;
         a->Agility=0;
     }
 	return Description;
@@ -210,13 +212,13 @@ QString FightSystem::Skill(HunLing * a, QList<HunLing *> b, HunJi * skill){
 
 
     for(int i=0;i<b.size();i++)
-        if (b[i]->VIT <= 0){
-            b[i]->VIT = 0;
+        if (b[i]->VITNOW <= 0){
+            b[i]->VITNOW = 0;
             b[i]->Agility=0;
         }
 
-    if (a->VIT <= 0){
-        a->VIT = 0;
+    if (a->VITNOW <= 0){
+        a->VITNOW = 0;
         a->Agility=0;
     }
     return Description;
@@ -238,12 +240,12 @@ QString FightSystem::UseItem(int a, HunLing * b,HunLing* c){
 	}
 
 
-    if (b->VIT <= 0){
-        b->VIT = 0;
+    if (b->VITNOW <= 0){
+        b->VITNOW = 0;
         b->Agility=0;
     }
-    if (c->VIT <= 0){
-        c->VIT = 0;
+    if (c->VITNOW <= 0){
+        c->VITNOW = 0;
         c->Agility=0;
     }
 	return Description;
@@ -267,13 +269,13 @@ QString FightSystem::UseItem(int a, HunLing * b, QList<HunLing *> c){
 
 
     for(int i=0;i<c.size();i++)
-        if (c[i]->VIT <= 0){
-            c[i]->VIT = 0;
+        if (c[i]->VITNOW <= 0){
+            c[i]->VITNOW = 0;
             c[i]->Agility=0;
         }
 
-    if (b->VIT <= 0){
-        b->VIT = 0;
+    if (b->VITNOW <= 0){
+        b->VITNOW = 0;
         b->Agility=0;
     }
     return Description;

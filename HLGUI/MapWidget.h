@@ -34,6 +34,7 @@ class MapWidget: public QWidget{
     MapWidget(DiTu a,RenWu* b);
     ~MapWidget(){}
     void UpDate(DiTu a);
+    void UpDateNPC(DiTu a);//完成任务后更新地图NPC
 };
 
 MapWidget::MapWidget(DiTu a,RenWu* b){
@@ -44,7 +45,8 @@ MapWidget::MapWidget(DiTu a,RenWu* b){
     Me=b;
 
     NPC_List=GameSystem::CanShowList(Map,Me);//初始化NPC列表
-    for(int i=0;i<GetNumber(0,9);i++)
+    //for(int i=0;i<GetNumber(0,9);i++)
+    for(int i=0;i<9;i++)
     Enemy_List.append(GameSystem::CreateLHList(Map));//初始化魂灵列表的列表
 
     for(int i=0;i<NPC_List.size();i++)
@@ -75,6 +77,11 @@ void MapWidget::UpDate(DiTu a){
     for(int i=0;i<GetNumber(0,9);i++)
     Enemy_List.append(GameSystem::CreateLHList(Map));
 
+    for(int i=0;i<9;i++){
+        MapHL[i].Clear();
+        MapNPC[i].Clear();
+    }
+
     for(int i=0;i<NPC_List.size();i++)
         MapNPC[i].UpDateAll(Me,NPC_List[i]);
 
@@ -84,6 +91,18 @@ void MapWidget::UpDate(DiTu a){
 
 
     Title.setText(Map.Name+"<br>"+Map.Des);
+}
+
+void MapWidget::UpDateNPC(DiTu a){
+    Map=a;
+    NPC_List=GameSystem::CanShowList(Map,Me);
+
+    for(int i=0;i<9;i++)
+        MapNPC[i].Clear();
+
+    for(int i=0;i<NPC_List.size();i++)
+        MapNPC[i].UpDateAll(Me,NPC_List[i]);
+
 }
 
 

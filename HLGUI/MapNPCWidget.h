@@ -53,12 +53,23 @@ class MapNPCWidget: public QWidget{
     }
     ~MapNPCWidget(){}
     void UpDateAll(RenWu* temp,NPC a);
+    void Clear();
 	
 	
 };
 
+void MapNPCWidget::Clear(){
+    Name.setText("");
+    LV.setText("等级：");
+    Task.setText("任务");
+    Talk.setText("交谈");
+    Attack.setText("攻击");
+    this->setEnabled(false);
+}
+
 void MapNPCWidget::UpDateAll(RenWu* temp,NPC a){
     this->setEnabled(true);
+    Attack.setEnabled(true);
 
     Me=temp;
     tempNPC=a;
@@ -90,8 +101,10 @@ void MapNPCWidget::Attack_Click(){
     if(Battle->WinOrLose==1){
 
         for(int i=0;i<Me->myTaskList.size();i++)//完成任务
-                if(Me->myTaskList[i].NTalkNPC==tempNPC.ID)
+                if(Me->myTaskList[i].NKillNPC==tempNPC.ID){
                     Me->myTaskList[i].FMB++;
+                    SystemNPC[tempNPC.ID].CanATK=0;
+                }
 
        Me->Exp_Now+=Battle->Reward.Exp;
        Me->Coin+=Battle->Reward.Coin;
@@ -118,14 +131,14 @@ void MapNPCWidget::Attack_Click(){
     if(UL>0)
        QMessageBox::about(this,"提示","恭喜！你升级了！");
 
-    this->setEnabled(false);
-    SystemNPC[tempNPC.ID].CanATK=0;
+    Attack.setEnabled(false);
+
     }
     delete Battle;
 }
 
 void MapNPCWidget::Task_Click(){
-    TaskMsg=new TaskMsgWidget(GameSystem::CanExceptList(tempNPC,Me),&Me->myTaskList);
+    TaskMsg=new TaskMsgWidget(Me,GameSystem::CanExceptList(tempNPC,Me));
     if(TaskMsg->tempTask.isEmpty()==true){
         QMessageBox::about(this,"没有任务","没有任务");
         return;

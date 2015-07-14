@@ -22,16 +22,16 @@ class RenWu{
 	double Coin;
 	int PosX;
 	int PosY;
-    double Strength;//加了buff后的数据
-	double Agility;
-	double Vitality;
-	double Energy;
-	double Sour;
-    double Ori_Strength;//原始数据
-	double Ori_Agility;
-	double Ori_Vitality;
-	double Ori_Energy;
-	double Ori_Sour;
+    int Strength;//加了buff后的数据
+    int Agility;
+    int Vitality;
+    int Energy;
+    int Sour;
+    int Ori_Strength;//原始数据
+    int Ori_Agility;
+    int Ori_Vitality;
+    int Ori_Energy;
+    int Ori_Sour;
 	LGList LG;
     QList<LingHuan> LH;
     QList<Item> Bag;
@@ -451,7 +451,7 @@ int RenWu::UpdateLV(){
 		{
             sum += 1;
 			LV++;
-            Exp_Need = 100 * pow(1.2, LV + 1);//等级公式
+            Exp_Need = 100 * LV;//等级公式need change
             Ori_Strength+=2;
             Ori_Agility+=2;
             Ori_Vitality+=1;

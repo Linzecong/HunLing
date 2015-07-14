@@ -26,23 +26,23 @@ class GameSystem{
 	RenWu Me;
   public:
     GameSystem(){
-       SystemMap[0][0].Init();
+        SystemMap[0][0].Init();
         SystemHJ[0].Init();
         SystemHL[0].Init();
         SystemItem[0].Init();
-        SystemNPC[0].Init();
         SystemTask[0].Init();
         SystemMessage[0].Init();
         SystemBuff[0].Init();
-      //  Me.Init();
+        SystemNPC[0].Init();
+        Me.Init();
 
 
-        // 测试用
+        /* 测试用
         Me.LV=45;
         Me.Exp_Need=100;
         Me.Exp_Now=10;
         Me.Name="傻逼";
-        Me.Coin=100000000;
+        Me.Coin=10;
         Me.PosX=1;
         Me.PosY=1;
         Me.Ori_Agility=10;
@@ -65,7 +65,7 @@ class GameSystem{
 
 
 
-       // -----*/
+        -----*/
 
     }
 
@@ -229,12 +229,6 @@ QList<LingHuan> GameSystem::CreateLHList(DiTu a){//通过地图，生成灵环�
 	return tempList;
 }
 
-bool GameSystem::CanExcept(Task a,RenWu* b){//判断能否接受任务
-    for(int i=0;i<b->myTaskList.size();i++)
-    if(a.ID==b->myTaskList[i].ID)
-        return false;
-    return SystemTask[a.Need_ID].IsFinish;
-}
 
 bool GameSystem::CanGoTo(DiTu a){//判断能否去那个地方
 	return SystemTask[a.NTask].IsFinish;
@@ -249,12 +243,20 @@ QList<Message> GameSystem::CanTalkList(NPC a, RenWu *b){//返回一个NPC所能�
 		if (aaa == 0)
 			continue;
         Task temp = SystemTask[SystemMessage[aaa].NTask];//说话所需任务(已完成的任务)
-            if (SystemTask[temp.ID].IsFinish==1){
+            if (SystemTask[temp.ID].IsFinish==1)
                 tempList.append(SystemMessage[aaa]);
-                break;
-            }
     }
-	return tempList;
+
+    return tempList;
+}
+
+bool GameSystem::CanExcept(Task a,RenWu* b){//判断能否接受任务
+    for(int i=0;i<b->myTaskList.size();i++)
+    if(a.ID==b->myTaskList[i].ID)
+        return false;
+    if(SystemTask[a.ID].IsFinish==1)
+        return false;
+    return SystemTask[a.Need_ID].IsFinish;
 }
 
 QList<Task> GameSystem::CanExceptList(NPC a, RenWu *b){//返回当前可以接受的任务列表
@@ -270,16 +272,16 @@ QList<Task> GameSystem::CanExceptList(NPC a, RenWu *b){//返回当前可以接�
 QList<NPC> GameSystem::CanShowList(DiTu a, RenWu *b){//返回目前可以显示的NPC
     QList<NPC>  tempList;
     for (int i = 0; i <10; i++){
-        if (SystemTask[SystemNPC[a.IndexNPC[i]].TaskShow].IsFinish==1&&a.IndexNPC[i]!=0){
+        if (SystemTask[SystemNPC[a.IndexNPC[i]].TaskShow].IsFinish==1&&a.IndexNPC[i]!=0)
             tempList.append(SystemNPC[a.IndexNPC[i]]);
-            break;
-        }
 	}
 	return tempList;
 }
 
 DropData GameSystem::DropItem(QList<HunLing> a){//通过魂灵列表生成掉落的东西,特定物品可特定判断
 	DropData tempData;
+    tempData.Coin=0;
+    tempData.Exp=0;
     for (int i = 0; i < a.size(); i++){
         HunLing temp = a[i];
 
@@ -290,8 +292,7 @@ DropData GameSystem::DropItem(QList<HunLing> a){//通过魂灵列表生成掉落
 
 		int aaa = temp.DropItem[GetNumber(1, 9)];
         tempData.Item.append(SystemItem[aaa]);
-		tempData.Exp +=
-			100 * pow(1.2, temp.LV) - (100 * pow(1.2, temp.LV - 1));
+        tempData.Exp +=10;//要改！！
 		tempData.Coin += GetNumber(temp.LV * 1.5, temp.LV * 2);
 		if (GetNumber(1, 100) == 1){
 			LingGu tempLG = CreateLG(temp,GetNumber(1,6));

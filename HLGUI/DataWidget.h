@@ -59,6 +59,7 @@ class DataWidget: public QWidget{
     QLabel Name;
 	QLabel Level;
 	QLabel Exp;
+    QLabel Coin;
 	QLabel LingHuan;//颜色
 	QLabel Strength;
 	QLabel Agility;
@@ -80,6 +81,7 @@ DataWidget::DataWidget(RenWu* a){
     Name.setText("名字："+Me->Name);
     Level.setText("等级："+QString::number(Me->LV)+"级");
     Exp.setText("经验："+QString::number(Me->Exp_Now)+"/"+QString::number(Me->Exp_Need));
+    Coin.setText("金币："+QString::number(Me->Coin));
     for(int i=0;i<Me->LH.size();i++)
     LingHuan.setText(LingHuan.text()+Me->LH[i].Col);
     LingHuan.setText("灵环："+LingHuan.text());
@@ -93,6 +95,7 @@ DataWidget::DataWidget(RenWu* a){
     MainLayout->addWidget(&Name);
     MainLayout->addWidget(&Level);
     MainLayout->addWidget(&Exp);
+    MainLayout->addWidget(&Coin);
     MainLayout->addWidget(&LingHuan);
     MainLayout->addWidget(&Strength);
     MainLayout->addWidget(&Agility);
@@ -108,6 +111,7 @@ void DataWidget::UpDate(){
     Title.setText("人物信息：");
     Name.setText("名字："+Me->Name);
     Level.setText("等级："+QString::number(Me->LV)+"级");
+    Coin.setText("金币："+QString::number(Me->Coin));
     Exp.setText("经验："+QString::number(Me->Exp_Now)+"/"+QString::number(Me->Exp_Need));
     LingHuan.setText("");
     for(int i=0;i<Me->LH.size();i++)

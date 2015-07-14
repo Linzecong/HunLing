@@ -11,9 +11,10 @@
 #include<QListWidget>
 #include<QMessageBox>
 #include<../HLBase/HL_Task.h>
+#include<../HLBase/HL_RenWu.h>
 class TaskMsgWidget: public QDialog{
 	public:
-    QList<Task>* Me;//自己的任务列表
+    RenWu* Me;//自己的任务列表
     QList<Task> tempTask;//能接受的任务列表
     QListWidget List;
     QLabel Title;
@@ -23,24 +24,26 @@ class TaskMsgWidget: public QDialog{
 	QLabel Reward;
 	QPushButton Except;
     QVBoxLayout* Layout1;
-    QHBoxLayout* Layout2;
+    QVBoxLayout* Layout2;
     QVBoxLayout* MainLayout;
 
 	public:
-    TaskMsgWidget(QList<Task> a,QList<Task>* b);
+    TaskMsgWidget(RenWu* a,QList<Task> b);
     void Except_Click();
-    void ListClick();
+    void List_Click();
     ~TaskMsgWidget(){}
 };
 
-TaskMsgWidget::TaskMsgWidget(QList<Task> a, QList<Task> *b){
+TaskMsgWidget::TaskMsgWidget(RenWu* a, QList<Task> b){
     Layout1=new QVBoxLayout;
-    Layout2=new QHBoxLayout;
+    Layout2=new QVBoxLayout;
     MainLayout=new QVBoxLayout;
-    tempTask=a;
-    Me=b;
+    tempTask=b;
+    Me=a;
+
     for(int i=0;i<tempTask.size();i++)
         List.addItem(tempTask[i].Name);
+
     Title.setText("任务列表：");
     Name.setText("任务名称：");
     Des.setText("任务简介：");
@@ -57,26 +60,29 @@ TaskMsgWidget::TaskMsgWidget(QList<Task> a, QList<Task> *b){
     MainLayout->addLayout(Layout2);
     MainLayout->addWidget(&Except);
     connect(&Except,&QPushButton::clicked,this,&Except_Click);
+    connect(&List,&QListWidget::clicked,this,&List_Click);
     this->setLayout(MainLayout);
 }
 
 void TaskMsgWidget::Except_Click(){
     int a=List.currentRow();
-    int b=tempTask[a].ID;
-    Me->append(SystemTask[b]);
+    if(a<0)
+        return;
+    Me->myTaskList.append(tempTask[a]);
     Except.setEnabled(false);
     QMessageBox::about(this,"提示","接受成功！");
     List.takeItem(a);
     tempTask.takeAt(a);
 }
 
-void TaskMsgWidget::ListClick(){
+void TaskMsgWidget::List_Click(){
+    Except.setEnabled(true);
     int a=List.currentRow();
     Task b=tempTask[a];
     Name.setText("任务名称："+b.Name);
     Des.setText("任务简介："+b.Des);
     MB_FMB.setText("任务进度："+QString::number(b.FMB)+"/"+QString::number(b.MB));
-    Reward.setText("任务奖励：<br>金钱："+QString::number(b.A_Coin)+"<br>经验："+QString::number(b.A_Exp)+"<br>"+SystemItem[b.A_Item].Name+"x"+QString::number(b.A_Count)+"个");
+    Reward.setText("任务奖励：<br>金钱："+QString::number(b.A_Coin)+"<br>经验："+QString::number(b.A_Exp)+"<br>道具："+SystemItem[b.A_Item].Name+" * "+QString::number(b.A_Count)+"个");
 }
 
 #endif

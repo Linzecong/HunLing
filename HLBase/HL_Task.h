@@ -31,7 +31,7 @@ class Task
        Des="空";
        Need_ID=0;
        Name="空";
-       IsFinish=1;
+       IsFinish=0;
        MB=0;
        FMB=0;
        NKillHL=0;
@@ -102,7 +102,8 @@ file.open(QIODevice::ReadOnly);
 	tmpfile.read(( char *)&SystemTask[i].A_Item,a);
 	tmpfile.read(( char *)&SystemTask[i].A_Count,a);
     }
-    tmpfile.close();  
+    tmpfile.close();
+    SystemTask[0].IsFinish=1;
 }
 
 

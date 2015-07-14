@@ -328,6 +328,9 @@ FightWidget::FightWidget(RenWu *a, NPC b){
     connect(&SkipButton,&QPushButton::clicked,this,&FightWidget::Skip);
     connect(&GoOn,&QPushButton::clicked,this,&FightWidget::GoOn_Ckick);
 
+    connect(&EnemyHLList,&QListWidget::clicked,this,&FightWidget::EnemyClick);
+    connect(&MyHLList,&QListWidget::clicked,this,&FightWidget::MeClick);
+
 
 
 
@@ -632,7 +635,7 @@ void FightWidget::Skip(){
     msgBox.setDefaultButton(QMessageBox::No);
     int ret = msgBox.exec();
     if(ret==QMessageBox::Yes){
-    MessageList.addItem("（敌方）"+MyHL[System->EB->index].Name+"无所事事！跳过了回合！");
+    MessageList.addItem("（我方）"+MyHL[System->EB->index].Name+"无所事事！跳过了回合！");
     GoOn.setEnabled(true);
     this->SetButtonEnable(false);
     }
@@ -656,12 +659,13 @@ void FightWidget::GoOn_Ckick(){
      if(System->CanGoOn()==1){
          System->EB->next();
          if(System->EB->type==0){
+             MessageList.addItem("（敌方）现在是 "+EnemyHL[System->EB->index].Name+"的回合！");
              if(Enemy.Des=="魂灵"){
              if(Enemy.CanUseHJList(EnemyHL[System->EB->index].ID).isEmpty()==true){
                  Attack();
              }
              else{
-                 if(GetNumber(0,10)>=7)
+                 if(GetNumber(0,10)>=5)
                      Attack();
                  else
                      Skill();
@@ -705,13 +709,15 @@ void FightWidget::GoOn_Ckick(){
 
                  }
              }
-             GoOn.setEnabled(false);
+             GoOn.setEnabled(true);
 
          }
          else{
              this->SetButtonEnable(true);
-
+             MessageList.addItem("（我方）现在是 "+MyHL[System->EB->index].Name+"的回合！");
          }
+
+
      }
      Energy.setText("魂力："+QString::number(Me->Energy)+"/"+QString::number(Me->Ori_Energy));
      Sour.setText("灵力："+QString::number(Me->Sour)+"/"+QString::number(Me->Ori_Sour));
