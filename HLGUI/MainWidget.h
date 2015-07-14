@@ -181,12 +181,53 @@ void MainWidget::keyPressEvent(QKeyEvent *e){
 
 
 void MainWidget::xia(){
+    if(Game->Me.PosY==25){
+        QMessageBox::about(this,"提示","这已经是世界的尽头！");
+    return;
+}
+    if(Game->CanGoTo(SystemMap[Game->Me.PosX][(Game->Me.PosY)+1])){
   Game->Me.PosY++;
   Map_Widget->UpDate(SystemMap[Game->Me.PosX][Game->Me.PosY]);
+    }
+    else
+        QMessageBox::about(this,"提示","你还不能去那里！");
 }
-void MainWidget::shang(){}
-void MainWidget::zuo(){}
-void MainWidget::you(){}
+void MainWidget::shang(){
+    if(Game->Me.PosY==0){
+        QMessageBox::about(this,"提示","这已经是世界的尽头！");
+    return;
+}
+    if(Game->CanGoTo(SystemMap[Game->Me.PosX][(Game->Me.PosY)-1])){
+    Game->Me.PosY--;
+    Map_Widget->UpDate(SystemMap[Game->Me.PosX][Game->Me.PosY]);
+    }
+    else
+        QMessageBox::about(this,"提示","你还不能去那里！");
+}
+void MainWidget::zuo(){
+    if(Game->Me.PosX==0){
+        QMessageBox::about(this,"提示","这已经是世界的尽头！");
+    return;
+}
+     if(Game->CanGoTo(SystemMap[(Game->Me.PosX)-1][(Game->Me.PosY)])){
+    Game->Me.PosX--;
+    Map_Widget->UpDate(SystemMap[Game->Me.PosX][Game->Me.PosY]);
+}
+else
+    QMessageBox::about(this,"提示","你还不能去那里！");
+}
+void MainWidget::you(){
+    if(Game->Me.PosX==+1>25){
+        QMessageBox::about(this,"提示","这已经是世界的尽头！");
+    return;
+}
+     if(Game->CanGoTo(SystemMap[(Game->Me.PosX)+1][(Game->Me.PosY)])){
+    Game->Me.PosX++;
+    Map_Widget->UpDate(SystemMap[Game->Me.PosX][Game->Me.PosY]);
+     }
+     else
+         QMessageBox::about(this,"提示","你还不能去那里！");
+}
 
 #endif
 

@@ -34,10 +34,10 @@ class GameSystem{
         SystemMessage[0].Init();
         SystemBuff[0].Init();
         SystemNPC[0].Init();
-        Me.Init();
+       // Me.Init();
 
 
-        /* 测试用
+        // 测试用
         Me.LV=45;
         Me.Exp_Need=100;
         Me.Exp_Now=10;
@@ -45,27 +45,30 @@ class GameSystem{
         Me.Coin=10;
         Me.PosX=1;
         Me.PosY=1;
-        Me.Ori_Agility=10;
-        Me.Ori_Energy=100;
-        Me.Ori_Strength=10;
+        Me.Ori_Agility=200;
+        Me.Ori_Energy=1000;
+        Me.Ori_Strength=200;
         Me.Ori_Vitality=100;
-        Me.Ori_Sour=100;
-        SystemHL[1].LV=80;
+        Me.Ori_Sour=1000;
+        SystemHL[1].LV=19;
         LingHuan a=CreateLH(SystemHL[1]);
         Me.LH.append(a);
-        SystemHL[2].LV=20;
+        SystemHL[2].LV=28;
         a=CreateLH(SystemHL[2]);
         Me.LH.append(a);
         Me.Bag.append(SystemItem[1]);
         Me.Bag.append(SystemItem[2]);
-        SystemHL[3].LV=60;
+        SystemHL[3].LV=32;
         a=CreateLH(SystemHL[3]);
+        Me.LHBag.append(a);
+        SystemHL[4].LV=49;
+        a=CreateLH(SystemHL[4]);
         Me.LHBag.append(a);
         Me.UpdateBuff();
 
 
 
-        -----*/
+       // -----*/
 
     }
 
@@ -284,7 +287,8 @@ DropData GameSystem::DropItem(QList<HunLing> a){//通过魂灵列表生成掉落
     tempData.Exp=0;
     for (int i = 0; i < a.size(); i++){
         HunLing temp = a[i];
-
+        temp.Agility=SystemHL[temp.ID].Strength;
+        temp.Agility=SystemHL[temp.ID].Agility;
         /*特定掉落
         if(temp.ID==x)
             tempData.Item.Insert(SystemItem[aaa]);*/
@@ -294,12 +298,12 @@ DropData GameSystem::DropItem(QList<HunLing> a){//通过魂灵列表生成掉落
         tempData.Item.append(SystemItem[aaa]);
         tempData.Exp +=10;//要改！！
 		tempData.Coin += GetNumber(temp.LV * 1.5, temp.LV * 2);
-		if (GetNumber(1, 100) == 1){
+        if (GetNumber(1, 10) == 1){
 			LingGu tempLG = CreateLG(temp,GetNumber(1,6));
             tempData.LG.append(tempLG);
 		}
 		if (GetNumber(1, 20) == 1){
-			LingHuan tempLH = CreateLH(temp);
+            LingHuan tempLH = CreateLH(temp);
             tempData.LH.append(tempLH);
 		}
 

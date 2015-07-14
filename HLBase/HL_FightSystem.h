@@ -112,9 +112,13 @@ void FightSystem::SetBuff(){
     for (int i = 0; i < Me->myBuffList.size(); i++){//注意！通过人物的BuffList来更新
         int a = Me->myBuffList[i].ID;
 		switch (a){
-		case 1:
+        case 3:
+            for(int i=0;i<EnemyHL.size();i++)
+                EnemyHL[i]->DEF-=50;
 				break;
-		case 2:
+        case 4:
+            for(int i=0;i<MyHL.size();i++)
+                MyHL[i]->ATK+=200;
 				break;
 		}
 	}
@@ -122,11 +126,15 @@ void FightSystem::SetBuff(){
     for (int i = 0; i < Enemy->myBuffList.size(); i++){
         int a = Enemy->myBuffList[i].ID;
 		switch (a){
-		case 1:
-				break;
-		case 2:
-				break;
-		}
+        case 3:
+            for(int i=0;i<MyHL.size();i++)
+                MyHL[i]->DEF-=50;
+                break;
+        case 4:
+            for(int i=0;i<EnemyHL.size();i++)
+                EnemyHL[i]->ATK+=200;
+                break;
+        }
 	}
 
 }
@@ -182,9 +190,22 @@ QString FightSystem::Skill(HunLing * a, HunLing * b, HunJi * skill){//注意技�
 	skill->NowTurn += skill->Turn;
 	switch (skill->ID){
 	case 1:
+        b->DEF=b->DEF*0.9;
+        Description=a->Name+"对"+b->Name+"使用技能"+skill->Name+"，"+b->Name+"的防御变成了"+QString::number(b->DEF);
 			break;
-	case 2:
-			break;
+    case 2:{
+        double ATKPoint=0;
+        ATKPoint=((a->G_Lig)/100+1)*(a->ATK)-((b->K_Lig)/100+1)*(b->DEF);
+        if (ATKPoint < 0)
+            return a->Name+"的攻击太低了！起不了作用！";
+        b->VITNOW -= ATKPoint;
+        Description=a->Name+"对"+b->Name+"使用技能"+skill->Name+"，"+"对对方"+b->Name+"造成"+QString::number(ATKPoint)+"点伤害！";
+}
+            break;
+    case 3:
+        b->VITNOW+=100;
+        Description=a->Name+"对"+b->Name+"使用技能"+skill->Name+"，"+b->Name+"的生命值增加了100点！";
+            break;
 	}
 
 
@@ -197,6 +218,10 @@ QString FightSystem::Skill(HunLing * a, HunLing * b, HunJi * skill){//注意技�
         a->VITNOW = 0;
         a->Agility=0;
     }
+    if(a->VITNOW>a->VIT)
+        a->VITNOW =a->VIT;
+    if(b->VITNOW>b->VIT)
+        b->VITNOW =b->VIT;
 	return Description;
 }
 
@@ -204,10 +229,11 @@ QString FightSystem::Skill(HunLing * a, QList<HunLing *> b, HunJi * skill){
     QString Description;
     skill->NowTurn += skill->Turn;
     switch (skill->ID){
-    case 1:
-            break;
-    case 2:
-            break;
+
+    case 4:
+        for(int i=0;i<b.size();i++)
+            b[i]->VITNOW+=50;
+        Description=a->Name+"使用技能"+skill->Name+","+"我方全体回复50点生命！";
     }
 
 
@@ -215,12 +241,17 @@ QString FightSystem::Skill(HunLing * a, QList<HunLing *> b, HunJi * skill){
         if (b[i]->VITNOW <= 0){
             b[i]->VITNOW = 0;
             b[i]->Agility=0;
+            if(b[i]->VITNOW>b[i]->VIT)
+                b[i]->VITNOW = b[i]->VIT;
         }
+
 
     if (a->VITNOW <= 0){
         a->VITNOW = 0;
         a->Agility=0;
     }
+    if(a->VITNOW>a->VIT)
+        a->VITNOW =a->VIT;
     return Description;
 }
 
@@ -229,14 +260,18 @@ QString FightSystem::UseItem(int a, HunLing * b,HunLing* c){
 	QString Description;
 	switch (a)
 	{
-	case 1:
+    case 2:
 		{
+        double ATKPoint=0;
+        ATKPoint=((b->G_Fire)/100+1)*(b->ATK)-(c->K_Fire/100+1)*(b->DEF);
+        if (ATKPoint < 0)
+            return b->Name+"的攻击太低了！起不了作用！";
+        c->VITNOW -= ATKPoint;
+        Description=b->Name+"对"+c->Name+"使用道具"+"，"+"对对方"+c->Name+"造成"+QString::number(ATKPoint)+"点伤害！";
+
 			break;
 		}
-	case 2:
-		{
-			break;
-		}
+
 	}
 
 

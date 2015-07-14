@@ -132,6 +132,7 @@ void LGWidget::Putoff_Click(){
         Me->TakeoffLG(6);
        }
            UpDate();
+           QMessageBox::about(this,"提示","成功脱下！");
     }
 
 }
@@ -185,6 +186,8 @@ void LGWidget::Bag_Click(){
 }
 
 void LGWidget::UpDate(){
+    WearButton.setEnabled(false);
+    Putoff.setEnabled(false);
     Wear.clear();
     Bag.clear();
     for(int i=0;i<Me->LGBag.size();i++)

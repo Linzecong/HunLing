@@ -171,12 +171,14 @@ public:
 
         MainLayout=new QVBoxLayout;
         List.setCurrentRow(0);
+        OK.setEnabled(false);
         MainLayout->addWidget(&List);
         MainLayout->addWidget(&OK);
         MainLayout->addWidget(&Close);
         this->setLayout(MainLayout);
         connect(&OK,&QPushButton::clicked,this,&FightItemWidget::OKClick);
         connect(&Close,&QPushButton::clicked,this,&FightItemWidget::close);
+        connect(&List,&QListWidget::clicked,this,&FightItemWidget::Set);
         this->setWindowFlags(Qt::FramelessWindowHint);
         this->setWindowTitle("请选择道具");
     }
@@ -190,6 +192,7 @@ public:
         UseIndex=List.currentRow();
         this->close();
     }
+    void Set(){OK.setEnabled(true);}
 };
 
 class FightWidget: public QDialog{
@@ -413,7 +416,7 @@ void FightWidget::Skill(){
             return;
         }
         else{
-             if(tempMe.ATK_Ski.Energy>Me->Energy||tempMe.ATK_Ski.Sour<=Me->Sour){
+             if(tempMe.ATK_Ski.Energy>Me->Energy||tempMe.ATK_Ski.Sour>Me->Sour){
                  QMessageBox::about(this,"提示","魂力或灵力不足");
                  return;
              }

@@ -5,7 +5,7 @@ class Item
 	int ID;
 	QString Des;
 	QString Name;
-	int Type;
+    int Type;//1战前使用,2战中使用,3不可使用
     int ATKType;//0敌人单体,1敌人全体,2我方单体,3我方全体
 	int Value;
 	int Str;

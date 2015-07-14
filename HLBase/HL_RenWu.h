@@ -77,8 +77,7 @@ void RenWu::Save(){
         for(int i=0;i<LH.size();i++)
         in<<LH[i].Name<<" "<<LH[i].Des<<" "<<LH[i].Col<<endl;
 
-        for(int i=0;i<myTaskList.size();i++)
-        in<<myTaskList[i].Name<<" "<<myTaskList[i].Des<<endl;
+
 
         for(int i=0;i<LGBag.size();i++)
         in<<LGBag[i].Name<<endl;
@@ -414,7 +413,7 @@ for(int i=0;i<MYTASKLIST_SIZE;i++){
 }
 
 for(int i=0;i<LGBAG_SIZE;i++){
-    LingGu temp;
+    LingGu temp=LGBag[i];
 tmpfile.read(( char *)&temp.LV,a);
 tmpfile.read(( char *)&temp.ID,a);
 tmpfile.read(( char *)&temp.Type,a);
@@ -426,18 +425,18 @@ tmpfile.read(( char *)&temp.ATK_Ski.ID,a);
 temp.ATK_Ski=SystemHJ[temp.ATK_Ski.ID];
 tmpfile.read(( char *)&temp.Add_Str,b);
 tmpfile.read(( char *)&temp.Add_Agi,b);
-LGBag.append(temp);
+LGBag[i]=temp;
 }
 
 for(int i=0;i<LHBAG_SIZE;i++){
-    LingHuan temp;
+    LingHuan temp=LHBag[i];
     tmpfile.read(( char *)&temp.LV,a);
     tmpfile.read(( char *)&temp.ID,a);
     tmpfile.read(( char *)&temp.DEF_Ski,a);
     tmpfile.read(( char *)&temp.Value,b);
     tmpfile.read(( char *)&temp.Strength,b);
     tmpfile.read(( char *)&temp.Agility,b);
-    LHBag.append(temp);
+    LHBag[i]=temp;
 }
 
     tmpfile.close();
@@ -653,14 +652,16 @@ void RenWu::UpdateBuff(){
 	Strength += LG.RHand.Add_Str;
 	Agility += LG.RHand.Add_Agi;
 	Strength += LG.LHand.Add_Str;
-	Agility += LG.RHand.Add_Agi;
+    Agility += LG.LHand.Add_Agi;
 
     for (int i = 0; i < myBuffList.size(); i++){
         int a = myBuffList[i].ID;
 		switch (a){
 		case 1:
+            Strength+=10;
 				break;
 		case 2:
+            Agility+=20;
 				break;
 		}
 	}

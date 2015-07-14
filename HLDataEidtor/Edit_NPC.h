@@ -271,7 +271,7 @@ NPCWidget::NPCWidget()
     Ori_Energy->setRange(100,5000);
     Ori_Sour->setRange(0,1000);
     CanATK->setRange(0,1);
-    TaskShow->setRange(0,1);
+    TaskShow->setRange(0,200);
     for(int j=1;j<=9;j++)
     {
     LHID[j]->setRange(0,199);
