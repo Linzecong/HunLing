@@ -88,10 +88,38 @@ class FightSystem{
 	QString Attack(HunLing * a, HunLing * b);//攻击
     QString Skill(HunLing * a, HunLing* b, HunJi * skill);//技能，直接传入技能。单体。
     QString Skill(HunLing * a, QList<HunLing*> b, HunJi * skill);//技能，直接传入技能。全体。注意replace
-    QString UseItem(int a, HunLing * b, HunLing *c);//用道具，道具编号。
-    QString UseItem(int a, HunLing * b, QList<HunLing*> c);//用道具，道具编号。全体，注意replace
+    QString UseItem(HunLing * a, HunLing *b, int c);//用道具，道具编号。
+    QString UseItem( HunLing * a, QList<HunLing*> b,int c);//用道具，道具编号。全体，注意replace
 
-	int CanGoOn();				// 判断能否继续
+    double ATKPoint(HunLing a,HunLing b,int type,double per){
+        double Point = 0;
+        switch(type){
+        case 0:
+            Point = a.ATK*(a.ATK/b.DEF)/5;
+            break;
+        case 1:
+            Point = ((a.G_Fire)/100+1)*a.ATK*(((a.G_Fire)/100+1)*a.ATK/b.DEF*((b.K_Fire)/100+1))/5;
+            break;
+        case 2:
+            Point = ((a.G_Ice)/100+1)*a.ATK*(((a.G_Ice)/100+1)*a.ATK/b.DEF*((b.K_Ice)/100+1))/5;
+            break;
+        case 3:
+            Point = ((a.G_Lig)/100+1)*a.ATK*(((a.G_Lig)/100+1)*a.ATK/b.DEF*((b.K_Lig)/100+1))/5;
+            break;
+        case 4:
+            Point = ((a.G_Tox)/100+1)*a.ATK*(((a.G_Tox)/100+1)*a.ATK/b.DEF*((b.K_Tox)/100+1))/5;
+            break;
+        default:
+            Point = a.ATK*(a.ATK/b.DEF)/5;
+            break;
+        }
+        Point*=per;
+        return Point;
+
+
+    }
+
+    int CanGoOn();				// 判断能否继续
     void UpdateVIT();//每轮前调用，更新体力
 };
 
@@ -112,14 +140,14 @@ FightSystem::FightSystem(RenWu* a, NPC *b, QList<HunLing *> a1, QList<HunLing *>
 void FightSystem::UpdateVIT(){
 
     for(int i=0;i<MyHL.size();i++){
-        MyHL[i]->VIT = (Me->Vitality+MyHL[i]->Strength) * MyHL[i]->VIT_Vit * MyHL[i]->LV;
+        MyHL[i]->VIT = (Me->Vitality+MyHL[i]->Strength) * MyHL[i]->VIT_Vit * MyHL[i]->LV/2;
         if(MyHL[i]->VIT<MyHL[i]->VITNOW)
             MyHL[i]->VITNOW=MyHL[i]->VIT;
         if(MyHL[i]->Agility==0)
             MyHL[i]->VITNOW=0;
     }
         for(int i=0;i<EnemyHL.size();i++){
-         EnemyHL[i]->VIT = (Enemy->Vitality+EnemyHL[i]->Strength) * EnemyHL[i]->VIT_Vit * EnemyHL[i]->LV;
+         EnemyHL[i]->VIT = (Enemy->Vitality+EnemyHL[i]->Strength) * EnemyHL[i]->VIT_Vit * EnemyHL[i]->LV/2;
          if(EnemyHL[i]->VIT<EnemyHL[i]->VITNOW)
              EnemyHL[i]->VITNOW=EnemyHL[i]->VIT;
          if(EnemyHL[i]->Agility==0)
@@ -161,17 +189,14 @@ int FightSystem::CanGoOn(){// 判断能否继续。0我输，1继续，-1赢了,
 }
 
 QString FightSystem::Attack(HunLing * a, HunLing * b){
-    double ATKPoint = a->ATK - b->DEF;//以后要优化
-	if (ATKPoint < 0)
-		return a->Name+"的攻击太低了！起不了作用！";
-    else{
-        b->VITNOW -= ATKPoint;//important
+    int Point=int(ATKPoint(*a,*b,0,1));
+        b->VITNOW -= Point;//important
         if (b->VITNOW <= 0){
             b->VITNOW = 0;
             b->Agility=0;
         }
-		return a->Name+"对对方"+b->Name+"造成"+QString::number(ATKPoint)+"点伤害！";
-	}
+        return a->Name+"对对方"+b->Name+"造成"+QString::number(Point)+"点伤害！";
+
 }
 
 QString FightSystem::Skill(HunLing * a, HunLing * b, HunJi * skill){//注意技能类型！和体力小于0(敏捷制0)
@@ -183,12 +208,10 @@ QString FightSystem::Skill(HunLing * a, HunLing * b, HunJi * skill){//注意技�
         Description=a->Name+"对"+b->Name+"使用技能"+skill->Name+"，"+b->Name+"的防御变成了"+QString::number(b->DEF);
 			break;
     case 2:{
-        double ATKPoint=0;
-        ATKPoint=((a->G_Lig)/100+1)*(a->ATK)-((b->K_Lig)/100+1)*(b->DEF);
-        if (ATKPoint < 0)
-            return a->Name+"的攻击太低了！起不了作用！";
-        b->VITNOW -= ATKPoint*2.00;
-        Description=a->Name+"对"+b->Name+"使用技能"+skill->Name+"，"+"对对方"+b->Name+"造成"+QString::number(ATKPoint)+"点伤害！";
+
+        int Point=int(ATKPoint(*a,*b,3,2));
+        b->VITNOW -= Point;
+        Description=a->Name+"对"+b->Name+"使用技能"+skill->Name+"，"+"对对方"+b->Name+"造成"+QString::number(Point)+"点伤害！";
 }
             break;
     case 3:
@@ -245,25 +268,23 @@ QString FightSystem::Skill(HunLing * a, QList<HunLing *> b, HunJi * skill){
 }
 
 
-QString FightSystem::UseItem(int a, HunLing * b,HunLing* c){
+QString FightSystem::UseItem(HunLing *a, HunLing * b, int c){
 	QString Description;
-	switch (a)
+    switch (c)
 	{
     case 2:
 		{
-        double ATKPoint=0;
-        ATKPoint=((b->G_Fire)/100+1)*(b->ATK)-(c->K_Fire/100+1)*(c->DEF);
-        if (ATKPoint < 0)
-            return b->Name+"的攻击太低了！起不了作用！";
-        c->VITNOW -= ATKPoint*1.20;
-        Description=b->Name+"对"+c->Name+"使用道具"+"，"+"对对方"+c->Name+"造成"+QString::number(ATKPoint)+"点伤害！";
+       int Point=int(ATKPoint(*a,*b,1,1.2));
+
+        b->VITNOW -= Point;
+        Description=a->Name+"对"+b->Name+"使用道具"+"，"+"对对方"+b->Name+"造成"+QString::number(Point)+"点伤害！";
 
 			break;
 		}
     case 4:
         {
-        c->VITNOW+=500;
-        Description=b->Name+"对"+c->Name+"使用道具"+"，"+"恢复了500点生命！";
+        b->VITNOW+=500;
+        Description=a->Name+"对"+b->Name+"使用道具"+"，"+"恢复了500点生命！";
 
             break;
         }
@@ -275,53 +296,52 @@ QString FightSystem::UseItem(int a, HunLing * b,HunLing* c){
         b->VITNOW = 0;
         b->Agility=0;
     }
-    if (c->VITNOW <= 0){
-        c->VITNOW = 0;
-        c->Agility=0;
+    if (a->VITNOW <= 0){
+        a->VITNOW = 0;
+        a->Agility=0;
     }
 	return Description;
 
 }
 
 
-QString FightSystem::UseItem(int a, HunLing * b, QList<HunLing *> c){
+QString FightSystem::UseItem(HunLing *a, QList<HunLing *> b, int c){
     QString Description;
-    switch (a)
+    switch (c)
     {
     case 3:
         {
-        double ATKPoint=0;
-        for(int i=0;i<c.size();i++){
-        ATKPoint=((b->G_Lig)/100+1)*(b->ATK)-(c[i]->K_Fire/100+1)*(c[i]->DEF);
-        if (ATKPoint < 0)
-            continue;
-        c[i]->VITNOW -= ATKPoint*1.50;
+        for(int i=0;i<b.size();i++){
+            int Point=int(ATKPoint(*a,*b[i],3,1.5));
+
+
+        b[i]->VITNOW -= Point;
         }
-        Description=b->Name+"对对方全体使用道具"+"，"+"对对方全体造成大量伤害！";
+        Description=a->Name+"对对方全体使用道具"+"，"+"对对方全体造成大量伤害！";
 
             break;
         }
     case 5:
         {
-        for(int i=0;i<c.size();i++)
-        c[i]->ATK += 100;
+        for(int i=0;i<b.size();i++)
+        b[i]->ATK += 100;
 
-        Description=b->Name+"使用道具"+"，"+"我方全体增加100点攻击！";
+        Description=a->Name+"使用道具"+"，"+"我方全体增加100点攻击！";
 
             break;
         }
     }
 
 
-    for(int i=0;i<c.size();i++)
-        if (c[i]->VITNOW <= 0){
-            c[i]->VITNOW = 0;
-            c[i]->Agility=0;
+    for(int i=0;i<b.size();i++)
+        if (b[i]->VITNOW <= 0){
+            b[i]->VITNOW = 0;
+            b[i]->Agility=0;
         }
 
-    if (b->VITNOW <= 0){
-        b->VITNOW = 0;
-        b->Agility=0;
+    if (a->VITNOW <= 0){
+        a->VITNOW = 0;
+        a->Agility=0;
     }
     return Description;
 }
@@ -358,11 +378,11 @@ void FightSystem::SetBuff(){
     }
 
     for(int i=0;i<MyHL.size();i++){
-        MyHL[i]->VIT = (Me->Vitality+MyHL[i]->Strength) * MyHL[i]->VIT_Vit * MyHL[i]->LV;
+        MyHL[i]->VIT = (Me->Vitality+MyHL[i]->Strength) * MyHL[i]->VIT_Vit * MyHL[i]->LV/2;
             MyHL[i]->VITNOW=MyHL[i]->VIT;
     }
         for(int i=0;i<EnemyHL.size();i++){
-         EnemyHL[i]->VIT = (Enemy->Vitality+EnemyHL[i]->Strength) * EnemyHL[i]->VIT_Vit * EnemyHL[i]->LV;
+         EnemyHL[i]->VIT = (Enemy->Vitality+EnemyHL[i]->Strength) * EnemyHL[i]->VIT_Vit * EnemyHL[i]->LV/2;
              EnemyHL[i]->VITNOW=EnemyHL[i]->VIT;
         }
 

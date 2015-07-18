@@ -14,9 +14,9 @@ class LingHuan{
 	QString Name;
 	QString Des;
 	QString Col;
-	double Value;
-	double Strength;
-	double Agility;
+    int Value;
+    int Strength;
+    int Agility;
     LingHuan(){
         LV=ID=DEF_Ski=0;
         Name=Des=Col="空";

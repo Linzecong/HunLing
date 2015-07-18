@@ -34,36 +34,37 @@ class GameSystem{
         SystemMessage[0].Init();
         SystemBuff[0].Init();
         SystemNPC[0].Init();
-        Me.Init();
+        //Me.Init();
 
 
-        /* 测试用
-        Me.LV=45;
-        Me.Exp_Need=100;
-        Me.Exp_Now=10;
+
+        Me.LV=1;
+        Me.Exp_Need=720;
+        Me.Exp_Now=0;
         Me.Name="傻逼";
         Me.Coin=10;
         Me.PosX=1;
         Me.PosY=1;
-        Me.Ori_Agility=200;
-        Me.Ori_Energy=1000;
-        Me.Ori_Strength=200;
-        Me.Ori_Vitality=100;
-        Me.Ori_Sour=1000;
-        SystemHL[1].LV=19;
-        LingHuan a=CreateLH(SystemHL[1]);
+        Me.Ori_Agility=10;
+        Me.Ori_Energy=100;
+        Me.Ori_Strength=10;
+        Me.Ori_Vitality=5;
+        Me.Ori_Sour=100;
+        LingHuan a;
+        a.LV=5;
+        a.ID=1;
+        a.DEF_Ski=1;
+        a.Name=SystemHL[1].Name;
+        a.Des=SystemHL[1].Des;
+        a.Col="灰";
+        a.Value=999;
+        a.Strength=SystemHL[1].Strength+10;
+        a.Agility=SystemHL[1].Agility+10;
+
         Me.LH.append(a);
-        SystemHL[2].LV=28;
-        a=CreateLH(SystemHL[2]);
-        Me.LH.append(a);
-        Me.Bag.append(SystemItem[1]);
-        Me.Bag.append(SystemItem[2]);
-        SystemHL[3].LV=32;
-        a=CreateLH(SystemHL[3]);
-        Me.LHBag.append(a);
-        SystemHL[4].LV=49;
-        a=CreateLH(SystemHL[4]);
-        Me.LHBag.append(a);
+
+
+
         Me.UpdateBuff();
 
 
@@ -87,11 +88,11 @@ class GameSystem{
     static HunLing CreatHL(T a,LingHuan b){
         HunLing tempHL = SystemHL[b.ID];
         tempHL.LV = b.LV;
-        tempHL.Strength += a.Strength;
-        tempHL.Agility += a.Agility;
-        tempHL.ATK =(1 + 0.2 * tempHL.LV) * (tempHL.Strength * tempHL.ATK_Str + tempHL.Agility * tempHL.ATK_Agi);
-        tempHL.DEF =(1 + 0.2 * tempHL.LV) * (tempHL.Strength * tempHL.DEF_Str + tempHL.Agility * tempHL.DEF_Agi);
-        tempHL.VIT = (a.Vitality+tempHL.Strength) * tempHL.VIT_Vit * tempHL.LV;
+        tempHL.Strength = a.Strength+b.Strength;
+        tempHL.Agility = a.Agility+b.Agility;
+        tempHL.ATK =((1 + 2 * tempHL.LV) * (tempHL.Strength * tempHL.ATK_Str + tempHL.Agility * tempHL.ATK_Agi))/10;
+        tempHL.DEF =((1 + 2 * tempHL.LV) * (tempHL.Strength * tempHL.DEF_Str + tempHL.Agility * tempHL.DEF_Agi))/13;
+        tempHL.VIT = ((a.Vitality+tempHL.Strength) * tempHL.VIT_Vit * tempHL.LV)/2;
         tempHL.VITNOW=tempHL.VIT;
         return tempHL;
 
@@ -102,27 +103,30 @@ class GameSystem{
 
 LingHuan GameSystem::CreateLH(HunLing a){
 	LingHuan temp;
-	temp.LV = a.LV;
+    temp.LV = a.LV - 2 + GetNumber(2, 4);//-2～2的波动;
 	temp.Name = a.Name;
 	temp.Des = a.Des;
-	if (temp.LV > 0 && temp.LV < 20)
-		temp.Col = "白";
-	if (temp.LV >= 20 && temp.LV < 40)
-		temp.Col = "黄";
-	if (temp.LV >= 40 && temp.LV < 60)
-		temp.Col = "紫";
-	if (temp.LV >= 60 && temp.LV < 80)
-		temp.Col = "黑";
-	if (temp.LV >= 80 && temp.LV < 90)
-		temp.Col = "红";
-	if (temp.LV >= 90 && temp.LV < 95)
-		temp.Col = "橙";
-	if (temp.LV >= 95 && temp.LV < 100)
-		temp.Col = "金";
-	temp.Strength = a.Strength;
-	temp.Agility = a.Agility;
+    if (temp.LV > 0 && temp.LV < 10)
+        temp.Col = "灰";
+    if (temp.LV >= 10 && temp.LV < 20)
+        temp.Col = "白";
+    if (temp.LV >= 30 && temp.LV < 40)
+        temp.Col = "蓝";
+    if (temp.LV >= 40 && temp.LV < 50)
+        temp.Col = "黄";
+    if (temp.LV >= 50 && temp.LV < 60)
+        temp.Col = "橙";
+    if (temp.LV >= 60 && temp.LV < 70)
+        temp.Col = "绿";
+    if (temp.LV >= 80 && temp.LV < 90)
+        temp.Col = "紫";
+    if (temp.LV >= 90)
+        temp.Col = "彩";
+    temp.Strength = int(double(a.Strength)*0.8);
+    temp.Agility = int(double(a.Agility)*0.8);
 	temp.ID = a.ID;
 	temp.DEF_Ski = a.DEF_Ski;
+    temp.Value=(temp.Strength * 100 + temp.Agility * 100 + temp.LV * 50 ) * 1.5;
 	return temp;
 }
 
@@ -151,13 +155,13 @@ LingGu GameSystem::CreateLG(HunLing a,int type){
 			temp.Name = a.Name + "之右腿骨";
 			break;
 	}
-	temp.Strength = a.Strength - 5 + GetNumber(5, 10);//-5～5
-	temp.Agility = a.Agility - 5 + GetNumber(5, 10);
+    temp.Strength = int(double(a.Strength)*0.8);
+    temp.Agility = int(double(a.Agility)*0.8);
 	temp.ATK_Ski = a.ATK_Ski;
 	temp.Add_Str = GetNumber(5, a.LV) / 5 + GetNumber(10, a.Strength) / 10;
 	temp.Add_Agi = GetNumber(5, a.LV) / 5 + GetNumber(10, a.Agility) / 10;
 	temp.Value =(temp.Strength * 100 + temp.Agility * 100 + temp.LV * 50 +temp.Add_Str * 150 + temp.Add_Agi * 150) * 1.5;
-	temp.DEF_Ski = GetNumber(1, 199);//随机防御技能
+    temp.DEF_Ski = a.DEF_Ski;
 	return temp;
 }
 
@@ -182,7 +186,7 @@ NPC GameSystem::CreateNPC(QList<LingHuan> a){//通过灵环列表生成NPC，为
         tempAgi += a[i].Agility;
     temp.Ori_Agility = tempAgi / a.size();//平均敏捷
 
-    temp.Ori_Vitality = (temp.Ori_Strength + temp.Ori_Agility)/10;//体力等于力量加敏捷
+    temp.Ori_Vitality = (temp.Ori_Strength + temp.Ori_Agility)/10;//体力等于力量加敏捷/10
 
 	temp.Ori_Energy = temp.Ori_Vitality * 50 * temp.LV;//相当于无限魂力
 	temp.Ori_Sour = 500;//灵力
@@ -202,29 +206,30 @@ QList<LingHuan> GameSystem::CreateLHList(DiTu a){//通过地图，生成灵环�
 		HunLing tempHL = SystemHL[aaa];
 		tempHL.LV = GetNumber(a.MinLV, a.MaxLV);
 		temp.LV = tempHL.LV;
-        int AgiP=0;
         if(aaa!=0)
-         AgiP =tempHL.LV * 5 * tempHL.Agility / (tempHL.Agility +tempHL.Strength);
-		temp.Strength = tempHL.Strength + tempHL.LV * 5 - AgiP;
-		temp.Agility = tempHL.Agility + AgiP;
+
+        temp.Strength = tempHL.Strength + tempHL.LV * 2 ;
+        temp.Agility = tempHL.Agility + tempHL.LV * 2;
 		temp.Name = tempHL.Name;
 		temp.Des = tempHL.Des;
 		temp.DEF_Ski = tempHL.DEF_Ski;
 		temp.ID = tempHL.ID;
-		if (temp.LV > 0 && temp.LV < 20)
-			temp.Col = "白";
-		if (temp.LV >= 20 && temp.LV < 40)
-			temp.Col = "黄";
-		if (temp.LV >= 40 && temp.LV < 60)
-			temp.Col = "紫";
-		if (temp.LV >= 60 && temp.LV < 80)
-			temp.Col = "黑";
-		if (temp.LV >= 80 && temp.LV < 90)
-			temp.Col = "红";
-		if (temp.LV >= 90 && temp.LV < 95)
-			temp.Col = "橙";
-		if (temp.LV >= 95 && temp.LV < 100)
-			temp.Col = "金";
+        if (temp.LV > 0 && temp.LV < 10)
+            temp.Col = "灰";
+        if (temp.LV >= 10 && temp.LV < 20)
+            temp.Col = "白";
+        if (temp.LV >= 30 && temp.LV < 40)
+            temp.Col = "蓝";
+        if (temp.LV >= 40 && temp.LV < 50)
+            temp.Col = "黄";
+        if (temp.LV >= 50 && temp.LV < 60)
+            temp.Col = "橙";
+        if (temp.LV >= 60 && temp.LV < 70)
+            temp.Col = "绿";
+        if (temp.LV >= 80 && temp.LV < 90)
+            temp.Col = "紫";
+        if (temp.LV >= 90)
+            temp.Col = "彩";
 		temp.Value = 0;
         tempList.append(temp);
 	}
@@ -287,20 +292,23 @@ DropData GameSystem::DropItem(QList<HunLing> a){//通过魂灵列表生成掉落
     tempData.Exp=0;
     for (int i = 0; i < a.size(); i++){
         HunLing temp = a[i];
-        temp.Agility=SystemHL[temp.ID].Agility;
-        temp.Strength = temp.Strength + temp.LV * 5 - temp.LV * 5 * temp.Agility / (temp.Agility +temp.Strength);
-        temp.Agility=a[i].Agility+temp.LV * 5 * temp.Agility / (temp.Agility +temp.Strength);;
+
+        temp.Strength = temp.Strength + temp.LV * 2;
+        temp.Agility=temp.Agility+temp.LV * 2;
         /*特定掉落
         if(temp.ID==x)
             tempData.Item.Insert(SystemItem[aaa]);*/
         /*全局掉落*/
 
+        int count=GetNumber(0,GetNumber(0,GetNumber(0,3)));
+        for(int j=0;j<count;j++){
 		int aaa = temp.DropItem[GetNumber(1, 9)];
         if(aaa!=0)
         tempData.Item.append(SystemItem[aaa]);
-        tempData.Exp +=10;//要改！！
+        }
+        tempData.Exp +=(a[i].LV-1)*2+60;//要改！！
 		tempData.Coin += GetNumber(temp.LV * 1.5, temp.LV * 2);
-        if (GetNumber(1, 10) == 1){
+        if (GetNumber(1, 100) == 1){
 			LingGu tempLG = CreateLG(temp,GetNumber(1,6));
             tempData.LG.append(tempLG);
 		}

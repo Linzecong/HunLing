@@ -55,6 +55,7 @@ QList<int> NPC::CanUseHJList(int hl){
         temp.append(5);
     if(LG.RLeg.ATK_Ski.Energy<=Energy&&LG.RLeg.ATK_Ski.Sour<=Sour&&LG.RLeg.ATK_Ski.NowTurn==0&&LG.RLeg.ATK_Ski.ID!=0)
         temp.append(6);
+
     return temp;
 }
 
@@ -136,27 +137,28 @@ void NPC::Update(){
 	    tempHL.Update();
 		LingHuan temp;
 		temp.LV = tempHL.LV;
-		int AgiP =tempHL.LV * 5 * tempHL.Agility / (tempHL.Agility +tempHL.Strength);
-		temp.Strength = tempHL.Strength + tempHL.LV * 5 - AgiP;
-		temp.Agility = tempHL.Agility + AgiP;
+        temp.Strength = tempHL.Strength + tempHL.LV * 2 ;
+        temp.Agility = tempHL.Agility + tempHL.LV * 2;
 		temp.Name = tempHL.Name;
 		temp.Des = tempHL.Des;
 		temp.DEF_Ski = tempHL.DEF_Ski;
 		temp.ID = tempHL.ID;
-		if (temp.LV > 0 && temp.LV < 20)
-			temp.Col = "白";
-		if (temp.LV >= 20 && temp.LV < 40)
-			temp.Col = "黄";
-		if (temp.LV >= 40 && temp.LV < 60)
-			temp.Col = "紫";
-		if (temp.LV >= 60 && temp.LV < 80)
-			temp.Col = "黑";
-		if (temp.LV >= 80 && temp.LV < 90)
-			temp.Col = "红";
-		if (temp.LV >= 90 && temp.LV < 95)
-			temp.Col = "橙";
-		if (temp.LV >= 95 && temp.LV < 100)
-			temp.Col = "金";
+        if (temp.LV > 0 && temp.LV < 10)
+            temp.Col = "灰";
+        if (temp.LV >= 10 && temp.LV < 20)
+            temp.Col = "白";
+        if (temp.LV >= 30 && temp.LV < 40)
+            temp.Col = "蓝";
+        if (temp.LV >= 40 && temp.LV < 50)
+            temp.Col = "黄";
+        if (temp.LV >= 50 && temp.LV < 60)
+            temp.Col = "橙";
+        if (temp.LV >= 60 && temp.LV < 70)
+            temp.Col = "绿";
+        if (temp.LV >= 80 && temp.LV < 90)
+            temp.Col = "紫";
+        if (temp.LV >= 90)
+            temp.Col = "彩";
 		temp.Value = 0;
         LH.append(temp);
 	}

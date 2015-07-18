@@ -14,7 +14,7 @@ sum=sum*a;
 return sum;
 }
 int GetNumber(int a, int b){//获得随机数
-    if(a==b)
+    if(a>=b)
         return a;
     int sum=a + qrand() % (b - a);
 return sum;

@@ -451,7 +451,7 @@ int RenWu::UpdateLV(){
             sum += 1;
 			LV++;
             Exp_Now=0;
-            Exp_Need = 100 * LV;//等级公式need change
+            Exp_Need = ((LV-1)*(LV-1)*(LV-1)+60)/5*((LV-1)*2+60);//等级公式
             Ori_Strength+=2;
             Ori_Agility+=2;
             Ori_Vitality+=1;
@@ -535,7 +535,7 @@ int RenWu::WearLH(LingHuan a){
         if(LH[i].ID==a.ID)
             return 2;
 
-    if (int(LV/10) <= LH.size())
+    if ((int(LV/10)+1) <= LH.size())
 		return -1; 
 	else{
 		if (Ori_Strength < a.Strength || Ori_Agility < a.Agility)

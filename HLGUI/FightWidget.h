@@ -356,13 +356,13 @@ void FightWidget::Attack(){
     if(System->EB->type==0){
         HunLing tempEnemy=EnemyHL[System->EB->index];
         int a=GetNumber(1,MyHL.size());
-        HunLing tempMe=MyHL[a];//以后要优化
+        HunLing tempMe=MyHL[a-1];//以后要优化
         QString msg=System->Attack(&tempEnemy,&tempMe);
         msg="（敌方）"+msg;
         QMessageBox::about(this,"提示",msg);
         MessageList.addItem(msg);
         EnemyHL[System->EB->index]=tempEnemy;
-        MyHL[a]=tempMe;
+        MyHL[a-1]=tempMe;
         GoOn.setEnabled(true);
     }
     if(System->EB->type==1){
@@ -607,25 +607,25 @@ void FightWidget::UseItem(){
         ChooseDialog* temp=new ChooseDialog(EnemyHL);
         temp->exec();
         HunLing tempEnemy1=EnemyHL[temp->num];
-        msg=System->UseItem(Me->Bag[tempItemList->UseIndex].ID,&tempMe,&tempEnemy1);
+        msg=System->UseItem(&tempMe,&tempEnemy1,Me->Bag[tempItemList->UseIndex].ID);
         EnemyHL[temp->num]=tempEnemy1;
         delete temp;
         break;
     }
     case 1:
-        msg=System->UseItem(Me->Bag[tempItemList->UseIndex].ID,&tempMe,tmpEnemyHL);
+        msg=System->UseItem(&tempMe,tmpEnemyHL,Me->Bag[tempItemList->UseIndex].ID);
         break;
     case 2:{
         ChooseDialog* temp1=new ChooseDialog(MyHL);
         temp1->exec();
         HunLing tempEnemy=MyHL[temp1->num];
-        msg=System->UseItem(Me->Bag[tempItemList->UseIndex].ID,&tempMe,&tempEnemy);
+        msg=System->UseItem(&tempMe,&tempEnemy,Me->Bag[tempItemList->UseIndex].ID);
         MyHL[temp1->num]=tempEnemy;
         delete temp1;
         break;
     }
     case 3:
-        msg=System->UseItem(Me->Bag[tempItemList->UseIndex].ID,&tempMe,tmpMyHL);
+        msg=System->UseItem(&tempMe,tmpMyHL,Me->Bag[tempItemList->UseIndex].ID);
         break;
     }
 

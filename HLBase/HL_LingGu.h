@@ -11,13 +11,13 @@ class LingGu{
 	int ID;
 	QString Name;
 	int Type;
-	double Value;
-	double Strength;
-	double Agility;
+    int Value;
+    int Strength;
+    int Agility;
 	int DEF_Ski;
     HunJi ATK_Ski;
-	double Add_Str;
-	double Add_Agi;
+    int Add_Str;
+    int Add_Agi;
     LingGu(){
         LV=ID=0;
         Name="空";
