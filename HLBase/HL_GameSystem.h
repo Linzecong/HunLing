@@ -34,10 +34,10 @@ class GameSystem{
         SystemMessage[0].Init();
         SystemBuff[0].Init();
         SystemNPC[0].Init();
-       // Me.Init();
+        Me.Init();
 
 
-        // 测试用
+        /* 测试用
         Me.LV=45;
         Me.Exp_Need=100;
         Me.Exp_Now=10;
@@ -91,7 +91,7 @@ class GameSystem{
         tempHL.Agility += a.Agility;
         tempHL.ATK =(1 + 0.2 * tempHL.LV) * (tempHL.Strength * tempHL.ATK_Str + tempHL.Agility * tempHL.ATK_Agi);
         tempHL.DEF =(1 + 0.2 * tempHL.LV) * (tempHL.Strength * tempHL.DEF_Str + tempHL.Agility * tempHL.DEF_Agi);
-        tempHL.VIT = a.Vitality * tempHL.VIT_Vit * tempHL.LV;
+        tempHL.VIT = (a.Vitality+tempHL.Strength) * tempHL.VIT_Vit * tempHL.LV;
         tempHL.VITNOW=tempHL.VIT;
         return tempHL;
 
@@ -182,13 +182,12 @@ NPC GameSystem::CreateNPC(QList<LingHuan> a){//通过灵环列表生成NPC，为
         tempAgi += a[i].Agility;
     temp.Ori_Agility = tempAgi / a.size();//平均敏捷
 
-	temp.Ori_Vitality = temp.Ori_Strength + temp.Ori_Agility;//体力等于力量加敏捷
+    temp.Ori_Vitality = (temp.Ori_Strength + temp.Ori_Agility)/10;//体力等于力量加敏捷
 
 	temp.Ori_Energy = temp.Ori_Vitality * 50 * temp.LV;//相当于无限魂力
 	temp.Ori_Sour = 500;//灵力
 
     temp.UpdateBuff();//更新战前Buff
-
 	return temp;
 }
 
@@ -246,7 +245,8 @@ QList<Message> GameSystem::CanTalkList(NPC a, RenWu *b){//返回一个NPC所能�
 		if (aaa == 0)
 			continue;
         Task temp = SystemTask[SystemMessage[aaa].NTask];//说话所需任务(已完成的任务)
-            if (SystemTask[temp.ID].IsFinish==1)
+            for(int j=0;j<b->myTaskList.size();j++)
+        if (temp.ID==b->myTaskList[j].ID||temp.ID==0)
                 tempList.append(SystemMessage[aaa]);
     }
 
@@ -287,14 +287,16 @@ DropData GameSystem::DropItem(QList<HunLing> a){//通过魂灵列表生成掉落
     tempData.Exp=0;
     for (int i = 0; i < a.size(); i++){
         HunLing temp = a[i];
-        temp.Agility=SystemHL[temp.ID].Strength;
         temp.Agility=SystemHL[temp.ID].Agility;
+        temp.Strength = temp.Strength + temp.LV * 5 - temp.LV * 5 * temp.Agility / (temp.Agility +temp.Strength);
+        temp.Agility=a[i].Agility+temp.LV * 5 * temp.Agility / (temp.Agility +temp.Strength);;
         /*特定掉落
         if(temp.ID==x)
             tempData.Item.Insert(SystemItem[aaa]);*/
         /*全局掉落*/
 
 		int aaa = temp.DropItem[GetNumber(1, 9)];
+        if(aaa!=0)
         tempData.Item.append(SystemItem[aaa]);
         tempData.Exp +=10;//要改！！
 		tempData.Coin += GetNumber(temp.LV * 1.5, temp.LV * 2);

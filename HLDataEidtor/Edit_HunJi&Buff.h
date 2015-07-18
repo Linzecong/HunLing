@@ -227,9 +227,9 @@ SkillWidget::SkillWidget()
     ID_HJ->setEnabled(false);
 
     Type_HJ = new QSpinBox;
-    Type_HJ->setRange(1, 5);
+    Type_HJ->setRange(0, 3);
     type_Buff = new QSpinBox;
-    type_Buff->setRange(1, 5);
+    type_Buff->setRange(1, 2);
 
     Energy_HJ = new QSpinBox;
     Energy_HJ->setRange(0, 1000);

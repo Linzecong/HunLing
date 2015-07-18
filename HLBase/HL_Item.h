@@ -13,7 +13,7 @@ class Item{
 	QString Des;
 	QString Name;
     int Type; //1战前使用,2战中使用,3不可使用
-    int ATKType;//0敌人单体,1敌人全体,2我方单体,3我方全体
+    ATKTYPE ATKType;//0敌人单体,1敌人全体,2我方单体,3我方全体
 	int Value;
 	//会永久增加的数值
 	int Str;
@@ -25,7 +25,7 @@ class Item{
     int Count;
 	void Init();
     Item(){
-        ID=Type=ATKType=Value=0;
+        ID=Type=Value=0;
         Des=Name="空";
         Str=Agi=Vit=Ene=Sour=Exp=0;
         Count=1;

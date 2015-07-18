@@ -7,19 +7,28 @@
 #include<QFile>
 #include<QTextStream>
 
+enum ATKTYPE
+{
+    ENEMYSINGLE=0,
+    ENEMYTEAM=1,
+    MYSIGLE=2,
+    MYTEAM=3
+
+};
+
 class HunJi{
   public:
 	int ID;
 	QString Name;
 	QString Des;
-	double Energy;
-	double Sour;
-    int Type;//0敌人单体,1敌人全体,2我方单体,3我方全体
+    int  Energy;
+    int Sour;
+    ATKTYPE Type;//0敌人单体,1敌人全体,2我方单体,3我方全体
 	int Turn;
 	int NowTurn;
 	void Init();
     HunJi(){
-        ID=Type=Turn=NowTurn=0;
+        ID=Turn=NowTurn=0;
         Name=Des="空";
         Energy=Sour=0;
     }

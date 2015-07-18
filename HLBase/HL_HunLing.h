@@ -16,10 +16,10 @@ class HunLing{
 	QString Des;
 	int Strength;
 	int Agility;
-	int ATK;
-	int DEF;
-	int VIT;
-    int VITNOW;
+    double ATK;
+    double DEF;
+    double VIT;
+    double VITNOW;
 	int K_Fire;
 	int K_Ice;
 	int K_Lig;
@@ -45,7 +45,7 @@ class HunLing{
         K_Fire=K_Ice=K_Lig=K_Tox=0;
         G_Fire=G_Ice=G_Lig=G_Tox=ATK_Str=ATK_Agi=0;
         DEF_Str= DEF_Agi=VIT_Vit=DEF_Ski=0;
-        ATK_Ski=SystemHJ[0];
+
         for(int i=0;i<10;i++)
             DropItem[i]=0;
     }

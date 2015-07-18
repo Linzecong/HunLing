@@ -217,7 +217,7 @@ else
     QMessageBox::about(this,"提示","你还不能去那里！");
 }
 void MainWidget::you(){
-    if(Game->Me.PosX==+1>25){
+    if(Game->Me.PosX==25){
         QMessageBox::about(this,"提示","这已经是世界的尽头！");
     return;
 }

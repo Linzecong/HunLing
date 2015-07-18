@@ -49,6 +49,7 @@ class SkillChooseDialog: public QDialog{
 public:
     int Energy;
     int Sour;
+    int type;//记录选择了哪个灵骨
     HunJi Skill;
     LGList LG;
     QListWidget List;
@@ -110,6 +111,7 @@ public:
                 return;
             }
             Skill=LG.Head.ATK_Ski;
+            type=1;
             break;
         case 1:
             if(LG.Body.ATK_Ski.NowTurn>0&&LG.Body.ATK_Ski.Energy>=Energy&&LG.Body.ATK_Ski.Sour>=Sour){
@@ -117,6 +119,7 @@ public:
                 return;
             }
             Skill=LG.Body.ATK_Ski;
+            type=2;
             break;
         case 2:
             if(LG.LHand.ATK_Ski.NowTurn>0&&LG.LHand.ATK_Ski.Energy>=Energy&&LG.LHand.ATK_Ski.Sour>=Sour){
@@ -124,6 +127,7 @@ public:
                 return;
             }
             Skill=LG.LHand.ATK_Ski;
+            type=3;
             break;
         case 3:
             if(LG.RHand.ATK_Ski.NowTurn>0&&LG.RHand.ATK_Ski.Energy>=Energy&&LG.RHand.ATK_Ski.Sour>=Sour){
@@ -131,6 +135,7 @@ public:
                 return;
             }
             Skill=LG.RHand.ATK_Ski;
+            type=4;
             break;
         case 4:
             if(LG.LLeg.ATK_Ski.NowTurn>0&&LG.LLeg.ATK_Ski.Energy>=Energy&&LG.LLeg.ATK_Ski.Sour>=Sour){
@@ -138,6 +143,7 @@ public:
                 return;
             }
             Skill=LG.LLeg.ATK_Ski;
+            type=5;
             break;
         case 5:
             if(LG.RLeg.ATK_Ski.NowTurn>0&&LG.RLeg.ATK_Ski.Energy>=Energy&&LG.RLeg.ATK_Ski.Sour>=Sour){
@@ -145,6 +151,7 @@ public:
                 return;
             }
             Skill=LG.RLeg.ATK_Ski;
+            type=6;
             break;
         }
         this->close();
@@ -164,7 +171,7 @@ public:
     FightItemWidget(QList<Item> a){
         tempItem=a;
         OK.setText("确定");
-        UseIndex=0;
+        UseIndex=-1;
         Close.setText("关闭");
         for(int i=0;i<a.size();i++)
         List.addItem(tempItem[i].Name+"作用："+tempItem[i].Des);
@@ -190,7 +197,7 @@ public:
             return;
         }
         UseIndex=List.currentRow();
-        this->close();
+        this->hide();
     }
     void Set(){OK.setEnabled(true);}
 };
@@ -252,10 +259,15 @@ class FightWidget: public QDialog{
 
 FightWidget::FightWidget(RenWu *a, NPC b){
     Me=a;
+    Me->Energy=Me->Ori_Energy;
+    Me->Sour=Me->Ori_Sour;
     Enemy=b;
+    Enemy.Energy=Enemy.Ori_Energy;
+    Enemy.Sour=Enemy.Ori_Sour;
     Energy.setText("魂力："+QString::number(Me->Energy)+"/"+QString::number(Me->Ori_Energy));
     Sour.setText("灵力："+QString::number(Me->Sour)+"/"+QString::number(Me->Ori_Sour));
     WinOrLose=0;
+
     for (int i = 0; i < a->LH.size(); i++)//灵环初始化成魂灵
         if(a->LH[i].ID!=0)
         MyHL.append(GameSystem::CreatHL(*a,a->LH[i]));
@@ -375,25 +387,25 @@ void FightWidget::Skill(){
         HunLing tempEnemy=EnemyHL[System->EB->index];
         QString msg="";
         switch(tempEnemy.ATK_Ski.Type){
-        case 0:{
+        case ENEMYSINGLE:{
         int a=GetNumber(1,MyHL.size());
-        HunLing tempMe=MyHL[a];//以后要优化
+        HunLing tempMe=MyHL[a-1];//以后要优化
         msg=System->Skill(&tempEnemy,&tempMe,&tempEnemy.ATK_Ski);
-        MyHL[a]=tempMe;
+        MyHL[a-1]=tempMe;
         break;
         }
-        case 1:{
+        case ENEMYTEAM:{
         msg=System->Skill(&tempEnemy,tmpMyHL,&tempEnemy.ATK_Ski);
         break;
         }
-        case 2:{
+        case MYSIGLE:{
         int b=GetNumber(1,EnemyHL.size());
-        HunLing b1=EnemyHL[b];//以后要优化
+        HunLing b1=EnemyHL[b-1];//以后要优化
         msg=System->Skill(&tempEnemy,&b1,&tempEnemy.ATK_Ski);
-        EnemyHL[b]=b1;
+        EnemyHL[b-1]=b1;
         break;
         }
-        case 3:{
+        case MYTEAM:{
         msg=System->Skill(&tempEnemy,tmpEnemyHL,&tempEnemy.ATK_Ski);
         break;
         }
@@ -424,7 +436,7 @@ void FightWidget::Skill(){
 
 
         switch(tempMe.ATK_Ski.Type){
-        case 0:{
+        case ENEMYSINGLE:{
             ChooseDialog* temp=new ChooseDialog(EnemyHL);
             temp->exec();
             HunLing tempEnemy1=EnemyHL[temp->num];
@@ -433,10 +445,10 @@ void FightWidget::Skill(){
             delete temp;
             break;
         }
-        case 1:
+        case ENEMYTEAM:
             msg=System->Skill(&tempMe,tmpEnemyHL,&tempMe.ATK_Ski);
             break;
-        case 2:{
+        case MYSIGLE:{
             ChooseDialog* temp1=new ChooseDialog(MyHL);
             temp1->exec();
             HunLing tempEnemy=MyHL[temp1->num];
@@ -445,7 +457,7 @@ void FightWidget::Skill(){
             delete temp1;
             break;
         }
-        case 3:
+        case MYTEAM:
             msg=System->Skill(&tempMe,tmpMyHL,&tempMe.ATK_Ski);
             break;
         }
@@ -471,10 +483,10 @@ void FightWidget::EnemyLGSkill(HunJi* Skill){
         switch(Skill->Type){
         case 0:{
         int a=GetNumber(1,MyHL.size());
-        HunLing tempMe=MyHL[a];//以后要优化
+        HunLing tempMe=MyHL[a-1];//以后要优化
         msg=System->Skill(&tempEnemy,&tempMe,Skill);
         msg=msg+"（灵骨技能）";
-        MyHL[a]=tempMe;
+        MyHL[a-1]=tempMe;
         break;
         }
         case 1:
@@ -483,10 +495,10 @@ void FightWidget::EnemyLGSkill(HunJi* Skill){
         break;
         case 2:{
         int b=GetNumber(1,EnemyHL.size());
-        HunLing b1=EnemyHL[b];//以后要优化
+        HunLing b1=EnemyHL[b-1];//以后要优化
         msg=System->Skill(&tempEnemy,&b1,Skill);
         msg=msg+"（灵骨技能）";
-        EnemyHL[b]=b1;
+        EnemyHL[b-1]=b1;
         break;
         }
         case 3:
@@ -546,23 +558,23 @@ void FightWidget::LGSkill(){
             break;
         }
 
-        switch(temp2->Skill.Type){
-        case 0:
+        switch(temp2->type){
+        case 1:
             Me->LG.Head.ATK_Ski=temp2->Skill;
             break;
-        case 1:
+        case 2:
             Me->LG.Body.ATK_Ski=temp2->Skill;
             break;
-        case 2:
+        case 3:
             Me->LG.RHand.ATK_Ski=temp2->Skill;
             break;
-        case 3:
+        case 4:
             Me->LG.LHand.ATK_Ski=temp2->Skill;
             break;
-        case 4:
+        case 5:
             Me->LG.RLeg.ATK_Ski=temp2->Skill;
             break;
-        case 5:
+        case 6:
             Me->LG.LLeg.ATK_Ski=temp2->Skill;
             break;
         }
@@ -585,7 +597,7 @@ void FightWidget::UseItem(){
     QString msg="";
     FightItemWidget* tempItemList=new FightItemWidget(Me->Bag);
     tempItemList->exec();
-    if(tempItemList->UseIndex==0){
+    if(tempItemList->UseIndex==-1){
         delete tempItemList;
         return;
     }
@@ -595,25 +607,25 @@ void FightWidget::UseItem(){
         ChooseDialog* temp=new ChooseDialog(EnemyHL);
         temp->exec();
         HunLing tempEnemy1=EnemyHL[temp->num];
-        msg=System->UseItem(tempItemList->UseIndex,&tempMe,&tempEnemy1);
+        msg=System->UseItem(Me->Bag[tempItemList->UseIndex].ID,&tempMe,&tempEnemy1);
         EnemyHL[temp->num]=tempEnemy1;
         delete temp;
         break;
     }
     case 1:
-        msg=System->UseItem(tempItemList->UseIndex,&tempMe,tmpEnemyHL);
+        msg=System->UseItem(Me->Bag[tempItemList->UseIndex].ID,&tempMe,tmpEnemyHL);
         break;
     case 2:{
         ChooseDialog* temp1=new ChooseDialog(MyHL);
         temp1->exec();
         HunLing tempEnemy=MyHL[temp1->num];
-        msg=System->UseItem(tempItemList->UseIndex,&tempMe,&tempEnemy);
+        msg=System->UseItem(Me->Bag[tempItemList->UseIndex].ID,&tempMe,&tempEnemy);
         MyHL[temp1->num]=tempEnemy;
         delete temp1;
         break;
     }
     case 3:
-        msg=System->UseItem(tempItemList->UseIndex,&tempMe,tmpMyHL);
+        msg=System->UseItem(Me->Bag[tempItemList->UseIndex].ID,&tempMe,tmpMyHL);
         break;
     }
 
@@ -740,6 +752,7 @@ void FightWidget::GoOn_Ckick(){
      if(System->CanGoOn()==-2){
          QMessageBox::about(this,"提示","分不出胜负！");
          WinOrLose=-1;
+         this->close();
          return;
      }
 

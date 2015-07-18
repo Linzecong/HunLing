@@ -450,6 +450,7 @@ int RenWu::UpdateLV(){
 		{
             sum += 1;
 			LV++;
+            Exp_Now=0;
             Exp_Need = 100 * LV;//等级公式need change
             Ori_Strength+=2;
             Ori_Agility+=2;
@@ -622,8 +623,7 @@ void RenWu::UpdateBuff(){
 	Strength = Ori_Strength;
 	Agility = Ori_Agility;
 	Vitality = Ori_Vitality;
-	Energy = Ori_Energy;
-	Sour = Ori_Sour;
+
     for (int i = 0; i <LH.size(); i++){
         if(LH[i].ID!=0)
         myBuffList.append(SystemBuff[LH[i].DEF_Ski]);
