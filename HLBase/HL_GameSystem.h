@@ -34,10 +34,10 @@ class GameSystem{
         SystemMessage[0].Init();
         SystemBuff[0].Init();
         SystemNPC[0].Init();
-        //Me.Init();
+        Me.Init();
 
 
-
+/*
         Me.LV=1;
         Me.Exp_Need=720;
         Me.Exp_Now=0;
@@ -62,10 +62,10 @@ class GameSystem{
         a.Agility=SystemHL[1].Agility+10;
 
         Me.LH.append(a);
+Me.UpdateBuff();
 
 
 
-        Me.UpdateBuff();
 
 
 
@@ -122,8 +122,8 @@ LingHuan GameSystem::CreateLH(HunLing a){
         temp.Col = "紫";
     if (temp.LV >= 90)
         temp.Col = "彩";
-    temp.Strength = int(double(a.Strength)*0.8);
-    temp.Agility = int(double(a.Agility)*0.8);
+    temp.Strength = a.Strength*0.8;
+    temp.Agility = a.Agility*0.8;
 	temp.ID = a.ID;
 	temp.DEF_Ski = a.DEF_Ski;
     temp.Value=(temp.Strength * 100 + temp.Agility * 100 + temp.LV * 50 ) * 1.5;
@@ -158,6 +158,7 @@ LingGu GameSystem::CreateLG(HunLing a,int type){
     temp.Strength = int(double(a.Strength)*0.8);
     temp.Agility = int(double(a.Agility)*0.8);
 	temp.ATK_Ski = a.ATK_Ski;
+    temp.ATK_Ski.NowTurn=0.;
 	temp.Add_Str = GetNumber(5, a.LV) / 5 + GetNumber(10, a.Strength) / 10;
 	temp.Add_Agi = GetNumber(5, a.LV) / 5 + GetNumber(10, a.Agility) / 10;
 	temp.Value =(temp.Strength * 100 + temp.Agility * 100 + temp.LV * 50 +temp.Add_Str * 150 + temp.Add_Agi * 150) * 1.5;
@@ -293,14 +294,15 @@ DropData GameSystem::DropItem(QList<HunLing> a){//通过魂灵列表生成掉落
     for (int i = 0; i < a.size(); i++){
         HunLing temp = a[i];
 
-        temp.Strength = temp.Strength + temp.LV * 2;
-        temp.Agility=temp.Agility+temp.LV * 2;
+
+        temp.Strength = SystemHL[temp.ID].Strength + temp.LV * 2;
+        temp.Agility=SystemHL[temp.ID].Agility+temp.LV * 2;
         /*特定掉落
         if(temp.ID==x)
             tempData.Item.Insert(SystemItem[aaa]);*/
         /*全局掉落*/
 
-        int count=GetNumber(0,GetNumber(0,GetNumber(0,3)));
+        int count=GetNumber(1,GetNumber(0,GetNumber(2,5)));
         for(int j=0;j<count;j++){
 		int aaa = temp.DropItem[GetNumber(1, 9)];
         if(aaa!=0)
@@ -308,7 +310,7 @@ DropData GameSystem::DropItem(QList<HunLing> a){//通过魂灵列表生成掉落
         }
         tempData.Exp +=(a[i].LV-1)*2+60;//要改！！
 		tempData.Coin += GetNumber(temp.LV * 1.5, temp.LV * 2);
-        if (GetNumber(1, 100) == 1){
+        if (GetNumber(1, 5) == 1){
 			LingGu tempLG = CreateLG(temp,GetNumber(1,6));
             tempData.LG.append(tempLG);
 		}

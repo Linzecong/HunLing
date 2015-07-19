@@ -132,6 +132,25 @@ FightSystem::FightSystem(RenWu* a, NPC *b, QList<HunLing *> a1, QList<HunLing *>
     MyHL=a1;
     EnemyHL=b1;
 	Turn = 1;
+    for (int i = 0; i < MyHL.size(); i++)
+        MyHL[i]->ATK_Ski.NowTurn=0;
+
+    for (int i = 0; i < EnemyHL.size(); i++)
+        EnemyHL[i]->ATK_Ski.NowTurn=0;
+
+    Me->LG.Head.ATK_Ski.NowTurn=0;
+    Me->LG.Body.ATK_Ski.NowTurn=0;
+    Me->LG.LHand.ATK_Ski.NowTurn=0;
+    Me->LG.RHand.ATK_Ski.NowTurn=0;
+    Me->LG.LLeg.ATK_Ski.NowTurn=0;
+    Me->LG.RLeg.ATK_Ski.NowTurn=0;
+    Enemy->LG.Head.ATK_Ski.NowTurn=0;
+    Enemy->LG.Body.ATK_Ski.NowTurn=0;
+    Enemy->LG.LHand.ATK_Ski.NowTurn=0;
+    Enemy->LG.RHand.ATK_Ski.NowTurn=0;
+    Enemy->LG.LLeg.ATK_Ski.NowTurn=0;
+    Enemy->LG.RLeg.ATK_Ski.NowTurn=0;
+
     EB=new EnergyBar(MyHL,EnemyHL);
 	SetBuff();
 }
@@ -168,6 +187,30 @@ void FightSystem::TurnOut(){// 技能冷却-1
         if (EnemyHL[i]->ATK_Ski.NowTurn < 0)
             EnemyHL[i]->ATK_Ski.NowTurn = 0;
 	}
+    if(Me->LG.Head.ATK_Ski.NowTurn>0)
+    Me->LG.Head.ATK_Ski.NowTurn--;
+    if(Me->LG.Body.ATK_Ski.NowTurn>0)
+    Me->LG.Body.ATK_Ski.NowTurn--;
+    if(Me->LG.LHand.ATK_Ski.NowTurn>0)
+    Me->LG.LHand.ATK_Ski.NowTurn--;
+    if(Me->LG.RHand.ATK_Ski.NowTurn>0)
+    Me->LG.RHand.ATK_Ski.NowTurn--;
+    if(Me->LG.LLeg.ATK_Ski.NowTurn>0)
+    Me->LG.LLeg.ATK_Ski.NowTurn--;
+    if(Me->LG.RLeg.ATK_Ski.NowTurn>0)
+    Me->LG.RLeg.ATK_Ski.NowTurn--;
+    if(Enemy->LG.Head.ATK_Ski.NowTurn>0)
+    Enemy->LG.Head.ATK_Ski.NowTurn--;
+    if(Enemy->LG.Body.ATK_Ski.NowTurn>0)
+    Enemy->LG.Body.ATK_Ski.NowTurn--;
+    if(Enemy->LG.LHand.ATK_Ski.NowTurn>0)
+    Enemy->LG.LHand.ATK_Ski.NowTurn--;
+    if(Enemy->LG.RHand.ATK_Ski.NowTurn>0)
+    Enemy->LG.RHand.ATK_Ski.NowTurn--;
+    if(Enemy->LG.LLeg.ATK_Ski.NowTurn>0)
+    Enemy->LG.LLeg.ATK_Ski.NowTurn--;
+    if(Enemy->LG.RLeg.ATK_Ski.NowTurn>0)
+    Enemy->LG.RLeg.ATK_Ski.NowTurn--;
     UpdateVIT();
 }
 

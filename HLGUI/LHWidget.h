@@ -104,19 +104,7 @@ LHWidget::LHWidget(RenWu* a){
 }
 
 void LHWidget::Data_Click(){
-    HunLing tempHL = SystemHL[tempLH.ID];
-    tempHL.LV = tempLH.LV;
-    tempHL.Strength += Me->Strength;
-    tempHL.Agility += Me->Agility;
-    tempHL.ATK =
-        (1 + 0.2 * tempHL.LV) * (tempHL.Strength * tempHL.ATK_Str +
-                                 tempHL.Agility * tempHL.ATK_Agi);
-    tempHL.DEF =
-        (1 + 0.2 * tempHL.LV) * (tempHL.Strength * tempHL.DEF_Str +
-                                 tempHL.Agility * tempHL.DEF_Agi);
-    tempHL.VIT = Me->Vitality * tempHL.VIT_Vit * tempHL.LV;
-    tempHL.VITNOW=tempHL.VIT;
-    HLData=new HLDataWidget(tempHL);
+    HLData=new HLDataWidget(GameSystem::CreatHL(*Me,tempLH));
     HLData->exec();
     delete HLData;
 }

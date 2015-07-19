@@ -69,12 +69,13 @@ void ItemWidget::Use_Click(){
 
 
     if(Me->Bag[temp].Type==1){
+    QMessageBox::about(NULL,"提示","使用成功！");
     Me->UseItem(Me->Bag[temp]);
     if(Me->Bag[temp].Count==1)
     Me->Bag.removeAt(temp);
     else
     Me->Bag[temp].Count--;
-    QMessageBox::about(NULL,"提示","使用成功！");
+
     UpDateList();
     return;
     }

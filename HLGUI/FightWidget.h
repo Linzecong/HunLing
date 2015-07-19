@@ -60,6 +60,7 @@ public:
         Skill.ID=0;
         Energy=b;
         Sour=c;
+        LG=a;
         Close.setText("关闭");
         if(a.Head.ID!=0)
         List.addItem(a.Head.Name+"   技能："+a.Head.ATK_Ski.Des+"   所需魂力："+QString::number(a.Head.ATK_Ski.Energy)+"   所需灵力："+QString::number(a.Head.ATK_Ski.Sour)+"   剩余冷却时间："+QString::number(a.Head.ATK_Ski.NowTurn));
@@ -417,7 +418,7 @@ void FightWidget::Skill(){
         Enemy.Sour-=tempEnemy.ATK_Ski.Sour;
 
         MessageList.addItem(msg);
-        EnemyHL[System->EB->index]=tempEnemy;
+
         GoOn.setEnabled(true);
     }
     if(System->EB->type==1){
@@ -469,7 +470,7 @@ void FightWidget::Skill(){
         Me->Energy-=tempMe.ATK_Ski.Energy;
         Me->Sour-=tempMe.ATK_Ski.Sour;
 
-        MyHL[System->EB->index]=tempMe;
+
 
         GoOn.setEnabled(true);
 
@@ -509,10 +510,10 @@ void FightWidget::EnemyLGSkill(HunJi* Skill){
         msg="（敌方）"+msg;
         QMessageBox::about(this,"提示",msg);
         MessageList.addItem(msg);
-        EnemyHL[System->EB->index]=tempEnemy;
 
-        Enemy.Energy-=tempEnemy.ATK_Ski.Energy;
-        Enemy.Sour-=tempEnemy.ATK_Ski.Sour;
+
+        Enemy.Energy-=Skill->Energy;
+        Enemy.Sour-=Skill->Sour;
 
         GoOn.setEnabled(true);
 
@@ -524,6 +525,7 @@ void FightWidget::LGSkill(){
         SkillChooseDialog* temp2=new SkillChooseDialog(Me->LG,Me->Energy,Me->Sour);
         temp2->exec();
         if(temp2->Skill.ID==0){
+            QMessageBox::about(this,"提示","Error");
             delete temp2;
             return;
         }
@@ -532,28 +534,28 @@ void FightWidget::LGSkill(){
             ChooseDialog* temp=new ChooseDialog(EnemyHL);
             temp->exec();
             HunLing tempEnemy1=EnemyHL[temp->num];
-            msg=System->Skill(&tempMe,&tempEnemy1,&tempMe.ATK_Ski);
+            msg=System->Skill(&tempMe,&tempEnemy1,&temp2->Skill);
             EnemyHL[temp->num]=tempEnemy1;
             msg=msg+"（灵骨技能）";
             delete temp;
             break;
         }
         case 1:
-            msg=System->Skill(&tempMe,tmpEnemyHL,&tempMe.ATK_Ski);
+            msg=System->Skill(&tempMe,tmpEnemyHL,&temp2->Skill);
             msg=msg+"（灵骨技能）";
             break;
         case 2:{
             ChooseDialog* temp1=new ChooseDialog(MyHL);
             temp1->exec();
             HunLing tempEnemy=MyHL[temp1->num];
-            msg=System->Skill(&tempMe,&tempEnemy,&tempMe.ATK_Ski);
+            msg=System->Skill(&tempMe,&tempEnemy,&temp2->Skill);
             MyHL[temp1->num]=tempEnemy;
             msg=msg+"（灵骨技能）";
             delete temp1;
             break;
         }
         case 3:
-            msg=System->Skill(&tempMe,tmpMyHL,&tempMe.ATK_Ski);
+            msg=System->Skill(&tempMe,tmpMyHL,&temp2->Skill);
             msg=msg+"（灵骨技能）";
             break;
         }
@@ -582,10 +584,10 @@ void FightWidget::LGSkill(){
         QMessageBox::about(this,"提示",msg);
         MessageList.addItem(msg);
 
-        Me->Energy-=tempMe.ATK_Ski.Energy;
-        Me->Sour-=tempMe.ATK_Ski.Sour;
+        Me->Energy-=temp2->Skill.Energy;
+        Me->Sour-=temp2->Skill.Sour;
 
-        MyHL[System->EB->index]=tempMe;
+        delete temp2;
         GoOn.setEnabled(true);
         this->SetButtonEnable(false);
 
@@ -626,15 +628,20 @@ void FightWidget::UseItem(){
     }
     case 3:
         msg=System->UseItem(&tempMe,tmpMyHL,Me->Bag[tempItemList->UseIndex].ID);
+
         break;
     }
 
     msg="（我方）"+msg;
     QMessageBox::about(this,"提示",msg);
     MessageList.addItem(msg);
-    Me->Bag.removeAt(tempItemList->UseIndex);
 
-    MyHL[System->EB->index]=tempMe;
+    if(Me->Bag[tempItemList->UseIndex].Count==1)
+    Me->Bag.removeAt(tempItemList->UseIndex);
+    else
+    Me->Bag[tempItemList->UseIndex].Count--;
+
+
     delete tempItemList;
 
     GoOn.setEnabled(true);

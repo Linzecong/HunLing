@@ -97,16 +97,16 @@ void RenWu::Save(){
     tmpfile.write(( char *)&Coin,b);
     tmpfile.write(( char *)&PosX,a);
     tmpfile.write(( char *)&PosY,a);
-    tmpfile.write(( char *)&Strength,b);
-    tmpfile.write(( char *)&Agility,b);
-    tmpfile.write(( char *)&Vitality,b);
-    tmpfile.write(( char *)&Energy,b);
-    tmpfile.write(( char *)&Sour,b);
-    tmpfile.write(( char *)&Ori_Strength,b);
-    tmpfile.write(( char *)&Ori_Agility,b);
-    tmpfile.write(( char *)&Ori_Vitality,b);
-    tmpfile.write(( char *)&Ori_Energy,b);
-    tmpfile.write(( char *)&Ori_Sour,b);
+    tmpfile.write(( char *)&Strength,a);
+    tmpfile.write(( char *)&Agility,a);
+    tmpfile.write(( char *)&Vitality,a);
+    tmpfile.write(( char *)&Energy,a);
+    tmpfile.write(( char *)&Sour,a);
+    tmpfile.write(( char *)&Ori_Strength,a);
+    tmpfile.write(( char *)&Ori_Agility,a);
+    tmpfile.write(( char *)&Ori_Vitality,a);
+    tmpfile.write(( char *)&Ori_Energy,a);
+    tmpfile.write(( char *)&Ori_Sour,a);
 
 tmpfile.write(( char *)&LG.Head.LV,a);
 tmpfile.write(( char *)&LG.Body.LV,a);
@@ -129,26 +129,26 @@ tmpfile.write(( char *)&LG.RHand.Type,a);
 tmpfile.write(( char *)&LG.LLeg.Type,a);
 tmpfile.write(( char *)&LG.RLeg.Type,a);
 
-tmpfile.write(( char *)&LG.Head.Value,b);
-tmpfile.write(( char *)&LG.Body.Value,b);
-tmpfile.write(( char *)&LG.LHand.Value,b);
-tmpfile.write(( char *)&LG.RHand.Value,b);
-tmpfile.write(( char *)&LG.LLeg.Value,b);
-tmpfile.write(( char *)&LG.RLeg.Value,b);
+tmpfile.write(( char *)&LG.Head.Value,a);
+tmpfile.write(( char *)&LG.Body.Value,a);
+tmpfile.write(( char *)&LG.LHand.Value,a);
+tmpfile.write(( char *)&LG.RHand.Value,a);
+tmpfile.write(( char *)&LG.LLeg.Value,a);
+tmpfile.write(( char *)&LG.RLeg.Value,a);
 
-tmpfile.write(( char *)&LG.Head.Strength,b);
-tmpfile.write(( char *)&LG.Body.Strength,b);
-tmpfile.write(( char *)&LG.LHand.Strength,b);
-tmpfile.write(( char *)&LG.RHand.Strength,b);
-tmpfile.write(( char *)&LG.LLeg.Strength,b);
-tmpfile.write(( char *)&LG.RLeg.Strength,b);
+tmpfile.write(( char *)&LG.Head.Strength,a);
+tmpfile.write(( char *)&LG.Body.Strength,a);
+tmpfile.write(( char *)&LG.LHand.Strength,a);
+tmpfile.write(( char *)&LG.RHand.Strength,a);
+tmpfile.write(( char *)&LG.LLeg.Strength,a);
+tmpfile.write(( char *)&LG.RLeg.Strength,a);
 
-tmpfile.write(( char *)&LG.Head.Agility,b);
-tmpfile.write(( char *)&LG.Body.Agility,b);
-tmpfile.write(( char *)&LG.LHand.Agility,b);
-tmpfile.write(( char *)&LG.RHand.Agility,b);
-tmpfile.write(( char *)&LG.LLeg.Agility,b);
-tmpfile.write(( char *)&LG.RLeg.Agility,b);
+tmpfile.write(( char *)&LG.Head.Agility,a);
+tmpfile.write(( char *)&LG.Body.Agility,a);
+tmpfile.write(( char *)&LG.LHand.Agility,a);
+tmpfile.write(( char *)&LG.RHand.Agility,a);
+tmpfile.write(( char *)&LG.LLeg.Agility,a);
+tmpfile.write(( char *)&LG.RLeg.Agility,a);
 
 tmpfile.write(( char *)&LG.Head.DEF_Ski,a);
 tmpfile.write(( char *)&LG.Body.DEF_Ski,a);
@@ -164,28 +164,28 @@ tmpfile.write(( char *)&LG.RHand.ATK_Ski.ID,a);
 tmpfile.write(( char *)&LG.LLeg.ATK_Ski.ID,a);
 tmpfile.write(( char *)&LG.RLeg.ATK_Ski.ID,a);
 
-tmpfile.write(( char *)&LG.Head.Add_Str,b);
-tmpfile.write(( char *)&LG.Body.Add_Str,b);
-tmpfile.write(( char *)&LG.LHand.Add_Str,b);
-tmpfile.write(( char *)&LG.RHand.Add_Str,b);
-tmpfile.write(( char *)&LG.LLeg.Add_Str,b);
-tmpfile.write(( char *)&LG.RLeg.Add_Str,b);
+tmpfile.write(( char *)&LG.Head.Add_Str,a);
+tmpfile.write(( char *)&LG.Body.Add_Str,a);
+tmpfile.write(( char *)&LG.LHand.Add_Str,a);
+tmpfile.write(( char *)&LG.RHand.Add_Str,a);
+tmpfile.write(( char *)&LG.LLeg.Add_Str,a);
+tmpfile.write(( char *)&LG.RLeg.Add_Str,a);
 
-tmpfile.write(( char *)&LG.Head.Add_Agi,b);
-tmpfile.write(( char *)&LG.Body.Add_Agi,b);
-tmpfile.write(( char *)&LG.LHand.Add_Agi,b);
-tmpfile.write(( char *)&LG.RHand.Add_Agi,b);
-tmpfile.write(( char *)&LG.LLeg.Add_Agi,b);
-tmpfile.write(( char *)&LG.RLeg.Add_Agi,b);
+tmpfile.write(( char *)&LG.Head.Add_Agi,a);
+tmpfile.write(( char *)&LG.Body.Add_Agi,a);
+tmpfile.write(( char *)&LG.LHand.Add_Agi,a);
+tmpfile.write(( char *)&LG.RHand.Add_Agi,a);
+tmpfile.write(( char *)&LG.LLeg.Add_Agi,a);
+tmpfile.write(( char *)&LG.RLeg.Add_Agi,a);
 
 for(int i=0;i<LH.size();i++){
     LingHuan temp=LH[i];
     tmpfile.write(( char *)&temp.LV,a);
     tmpfile.write(( char *)&temp.ID,a);
     tmpfile.write(( char *)&temp.DEF_Ski,a);
-    tmpfile.write(( char *)&temp.Value,b);
-    tmpfile.write(( char *)&temp.Strength,b);
-    tmpfile.write(( char *)&temp.Agility,b);
+    tmpfile.write(( char *)&temp.Value,a);
+    tmpfile.write(( char *)&temp.Strength,a);
+    tmpfile.write(( char *)&temp.Agility,a);
 
 }
 
@@ -208,13 +208,13 @@ for(int i=0;i<LGBag.size();i++){
 tmpfile.write(( char *)&temp.LV,a);
 tmpfile.write(( char *)&temp.ID,a);
 tmpfile.write(( char *)&temp.Type,a);
-tmpfile.write(( char *)&temp.Value,b);
-tmpfile.write(( char *)&temp.Strength,b);
-tmpfile.write(( char *)&temp.Agility,b);
+tmpfile.write(( char *)&temp.Value,a);
+tmpfile.write(( char *)&temp.Strength,a);
+tmpfile.write(( char *)&temp.Agility,a);
 tmpfile.write(( char *)&temp.DEF_Ski,a);
 tmpfile.write(( char *)&temp.ATK_Ski.ID,a);
-tmpfile.write(( char *)&temp.Add_Str,b);
-tmpfile.write(( char *)&temp.Add_Agi,b);
+tmpfile.write(( char *)&temp.Add_Str,a);
+tmpfile.write(( char *)&temp.Add_Agi,a);
 }
 
 for(int i=0;i<LHBag.size();i++){
@@ -222,9 +222,9 @@ for(int i=0;i<LHBag.size();i++){
     tmpfile.write(( char *)&temp.LV,a);
     tmpfile.write(( char *)&temp.ID,a);
     tmpfile.write(( char *)&temp.DEF_Ski,a);
-    tmpfile.write(( char *)&temp.Value,b);
-    tmpfile.write(( char *)&temp.Strength,b);
-    tmpfile.write(( char *)&temp.Agility,b);
+    tmpfile.write(( char *)&temp.Value,a);
+    tmpfile.write(( char *)&temp.Strength,a);
+    tmpfile.write(( char *)&temp.Agility,a);
 }
 
     tmpfile.close();
@@ -303,16 +303,16 @@ void RenWu::Init(){
     tmpfile.read(( char *)&Coin,b);
     tmpfile.read(( char *)&PosX,a);
     tmpfile.read(( char *)&PosY,a);
-    tmpfile.read(( char *)&Strength,b);
-    tmpfile.read(( char *)&Agility,b);
-    tmpfile.read(( char *)&Vitality,b);
-    tmpfile.read(( char *)&Energy,b);
-    tmpfile.read(( char *)&Sour,b);
-    tmpfile.read(( char *)&Ori_Strength,b);
-    tmpfile.read(( char *)&Ori_Agility,b);
-    tmpfile.read(( char *)&Ori_Vitality,b);
-    tmpfile.read(( char *)&Ori_Energy,b);
-    tmpfile.read(( char *)&Ori_Sour,b);
+    tmpfile.read(( char *)&Strength,a);
+    tmpfile.read(( char *)&Agility,a);
+    tmpfile.read(( char *)&Vitality,a);
+    tmpfile.read(( char *)&Energy,a);
+    tmpfile.read(( char *)&Sour,a);
+    tmpfile.read(( char *)&Ori_Strength,a);
+    tmpfile.read(( char *)&Ori_Agility,a);
+    tmpfile.read(( char *)&Ori_Vitality,a);
+    tmpfile.read(( char *)&Ori_Energy,a);
+    tmpfile.read(( char *)&Ori_Sour,a);
 
 tmpfile.read(( char *)&LG.Head.LV,a);
 tmpfile.read(( char *)&LG.Body.LV,a);
@@ -335,26 +335,26 @@ tmpfile.read(( char *)&LG.RHand.Type,a);
 tmpfile.read(( char *)&LG.LLeg.Type,a);
 tmpfile.read(( char *)&LG.RLeg.Type,a);
 
-tmpfile.read(( char *)&LG.Head.Value,b);
-tmpfile.read(( char *)&LG.Body.Value,b);
-tmpfile.read(( char *)&LG.LHand.Value,b);
-tmpfile.read(( char *)&LG.RHand.Value,b);
-tmpfile.read(( char *)&LG.LLeg.Value,b);
-tmpfile.read(( char *)&LG.RLeg.Value,b);
+tmpfile.read(( char *)&LG.Head.Value,a);
+tmpfile.read(( char *)&LG.Body.Value,a);
+tmpfile.read(( char *)&LG.LHand.Value,a);
+tmpfile.read(( char *)&LG.RHand.Value,a);
+tmpfile.read(( char *)&LG.LLeg.Value,a);
+tmpfile.read(( char *)&LG.RLeg.Value,a);
 
-tmpfile.read(( char *)&LG.Head.Strength,b);
-tmpfile.read(( char *)&LG.Body.Strength,b);
-tmpfile.read(( char *)&LG.LHand.Strength,b);
-tmpfile.read(( char *)&LG.RHand.Strength,b);
-tmpfile.read(( char *)&LG.LLeg.Strength,b);
-tmpfile.read(( char *)&LG.RLeg.Strength,b);
+tmpfile.read(( char *)&LG.Head.Strength,a);
+tmpfile.read(( char *)&LG.Body.Strength,a);
+tmpfile.read(( char *)&LG.LHand.Strength,a);
+tmpfile.read(( char *)&LG.RHand.Strength,a);
+tmpfile.read(( char *)&LG.LLeg.Strength,a);
+tmpfile.read(( char *)&LG.RLeg.Strength,a);
 
-tmpfile.read(( char *)&LG.Head.Agility,b);
-tmpfile.read(( char *)&LG.Body.Agility,b);
-tmpfile.read(( char *)&LG.LHand.Agility,b);
-tmpfile.read(( char *)&LG.RHand.Agility,b);
-tmpfile.read(( char *)&LG.LLeg.Agility,b);
-tmpfile.read(( char *)&LG.RLeg.Agility,b);
+tmpfile.read(( char *)&LG.Head.Agility,a);
+tmpfile.read(( char *)&LG.Body.Agility,a);
+tmpfile.read(( char *)&LG.LHand.Agility,a);
+tmpfile.read(( char *)&LG.RHand.Agility,a);
+tmpfile.read(( char *)&LG.LLeg.Agility,a);
+tmpfile.read(( char *)&LG.RLeg.Agility,a);
 
 tmpfile.read(( char *)&LG.Head.DEF_Ski,a);
 tmpfile.read(( char *)&LG.Body.DEF_Ski,a);
@@ -370,28 +370,37 @@ tmpfile.read(( char *)&LG.RHand.ATK_Ski.ID,a);
 tmpfile.read(( char *)&LG.LLeg.ATK_Ski.ID,a);
 tmpfile.read(( char *)&LG.RLeg.ATK_Ski.ID,a);
 
-tmpfile.read(( char *)&LG.Head.Add_Str,b);
-tmpfile.read(( char *)&LG.Body.Add_Str,b);
-tmpfile.read(( char *)&LG.LHand.Add_Str,b);
-tmpfile.read(( char *)&LG.RHand.Add_Str,b);
-tmpfile.read(( char *)&LG.LLeg.Add_Str,b);
-tmpfile.read(( char *)&LG.RLeg.Add_Str,b);
+LG.Head.ATK_Ski=SystemHJ[LG.Head.ATK_Ski.ID];
+LG.Body.ATK_Ski=SystemHJ[LG.Body.ATK_Ski.ID];
+LG.LHand.ATK_Ski=SystemHJ[LG.LHand.ATK_Ski.ID];
+LG.RHand.ATK_Ski=SystemHJ[LG.RHand.ATK_Ski.ID];
+LG.LLeg.ATK_Ski=SystemHJ[LG.LLeg.ATK_Ski.ID];
+LG.RLeg.ATK_Ski=SystemHJ[LG.RLeg.ATK_Ski.ID];
 
-tmpfile.read(( char *)&LG.Head.Add_Agi,b);
-tmpfile.read(( char *)&LG.Body.Add_Agi,b);
-tmpfile.read(( char *)&LG.LHand.Add_Agi,b);
-tmpfile.read(( char *)&LG.RHand.Add_Agi,b);
-tmpfile.read(( char *)&LG.LLeg.Add_Agi,b);
-tmpfile.read(( char *)&LG.RLeg.Add_Agi,b);
+
+
+tmpfile.read(( char *)&LG.Head.Add_Str,a);
+tmpfile.read(( char *)&LG.Body.Add_Str,a);
+tmpfile.read(( char *)&LG.LHand.Add_Str,a);
+tmpfile.read(( char *)&LG.RHand.Add_Str,a);
+tmpfile.read(( char *)&LG.LLeg.Add_Str,a);
+tmpfile.read(( char *)&LG.RLeg.Add_Str,a);
+
+tmpfile.read(( char *)&LG.Head.Add_Agi,a);
+tmpfile.read(( char *)&LG.Body.Add_Agi,a);
+tmpfile.read(( char *)&LG.LHand.Add_Agi,a);
+tmpfile.read(( char *)&LG.RHand.Add_Agi,a);
+tmpfile.read(( char *)&LG.LLeg.Add_Agi,a);
+tmpfile.read(( char *)&LG.RLeg.Add_Agi,a);
 
 for(int i=0;i<LH_SIZE;i++){
     LingHuan temp=LH[i];
     tmpfile.read(( char *)&temp.LV,a);
     tmpfile.read(( char *)&temp.ID,a);
     tmpfile.read(( char *)&temp.DEF_Ski,a);
-    tmpfile.read(( char *)&temp.Value,b);
-    tmpfile.read(( char *)&temp.Strength,b);
-    tmpfile.read(( char *)&temp.Agility,b);
+    tmpfile.read(( char *)&temp.Value,a);
+    tmpfile.read(( char *)&temp.Strength,a);
+    tmpfile.read(( char *)&temp.Agility,a);
     LH[i]=temp;
 }
 
@@ -417,14 +426,14 @@ for(int i=0;i<LGBAG_SIZE;i++){
 tmpfile.read(( char *)&temp.LV,a);
 tmpfile.read(( char *)&temp.ID,a);
 tmpfile.read(( char *)&temp.Type,a);
-tmpfile.read(( char *)&temp.Value,b);
-tmpfile.read(( char *)&temp.Strength,b);
-tmpfile.read(( char *)&temp.Agility,b);
+tmpfile.read(( char *)&temp.Value,a);
+tmpfile.read(( char *)&temp.Strength,a);
+tmpfile.read(( char *)&temp.Agility,a);
 tmpfile.read(( char *)&temp.DEF_Ski,a);
 tmpfile.read(( char *)&temp.ATK_Ski.ID,a);
 temp.ATK_Ski=SystemHJ[temp.ATK_Ski.ID];
-tmpfile.read(( char *)&temp.Add_Str,b);
-tmpfile.read(( char *)&temp.Add_Agi,b);
+tmpfile.read(( char *)&temp.Add_Str,a);
+tmpfile.read(( char *)&temp.Add_Agi,a);
 LGBag[i]=temp;
 }
 
@@ -433,9 +442,9 @@ for(int i=0;i<LHBAG_SIZE;i++){
     tmpfile.read(( char *)&temp.LV,a);
     tmpfile.read(( char *)&temp.ID,a);
     tmpfile.read(( char *)&temp.DEF_Ski,a);
-    tmpfile.read(( char *)&temp.Value,b);
-    tmpfile.read(( char *)&temp.Strength,b);
-    tmpfile.read(( char *)&temp.Agility,b);
+    tmpfile.read(( char *)&temp.Value,a);
+    tmpfile.read(( char *)&temp.Strength,a);
+    tmpfile.read(( char *)&temp.Agility,a);
     LHBag[i]=temp;
 }
 
@@ -494,6 +503,12 @@ int RenWu::FinishTask(Task a){
     for(int i=0;i<myTaskList.size();i++)//删除
     if(myTaskList[i].ID==a.ID)
         myTaskList.removeAt(i);
+
+    for(int i=0;i<Bag.size();i++)//删除任务道具
+    if(Bag[i].ID==a.NGetItem&&a.NGetItem!=0)
+        for(int j=0;j<a.MB;j++)
+        Bag[i].Count--;
+
 
 	Exp_Now += a.A_Exp;
 	Coin += a.A_Coin;

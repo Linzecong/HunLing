@@ -132,6 +132,7 @@ void MapNPCWidget::Attack_Click(){
        QMessageBox::about(this,"提示","恭喜！你升级了！");
 
     Attack.setEnabled(false);
+    SystemNPC[tempNPC.ID].TaskShow=199;
 
     }
     delete Battle;
