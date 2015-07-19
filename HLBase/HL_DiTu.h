@@ -20,6 +20,8 @@ int GetNumber(int a, int b){//获得随机数
 return sum;
 }
 
+
+
 class DiTu{
 	public:
 	QString Name;

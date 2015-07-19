@@ -13,7 +13,7 @@
 #include<QMessageBox>
 #include<../HLBase/HL_LingHuan.h>
 #include<../HLBase/HL_RenWu.h>
-#include<HLDataWidget.h>
+
 
 class LHWidget: public QDialog{
 	public:
@@ -110,8 +110,7 @@ void LHWidget::Data_Click(){
 }
 
 void LHWidget::Putoff_Click(){
-    Me->TakeoffLH(tempLH.ID);
-    Me->LHBag.append(tempLH);
+    Me->TakeoffLH(tempLH);
     QMessageBox::about(this,"成功！","成功脱下！");
     UpDate();
 }

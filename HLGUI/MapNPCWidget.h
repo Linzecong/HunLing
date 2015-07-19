@@ -12,8 +12,83 @@
 #include<QMessageBox>
 #include<../HLBase/HL_NPC.h>
 #include<../HLBase/HL_RenWu.h>
-#include<TaskMsgWidget.h>
 #include<FightWidget.h>
+class TaskMsgWidget: public QDialog{
+    public:
+    RenWu* Me;//自己的任务列表
+    QList<Task> tempTask;//能接受的任务列表
+    QListWidget List;
+    QLabel Title;
+    QLabel Name;
+    QLabel Des;
+    QLabel MB_FMB;
+    QLabel Reward;
+    QPushButton Except;
+    QVBoxLayout* Layout1;
+    QVBoxLayout* Layout2;
+    QVBoxLayout* MainLayout;
+
+    public:
+    TaskMsgWidget(RenWu* a,QList<Task> b);
+    void Except_Click();
+    void List_Click();
+    ~TaskMsgWidget(){}
+};
+
+TaskMsgWidget::TaskMsgWidget(RenWu* a, QList<Task> b){
+    Layout1=new QVBoxLayout;
+    Layout2=new QVBoxLayout;
+    MainLayout=new QVBoxLayout;
+    tempTask=b;
+    Me=a;
+
+    for(int i=0;i<tempTask.size();i++)
+        List.addItem(tempTask[i].Name);
+
+    Title.setText("任务列表：");
+    Name.setText("任务名称：");
+    Des.setText("任务简介：");
+    MB_FMB.setText("任务进度：");
+    Reward.setText("任务奖励：<br>");
+    Except.setText("接受！");
+    Layout1->addWidget(&Title);
+    Layout1->addWidget(&List);
+    Layout2->addWidget(&Name);
+    Layout2->addWidget(&Des);
+    Layout2->addWidget(&MB_FMB);
+    Layout2->addWidget(&Reward);
+    MainLayout->addLayout(Layout1);
+    MainLayout->addLayout(Layout2);
+    MainLayout->addWidget(&Except);
+    connect(&Except,&QPushButton::clicked,this,&Except_Click);
+    connect(&List,&QListWidget::clicked,this,&List_Click);
+    this->setLayout(MainLayout);
+}
+
+void TaskMsgWidget::Except_Click(){
+    int a=List.currentRow();
+    if(a<0)
+        return;
+
+    if(Me->ExceptTask(tempTask[a])==1){
+    Except.setEnabled(false);
+    QMessageBox::about(this,"提示","接受成功！");
+    }
+    else
+        QMessageBox::about(this,"提示","Error");
+    List.takeItem(a);
+    tempTask.takeAt(a);
+}
+
+void TaskMsgWidget::List_Click(){
+    Except.setEnabled(true);
+    int a=List.currentRow();
+    Task b=tempTask[a];
+    Name.setText("任务名称："+b.Name);
+    Des.setText("任务简介："+b.Des);
+    MB_FMB.setText("任务进度："+QString::number(b.FMB)+"/"+QString::number(b.MB));
+    Reward.setText("任务奖励：<br>金钱："+QString::number(b.A_Coin)+"<br>经验："+QString::number(b.A_Exp)+"<br>道具："+SystemItem[b.A_Item].Name+" * "+QString::number(b.A_Count)+"个");
+}
 
 class MapNPCWidget: public QWidget{
 	public:
@@ -99,41 +174,11 @@ void MapNPCWidget::Attack_Click(){
   //Battle->setWindowFlags(Qt::FramelessWindowHint);
     Battle->exec();
     if(Battle->WinOrLose==1){
-
-        for(int i=0;i<Me->myTaskList.size();i++)//完成任务
-                if(Me->myTaskList[i].NKillNPC==tempNPC.ID){
-                    Me->myTaskList[i].FMB++;
-                    SystemNPC[tempNPC.ID].CanATK=0;
-                }
-
-       Me->Exp_Now+=Battle->Reward.Exp;
-       Me->Coin+=Battle->Reward.Coin;
-       for(int i=0;i<Battle->Reward.Item.size();i++){
-           int stop=0;
-          for(int j=0;j<Me->Bag.size();j++)
-             if(Me->Bag[j].ID==Battle->Reward.Item[i].ID){
-                 Me->Bag[j].Count++;
-                 stop=1;
-                 break;
-             }
-          if(stop==0){
-          Me->Bag.append(Battle->Reward.Item[i]);
-          Me->Bag.last().Count=1;
-          }
-       }
-    for(int i=0;i<Battle->Reward.LG.size();i++)
-       Me->LGBag.append(Battle->Reward.LG[i]);
-
-    for(int i=0;i<Battle->Reward.LH.size();i++)
-       Me->LHBag.append(Battle->Reward.LH[i]);
-
-    int UL=Me->UpdateLV();
-    if(UL>0)
-       QMessageBox::about(this,"提示","恭喜！你升级了！");
-
-    Attack.setEnabled(false);
-    SystemNPC[tempNPC.ID].TaskShow=199;
-
+        Me->UpDateTask(tempNPC.ID,KILLNPC);
+        SystemNPC[tempNPC.ID].CanATK=0;
+        Me->ExceptReward(Battle->Reward);
+        Attack.setEnabled(false);
+        SystemNPC[tempNPC.ID].TaskShow=199;
     }
     delete Battle;
 }
@@ -150,11 +195,10 @@ void MapNPCWidget::Task_Click(){
 }
 
 void MapNPCWidget::Talk_Click(){
-    for(int i=0;i<Me->myTaskList.size();i++)//完成任务
-            if(Me->myTaskList[i].NTalkNPC==tempNPC.ID)
-                Me->myTaskList[i].FMB++;
+    Me->UpDateTask(tempNPC.ID,TALKNPC);
 
    QList<Message> temp=GameSystem::CanTalkList(tempNPC,Me);
+
    if(temp.isEmpty()==true)
        QMessageBox::about(this,"你好！","你好！");
    for(int i=0;i<temp.size();i++)

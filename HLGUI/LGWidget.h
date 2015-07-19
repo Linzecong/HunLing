@@ -107,30 +107,19 @@ LGWidget::LGWidget(RenWu* a){
 void LGWidget::Putoff_Click(){
     QString temp=Wear.item(Wear.currentRow())->text();
     if(temp!="空"){
-       if(Me->LG.Head.Name==temp){
-        Me->LGBag.append(Me->LG.Head);
-        Me->TakeoffLG(1);
-       }
-       if(Me->LG.Body.Name==temp){
-        Me->LGBag.append(Me->LG.Body);
-        Me->TakeoffLG(2);
-       }
-       if(Me->LG.LHand.Name==temp){
-        Me->LGBag.append(Me->LG.LHand);
-        Me->TakeoffLG(3);
-       }
-       if(Me->LG.RHand.Name==temp){
-        Me->LGBag.append(Me->LG.RHand);
-        Me->TakeoffLG(4);
-       }
-       if(Me->LG.LLeg.Name==temp){
-        Me->LGBag.append(Me->LG.LLeg);
-        Me->TakeoffLG(5);
-       }
-       if(Me->LG.RLeg.Name==temp){
-        Me->LGBag.append(Me->LG.RLeg);
-        Me->TakeoffLG(6);
-       }
+       if(Me->LG.Head.Name==temp)
+        Me->TakeoffLG(Me->LG.Head);
+       if(Me->LG.Body.Name==temp)
+        Me->TakeoffLG(Me->LG.Body);
+       if(Me->LG.LHand.Name==temp)
+        Me->TakeoffLG(Me->LG.LHand);
+       if(Me->LG.RHand.Name==temp)
+        Me->TakeoffLG(Me->LG.RHand);
+       if(Me->LG.LLeg.Name==temp)
+        Me->TakeoffLG(Me->LG.LLeg);
+       if(Me->LG.RLeg.Name==temp)
+        Me->TakeoffLG(Me->LG.RLeg);
+
            UpDate();
            QMessageBox::about(this,"提示","成功脱下！");
     }
@@ -150,7 +139,6 @@ void LGWidget::WearButton_Click(){
         break;
     case 1:
         QMessageBox::about(this,"提示","穿着成功！");
-        Me->LGBag.removeAt(a);
         break;
 
     }

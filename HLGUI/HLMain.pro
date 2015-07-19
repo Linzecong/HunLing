@@ -9,15 +9,11 @@ SOURCES += main.cpp
 
 HEADERS  += \
     BeginWidget.h \
-    DataWidget.h \
-    HLDataWidget.h \
-    HLWidget.h \
     ItemWidget.h \
     LGWidget.h \
     LHWidget.h \
     MapHLWidget.h \
     MapNPCWidget.h \
-    TaskMsgWidget.h \
     TaskWidget.h \
     TimeWidget.h \
     FightWidget.h \

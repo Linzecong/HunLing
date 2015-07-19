@@ -12,14 +12,7 @@
 #include "HL_FightSystem.h"
 #include "HL_LingHuan.h"
 
-class DropData{//掉落的东西
-  public:
-	int Exp;
-	int Coin;
-    QList<Item> Item;
-    QList<LingGu> LG;
-    QList<LingHuan> LH;
-};
+
 
 class GameSystem{
   public:
@@ -34,10 +27,10 @@ class GameSystem{
         SystemMessage[0].Init();
         SystemBuff[0].Init();
         SystemNPC[0].Init();
-        Me.Init();
+       // Me.Init();
 
 
-/*
+
         Me.LV=1;
         Me.Exp_Need=720;
         Me.Exp_Now=0;
@@ -79,10 +72,10 @@ Me.UpdateBuff();
     static QList<LingHuan> CreateLHList(DiTu a);
     static bool CanExcept(Task a,RenWu* b);
 	bool CanGoTo(DiTu a);
-
+    static bool IsTaskFinish(Task a);//判断此任务是否已完成
     static QList<Message> CanTalkList(NPC a,RenWu* b);
     static QList<Task> CanExceptList(NPC a,RenWu* b);
-    static QList<NPC> CanShowList(DiTu a,RenWu* b);
+    static QList<NPC> CanShowList(DiTu a);
     static DropData DropItem(QList<HunLing> a);
     template <class T>
     static HunLing CreatHL(T a,LingHuan b){
@@ -99,6 +92,10 @@ Me.UpdateBuff();
      }
 
 };
+
+bool GameSystem::IsTaskFinish(Task a){
+    return a.FMB>=a.MB;
+}
 
 
 LingHuan GameSystem::CreateLH(HunLing a){
@@ -278,7 +275,7 @@ QList<Task> GameSystem::CanExceptList(NPC a, RenWu *b){//返回当前可以接�
 	return tempList;
 }
 
-QList<NPC> GameSystem::CanShowList(DiTu a, RenWu *b){//返回目前可以显示的NPC
+QList<NPC> GameSystem::CanShowList(DiTu a){//返回目前可以显示的NPC
     QList<NPC>  tempList;
     for (int i = 0; i <10; i++){
         if (SystemTask[SystemNPC[a.IndexNPC[i]].TaskShow].IsFinish==1&&a.IndexNPC[i]!=0)

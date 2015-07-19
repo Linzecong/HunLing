@@ -12,6 +12,21 @@
 #include "HL_LingGu.h"
 #include "HL_LingHuan.h"
 #include "HL_Task.h"
+class DropData{//掉落的东西
+  public:
+    int Exp;
+    int Coin;
+    QList<Item> Item;
+    QList<LingGu> LG;
+    QList<LingHuan> LH;
+};
+enum TASKTYPE
+{
+    KILLHL=0,
+    KILLNPC=1,
+    TALKNPC=2,
+    GETITEM=3
+};
 
 class RenWu{
   public:
@@ -44,11 +59,13 @@ class RenWu{
     int ExceptTask(Task a);//1接受成功，-1异常，0不能接受
     bool IsHaveTaskFinish();//判断是否有任务已完成
     int FinishTask(Task a);//1成功完成，-1异常
+    void UpDateTask(int Need,TASKTYPE type);//完成任务+1
     void UseItem(Item a);//战前使用道具只有这些效果,不负责删除
     int WearLH(LingHuan a);//穿灵环，等级不足返回-1，需求不够返回0，1返回成功,2返回相同
     int WearLG(LingGu a);//穿灵骨,-1已有灵骨，0需求不足，1成功
-    void TakeoffLH(int a);//a is ID
-    void TakeoffLG(int a);// a is Type
+    void TakeoffLH(LingHuan a);
+    void TakeoffLG(LingGu a);
+    void ExceptReward(DropData a);//接受奖励
 
     void UpdateBuff();//更新战前Buff
     void Save();
@@ -60,6 +77,59 @@ RenWu::RenWu(){
     LV=0;Exp_Need=0;Exp_Now=0;Name="空";Coin=0;PosX=0;PosY=0;
     Strength=0;Agility=0;Vitality=0;Energy=0;Sour=0;
     Ori_Strength=0;Ori_Agility=0;Ori_Vitality=0;Ori_Energy=0;Ori_Sour=0;
+}
+
+void RenWu::ExceptReward(DropData a){
+    Exp_Now+=a.Exp;
+    Coin+=a.Coin;
+    for(int i=0;i<a.Item.size();i++){
+        int stop=0;
+       for(int j=0;j<Bag.size();j++)
+          if(Bag[j].ID==a.Item[i].ID){
+              Bag[j].Count++;
+              stop=1;
+              break;
+          }
+       if(stop==0){
+       Bag.append(a.Item[i]);
+       Bag.last().Count=1;
+       }
+    }
+    for(int i=0;i<a.LG.size();i++)
+       LGBag.append(a.LG[i]);
+
+    for(int i=0;i<a.LH.size();i++)
+       LHBag.append(a.LH[i]);
+    int UL=UpdateLV();
+    if(UL>0)
+       QMessageBox::about(NULL,"提示","恭喜！你升级了！");
+}
+
+void RenWu::UpDateTask(int Need,TASKTYPE type){
+    for(int i=0;i<myTaskList.size();i++){
+        switch(type){
+        case KILLHL:
+            if(myTaskList[i].NKillHL==Need)
+                myTaskList[i].FMB++;
+            break;
+        case KILLNPC:
+            if(myTaskList[i].NKillNPC==Need){
+                myTaskList[i].FMB++;
+                }
+            break;
+        case TALKNPC:
+            if(myTaskList[i].NTalkNPC==Need)
+                myTaskList[i].FMB++;
+            break;
+        case GETITEM:
+            if(myTaskList[i].NGetItem==Need)
+                for(int j=0;j<Bag.size();j++)
+                    if(Bag[i].ID==Need)
+                        myTaskList[i].FMB=Bag[j].Count;
+            break;
+        }
+    }
+
 }
 
 void RenWu::Save(){
@@ -475,17 +545,12 @@ int RenWu::UpdateLV(){
 int RenWu::ExceptTask(Task a){
     if(a.ID==0)
         return -1;
-    for(int i=0;i<myTaskList.size();i++)
-        if(myTaskList[i].ID==0){
-            myTaskList[i]=a;
-            return 1;
-            }
-    for(int i=0;i<myTaskList.size();i++)
-       if(myTaskList[i].ID==a.ID){
-          return 0;
-}
 
-return -1;
+    for(int i=0;i<myTaskList.size();i++)
+       if(myTaskList[i].ID==a.ID)
+          return 0;
+    myTaskList.append(a);
+    return 1;
 }
 
 bool RenWu::IsHaveTaskFinish(){
@@ -540,6 +605,15 @@ void RenWu::UseItem(Item a)
 	Ori_Energy += a.Ene;
 	Ori_Sour += a.Sour;
 	Exp_Now += a.Exp;
+
+    for(int i=0;i<Bag.size();i++)
+        if(a.ID==Bag[i].ID){
+            if(Bag[i].Count>1)
+                Bag[i].Count--;
+            else
+                Bag.removeAt(i);
+        }
+
     int UL=UpdateLV();
     if(UL>0)
        QMessageBox::about(NULL,"提示","恭喜！你升级了！");
@@ -555,8 +629,12 @@ int RenWu::WearLH(LingHuan a){
 	else{
 		if (Ori_Strength < a.Strength || Ori_Agility < a.Agility)
 			return 0;
-		else
+        else{
            LH.append(a);
+           for(int j=0;j<LHBag.size();j++)
+               if(a.ID==LHBag[j].ID&&a.Value==LHBag[j].Value)
+                   LHBag.removeAt(j);
+        }
 
 		return 1;
 	}
@@ -599,19 +677,26 @@ int RenWu::WearLG(LingGu a){
 				LG.RLeg = a;
 				break;
 		}
+        for(int i=0;i<LGBag.size();i++)
+            if(a.ID==LGBag[i].ID&&a.Value==LGBag[i].Value)
+                LGBag.removeAt(i);
 		return 1;
 	}
 }
 
 
-void RenWu::TakeoffLH(int a){
+void RenWu::TakeoffLH(LingHuan a){
     for(int i=0;i<LH.size();i++)
-        if(LH[i].ID==a)
+        if(LH[i].ID==a.ID&&a.Value==LH[i].Value){
             LH.removeAt(i);
+            LHBag.append(a);
+            break;
+        }
+
 }
 
-void RenWu::TakeoffLG(int a){
-    switch (a){
+void RenWu::TakeoffLG(LingGu a){
+    switch (a.Type){
     case 1:
         LG.Head.clear();
             break;
@@ -631,6 +716,7 @@ void RenWu::TakeoffLG(int a){
         LG.RLeg.clear();
             break;
     }
+    LGBag.append(a);
 }
 
 void RenWu::UpdateBuff(){

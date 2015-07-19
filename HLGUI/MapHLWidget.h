@@ -89,37 +89,9 @@ void MapHLWidget::Attack_Click(){
   //Battle->setWindowFlags(Qt::FramelessWindowHint);
     Battle->exec();
     if(Battle->WinOrLose==1){
-
-        for(int i=0;i<Me->myTaskList.size();i++)//完成任务
-            for(int j=0;j<EnemyList.size();j++)
-                if(Me->myTaskList[i].NKillHL==EnemyList[j].ID)
-                    Me->myTaskList[i].FMB++;
-
-       Me->Exp_Now+=Battle->Reward.Exp;
-       Me->Coin+=Battle->Reward.Coin;
-
-       for(int i=0;i<Battle->Reward.Item.size();i++){
-           int stop=0;
-          for(int j=0;j<Me->Bag.size();j++)
-             if(Me->Bag[j].ID==Battle->Reward.Item[i].ID){
-                 Me->Bag[j].Count++;
-                 stop=1;
-                 break;
-             }
-          if(stop==0){
-          Me->Bag.append(Battle->Reward.Item[i]);
-          Me->Bag.last().Count=1;
-          }
-       }
-    for(int i=0;i<Battle->Reward.LG.size();i++)
-       Me->LGBag.append(Battle->Reward.LG[i]);
-
-    for(int i=0;i<Battle->Reward.LH.size();i++)
-       Me->LHBag.append(Battle->Reward.LH[i]);
-
-    int UL=Me->UpdateLV();
-    if(UL>0)
-       QMessageBox::about(this,"提示","恭喜！你升级了！");
+        Me->UpDateTask(tempNPC.ID,KILLNPC);
+        SystemNPC[tempNPC.ID].CanATK=0;
+        Me->ExceptReward(Battle->Reward);
 
     this->setEnabled(false);
 

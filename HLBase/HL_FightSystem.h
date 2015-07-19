@@ -90,6 +90,12 @@ class FightSystem{
     QString Skill(HunLing * a, QList<HunLing*> b, HunJi * skill);//技能，直接传入技能。全体。注意replace
     QString UseItem(HunLing * a, HunLing *b, int c);//用道具，道具编号。
     QString UseItem( HunLing * a, QList<HunLing*> b,int c);//用道具，道具编号。全体，注意replace
+    template<class T>
+    void UsedSkill(T* a,HunJi* b){
+            b->NowTurn += b->Turn;
+            a->Energy-=b->Energy;
+            a->Sour-=b->Sour;
+    }
 
     double ATKPoint(HunLing a,HunLing b,int type,double per){
         double Point = 0;
@@ -244,7 +250,7 @@ QString FightSystem::Attack(HunLing * a, HunLing * b){
 
 QString FightSystem::Skill(HunLing * a, HunLing * b, HunJi * skill){//注意技能类型！和体力小于0(敏捷制0)
 	QString Description;
-	skill->NowTurn += skill->Turn;
+
 	switch (skill->ID){
 	case 1:
         b->DEF=b->DEF*0.9;
@@ -282,7 +288,7 @@ QString FightSystem::Skill(HunLing * a, HunLing * b, HunJi * skill){//注意技�
 
 QString FightSystem::Skill(HunLing * a, QList<HunLing *> b, HunJi * skill){
     QString Description;
-    skill->NowTurn += skill->Turn;
+
     switch (skill->ID){
 
     case 4:
@@ -343,6 +349,15 @@ QString FightSystem::UseItem(HunLing *a, HunLing * b, int c){
         a->VITNOW = 0;
         a->Agility=0;
     }
+
+    for(int i=0;i<Me->Bag.size();i++)
+        if(c==Me->Bag[i].ID){
+            if(Me->Bag[i].Count>1)
+                Me->Bag[i].Count--;
+            else
+                Me->Bag.removeAt(i);
+        }
+
 	return Description;
 
 }

@@ -44,8 +44,8 @@ MapWidget::MapWidget(DiTu a,RenWu* b){
     Map=a;
     Me=b;
 
-    NPC_List=GameSystem::CanShowList(Map,Me);//初始化NPC列表
-    //for(int i=0;i<GetNumber(0,9);i++)
+    NPC_List=GameSystem::CanShowList(Map);//初始化NPC列表
+
     for(int i=0;i<9;i++)
     Enemy_List.append(GameSystem::CreateLHList(Map));//初始化魂灵列表的列表
 
@@ -70,7 +70,7 @@ MapWidget::MapWidget(DiTu a,RenWu* b){
 
 void MapWidget::UpDate(DiTu a){
     Map=a;
-    NPC_List=GameSystem::CanShowList(Map,Me);
+    NPC_List=GameSystem::CanShowList(Map);
 
     Enemy_List.clear();
 
@@ -95,7 +95,7 @@ void MapWidget::UpDate(DiTu a){
 
 void MapWidget::UpDateNPC(DiTu a){
     Map=a;
-    NPC_List=GameSystem::CanShowList(Map,Me);
+    NPC_List=GameSystem::CanShowList(Map);
 
     for(int i=0;i<9;i++)
         MapNPC[i].Clear();

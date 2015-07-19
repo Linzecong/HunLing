@@ -55,10 +55,6 @@ TaskWidget::TaskWidget(RenWu* a){
     connect(&Finish,&QPushButton::clicked,this,&Finish_Click);
     connect(&List,&QListWidget::clicked,this,&List_Click);
 
-    for(int i=0;i<Me->myTaskList.size();i++)//完成任务
-        for(int j=0;j<Me->Bag.size();j++)
-            if(Me->myTaskList[i].NGetItem==Me->Bag[j].ID)
-                Me->myTaskList[i].FMB=Me->Bag[j].Count;
 }
 
 void TaskWidget::Finish_Click(){
@@ -84,7 +80,7 @@ void TaskWidget::List_Click(){
     MB_FMB.setText("任务进度："+QString::number(b.FMB)+"/"+QString::number(b.MB));
     Reward.setText("任务奖励：<br>金钱："+QString::number(b.A_Coin)+"<br>经验："+QString::number(b.A_Exp)+"<br>"+SystemItem[b.A_Item].Name+"x"+QString::number(b.A_Count)+"个");
 
-    if(b.FMB>=b.MB&&a>=0)//如果任务已完成
+    if(GameSystem::IsTaskFinish(b))//如果任务已完成
         Finish.setEnabled(true);
 }
 

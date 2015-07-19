@@ -12,12 +12,155 @@
 #include<QPushButton>
 #include<QListWidget>
 #include<QMessageBox>
-#include<HLWidget.h>
 #include<../HLBase/HL_FightSystem.h>
 #include<../HLBase/HL_NPC.h>
 #include<../HLBase/HL_HunLing.h>
 #include<../HLBase/HL_RenWu.h>
 #include<../HLBase/HL_GameSystem.h>
+
+class HLDataWidget: public QDialog{
+    public:
+    HunLing tempHL;
+    QLabel Name;
+    QLabel Des;
+    QLabel Strength;
+    QLabel Agility;
+    QLabel ATK;
+    QLabel DEF;
+    QLabel VIT;
+    QLabel K_Fire;
+    QLabel K_Ice;
+    QLabel K_Lig;
+    QLabel K_Tox;
+    QLabel G_Fire;
+    QLabel G_Ice;
+    QLabel G_Lig;
+    QLabel G_Tox;
+    QLabel DEF_Ski;
+    QLabel ATK_Ski;
+    QVBoxLayout MainLayout;
+    public:
+    void setData(HunLing a);
+    HLDataWidget(HunLing a);
+    ~HLDataWidget(){}
+};
+
+HLDataWidget::HLDataWidget(HunLing a){
+    tempHL=a;
+    Name.setText("名字："+a.Name);
+    Des.setText("介绍："+a.Des);
+    Strength.setText("力量："+QString::number(a.Strength));
+    Agility.setText("敏捷："+QString::number(a.Agility));
+    ATK.setText("攻击力："+QString::number(a.ATK));
+    DEF.setText("防御力："+QString::number(a.DEF));
+    VIT.setText("生命力："+QString::number(a.VIT));
+    K_Fire.setText("火抗："+QString::number(a.K_Fire));
+    K_Ice.setText("冰抗："+QString::number(a.K_Ice));
+    K_Lig.setText("电抗："+QString::number(a.K_Lig));
+    K_Tox.setText("毒抗："+QString::number(a.K_Tox));
+    G_Fire.setText("火焰伤害："+QString::number(a.G_Fire));
+    G_Ice.setText("冰冷伤害："+QString::number(a.G_Ice));
+    G_Lig.setText("电击伤害："+QString::number(a.G_Lig));
+    G_Tox.setText("毒素伤害："+QString::number(a.G_Tox));
+    ATK_Ski.setText("攻击技能：<br>"+SystemHJ[a.DEF_Ski].Name+"："+SystemHJ[a.DEF_Ski].Des);
+    DEF_Ski.setText("防御技能：<br>"+SystemBuff[a.DEF_Ski].Name+"："+SystemBuff[a.DEF_Ski].Des);
+    MainLayout.addWidget(&Name);
+    MainLayout.addWidget(&Des);
+    MainLayout.addWidget(&Strength);
+    MainLayout.addWidget(&Agility);
+    MainLayout.addWidget(&ATK);
+    MainLayout.addWidget(&DEF);
+    MainLayout.addWidget(&VIT);
+    MainLayout.addWidget(&K_Fire);
+    MainLayout.addWidget(&K_Ice);
+    MainLayout.addWidget(&K_Lig);
+    MainLayout.addWidget(&K_Tox);
+    MainLayout.addWidget(&G_Fire);
+    MainLayout.addWidget(&G_Ice);
+    MainLayout.addWidget(&G_Lig);
+    MainLayout.addWidget(&G_Tox);
+    MainLayout.addWidget(&ATK_Ski);
+    MainLayout.addWidget(&DEF_Ski);
+    this->setLayout(&MainLayout);
+}
+
+void HLDataWidget::setData(HunLing a){
+    tempHL=a;
+    Name.setText("名字："+a.Name);
+    Des.setText("介绍："+a.Des);
+    Strength.setText("力量："+QString::number(a.Strength));
+    Agility.setText("敏捷："+QString::number(a.Agility));
+    ATK.setText("攻击力："+QString::number(a.ATK));
+    DEF.setText("防御力："+QString::number(a.DEF));
+    VIT.setText("生命力："+QString::number(a.VIT));
+    K_Fire.setText("火抗："+QString::number(a.K_Fire));
+    K_Ice.setText("冰抗："+QString::number(a.K_Ice));
+    K_Lig.setText("电抗："+QString::number(a.K_Lig));
+    K_Tox.setText("毒抗："+QString::number(a.K_Tox));
+    G_Fire.setText("火焰伤害："+QString::number(a.G_Fire));
+    G_Ice.setText("冰冷伤害："+QString::number(a.G_Ice));
+    G_Lig.setText("电击伤害："+QString::number(a.G_Lig));
+    G_Tox.setText("毒素伤害："+QString::number(a.G_Tox));
+    ATK_Ski.setText("攻击技能：<br>"+SystemHJ[a.DEF_Ski].Name+"："+SystemHJ[a.DEF_Ski].Des);
+    DEF_Ski.setText("防御技能：<br>"+SystemBuff[a.DEF_Ski].Name+"："+SystemBuff[a.DEF_Ski].Des);
+}
+
+class HLWidget: public QWidget{
+    public:
+    HunLing tempHL;
+    QLabel Head;
+    QLabel Name;
+    QLabel LV;
+    QLabel ATK;
+    QLabel DEF;
+    QLabel VIT;
+    QPushButton Data;
+    QVBoxLayout MainLayout;
+    HLDataWidget* tempData;
+    public:
+    HLWidget();
+    ~HLWidget(){}
+    void Data_Click();
+    void setData(HunLing a);
+
+};
+HLWidget::HLWidget(){
+//  Head.setPixmap(QPixmap::load(""));
+    Name.setText("名字");
+    LV.setText("等级：");
+    ATK.setText("攻击力：");
+    DEF.setText("防御力：");
+    VIT.setText("生命力：");
+    LV.setText("等级：");
+    ATK.setText("攻击力：");
+    DEF.setText("防御力：");
+    VIT.setText("生命力：");
+    Data.setText("详细");
+    MainLayout.addWidget(&Head);
+    MainLayout.addWidget(&Name);
+    MainLayout.addWidget(&LV);
+    MainLayout.addWidget(&ATK);
+    MainLayout.addWidget(&DEF);
+    MainLayout.addWidget(&VIT);
+    MainLayout.addWidget(&Data);
+    this->setLayout(&MainLayout);
+    connect(&Data,&QPushButton::clicked,this,&HLWidget::Data_Click);
+}
+
+void HLWidget::Data_Click(){
+    tempData=new HLDataWidget(tempHL);
+    tempData->exec();
+    delete tempData;
+}
+
+void HLWidget::setData(HunLing a){
+    tempHL=a;
+    Name.setText(a.Name);
+    LV.setText("等级："+QString::number(a.LV));
+    ATK.setText("攻击力："+QString::number(a.ATK));
+    DEF.setText("防御力："+QString::number(a.DEF));
+    VIT.setText("生命力："+QString::number(a.VITNOW)+"/"+QString::number(a.VIT));
+}
 
 class ChooseDialog: public QDialog{
 	public:
@@ -414,8 +557,8 @@ void FightWidget::Skill(){
         msg="（敌方）"+msg;
         QMessageBox::about(this,"提示",msg);
 
-        Enemy.Energy-=tempEnemy.ATK_Ski.Energy;
-        Enemy.Sour-=tempEnemy.ATK_Ski.Sour;
+        System->UsedSkill(&Enemy,&tempEnemy.ATK_Ski);
+        EnemyHL[System->EB->index].ATK_Ski=tempEnemy.ATK_Ski;
 
         MessageList.addItem(msg);
 
@@ -467,9 +610,9 @@ void FightWidget::Skill(){
         QMessageBox::about(this,"提示",msg);
         MessageList.addItem(msg);
 
-        Me->Energy-=tempMe.ATK_Ski.Energy;
-        Me->Sour-=tempMe.ATK_Ski.Sour;
 
+        System->UsedSkill(Me,&tempMe.ATK_Ski);
+        MyHL[System->EB->index].ATK_Ski=tempMe.ATK_Ski;
 
 
         GoOn.setEnabled(true);
@@ -512,8 +655,8 @@ void FightWidget::EnemyLGSkill(HunJi* Skill){
         MessageList.addItem(msg);
 
 
-        Enemy.Energy-=Skill->Energy;
-        Enemy.Sour-=Skill->Sour;
+        System->UsedSkill(&Enemy,Skill);
+
 
         GoOn.setEnabled(true);
 
@@ -560,6 +703,8 @@ void FightWidget::LGSkill(){
             break;
         }
 
+        System->UsedSkill(Me,&temp2->Skill);
+
         switch(temp2->type){
         case 1:
             Me->LG.Head.ATK_Ski=temp2->Skill;
@@ -584,8 +729,6 @@ void FightWidget::LGSkill(){
         QMessageBox::about(this,"提示",msg);
         MessageList.addItem(msg);
 
-        Me->Energy-=temp2->Skill.Energy;
-        Me->Sour-=temp2->Skill.Sour;
 
         delete temp2;
         GoOn.setEnabled(true);
@@ -636,10 +779,6 @@ void FightWidget::UseItem(){
     QMessageBox::about(this,"提示",msg);
     MessageList.addItem(msg);
 
-    if(Me->Bag[tempItemList->UseIndex].Count==1)
-    Me->Bag.removeAt(tempItemList->UseIndex);
-    else
-    Me->Bag[tempItemList->UseIndex].Count--;
 
 
     delete tempItemList;
