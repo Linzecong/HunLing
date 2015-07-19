@@ -41,3 +41,5 @@ HEADERS  += \
     ../HLBase/HL_NPC.h \
     ../HLBase/HL_RenWu.h \
     ../HLBase/HL_Task.h
+
+RESOURCES +=

@@ -24,9 +24,21 @@ class BeginWidget :public QWidget{
 };
 
 BeginWidget::BeginWidget(){
+    QPropertyAnimation *animation = new QPropertyAnimation(&Begin, "geometry");
+    animation->setDuration(1000);
+    animation->setStartValue(QRect(0, 0, 0, 0));
+
+
+    animation->start();
+    QPropertyAnimation *animation1 = new QPropertyAnimation(&Quit, "geometry");
+    animation1->setDuration(2000);
+    animation1->setStartValue(QRect(0, 0, 100, 30));
+
+
+    animation1->start();
     this->setFixedSize(QSize(640,480));
-    Title.setText("魂灵师");
-    Text.setText("这就是魂灵师……");
+    //Title.setText("魂灵师");
+    //Text.setText("这就是魂灵师……");
     Begin.setText("开始游戏");
     Quit.setText("退出");
     MainLayout.addWidget(&Title);

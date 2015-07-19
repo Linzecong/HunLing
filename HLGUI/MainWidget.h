@@ -208,6 +208,8 @@ protected:
 };
 
 MainWidget::MainWidget(){
+
+
     Layout1=new QVBoxLayout;
     MainLayout=new QHBoxLayout;
 Game=new GameSystem;
