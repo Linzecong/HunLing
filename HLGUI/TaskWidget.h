@@ -51,6 +51,7 @@ TaskWidget::TaskWidget(RenWu* a){
     MainLayout->addWidget(&Title);
     MainLayout->addWidget(&List);
     MainLayout->addLayout(Layout1);
+    MainLayout->addStretch();
     this->setLayout(MainLayout);
     connect(&Finish,&QPushButton::clicked,this,&Finish_Click);
     connect(&List,&QListWidget::clicked,this,&List_Click);

@@ -19,9 +19,10 @@
 #include<LGWidget.h>
 #include<LHWidget.h>
 #include<TaskWidget.h>
-
+#include<QApplication>
 class BuffWidget: public QWidget{
     public:
+    TimeWidget* Time_Widget;
     QList<Buff> List;
     QLabel Buff1;
     QLabel Buff2;
@@ -34,6 +35,7 @@ class BuffWidget: public QWidget{
 };
 
 BuffWidget::BuffWidget(QList<Buff> a){
+        Time_Widget=new TimeWidget;
     List=a;
     Buff1.setText("战前Buff：<br>");
     for(int i=0;i<a.size();i++)
@@ -46,6 +48,7 @@ BuffWidget::BuffWidget(QList<Buff> a){
             Buff1.setText(Buff1.text()+a[i].Name+"："+a[i].Des+"<br>");
     MainLayout.addWidget(&Buff1);
     MainLayout.addWidget(&Buff2);
+    MainLayout.addWidget(Time_Widget);
     this->setLayout(&MainLayout);
 
 }
@@ -85,6 +88,7 @@ void UpDate();
 };
 
 DataWidget::DataWidget(RenWu* a){
+    this->setFixedSize(QSize(180,640));
      MainLayout=new QVBoxLayout;
     Me=a;
     Title.setText("人物信息：");
@@ -112,7 +116,9 @@ DataWidget::DataWidget(RenWu* a){
     MainLayout->addWidget(&Vitality);
     MainLayout->addWidget(&Energy);
     MainLayout->addWidget(&Sour);
+    MainLayout->addStretch();
     MainLayout->addWidget(myBuff);
+
     this->setLayout(MainLayout);
 
 }
@@ -139,6 +145,7 @@ void DataWidget::UpDate(){
 
 class MapButtonWidget: public QWidget{
     public:
+
     QPushButton BagButton;
     QPushButton TaskButton;
     QPushButton LGButton;
@@ -152,6 +159,8 @@ class MapButtonWidget: public QWidget{
 };
 
 MapButtonWidget::MapButtonWidget(){
+    this->setFixedSize(QSize(180,640));
+
     MainLayout=new QVBoxLayout;
     BagButton.setText("背包");
     TaskButton.setText("任务");
@@ -167,14 +176,17 @@ MapButtonWidget::MapButtonWidget(){
     MainLayout->addWidget(&SaveButton);
     MainLayout->addWidget(&HelpButton);
     MainLayout->addWidget(&QuitButton);
+
+
     this->setLayout(MainLayout);
+
 }
 
 class MainWidget:public QWidget{
 	public:
     GameSystem* Game;
 	DataWidget* Data_Widget;
-	TimeWidget* Time_Widget;
+
 	MapWidget* Map_Widget;
 	ItemWidget* Item_Widget;
 	LGWidget* LG_Widget;
@@ -204,23 +216,30 @@ class MainWidget:public QWidget{
 
 protected:
     void keyPressEvent(QKeyEvent *e);
+    void closeEvent(QCloseEvent *e);
+
 
 };
+void MainWidget::closeEvent(QCloseEvent *e){
+    QMessageBox::about(this,"关闭","关闭");
+    QApplication::closeAllWindows();
+
+}
+
 
 MainWidget::MainWidget(){
 
-
+   //this->setFixedSize(QSize(1080,640));
     Layout1=new QVBoxLayout;
     MainLayout=new QHBoxLayout;
 Game=new GameSystem;
 Data_Widget=new DataWidget(&Game->Me);
-Time_Widget=new TimeWidget;
+
 
 MapButton_Widget=new MapButtonWidget;
 Map_Widget=new MapWidget(SystemMap[Game->Me.PosX][Game->Me.PosY],&Game->Me);
 
 Layout1->addWidget(Map_Widget);
-Layout1->addWidget(Time_Widget);
 MainLayout->addWidget(Data_Widget);
 MainLayout->addLayout(Layout1);
 MainLayout->addWidget(MapButton_Widget);
@@ -232,7 +251,7 @@ connect(&MapButton_Widget->BagButton,QPushButton::clicked,this,MainWidget::ShowI
 connect(&MapButton_Widget->TaskButton,QPushButton::clicked,this,MainWidget::ShowTask);
 connect(&MapButton_Widget->LGButton,QPushButton::clicked,this,MainWidget::ShowLG);
 connect(&MapButton_Widget->LHButton,QPushButton::clicked,this,MainWidget::ShowLH);
-connect(&Time_Widget->timer,&QTimer::timeout,Data_Widget,&DataWidget::UpDate);
+connect(&Data_Widget->myBuff->Time_Widget->timer,&QTimer::timeout,Data_Widget,&DataWidget::UpDate);
 
 this->setLayout(MainLayout);
 
@@ -276,8 +295,16 @@ void MainWidget::ShowLG(){
 }
 
 void MainWidget::ShowLH(){
+    QSound::play(DATAPATH+"6112.wav");
     LH_Widget=new LHWidget(&Game->Me);
+    QPropertyAnimation *animation = new QPropertyAnimation(LH_Widget, "geometry");
+    animation->setDuration(1000);
+    animation->setStartValue(QRect(this->geometry().left(),this->geometry().top(),LH_Widget->geometry().top(),LH_Widget->geometry().left()));
+    animation->setEndValue(QRect(this->geometry().left(),this->geometry().top()+100,LH_Widget->geometry().top(),LH_Widget->geometry().left()));
+
+    animation->start();
     LH_Widget->exec();
+
     delete LH_Widget;
 
 }

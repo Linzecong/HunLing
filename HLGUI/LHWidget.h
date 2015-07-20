@@ -49,11 +49,13 @@ class LHWidget: public QDialog{
     void UpDate();
     void SetData(LingHuan a);
 	~LHWidget(){}
+
 	
 };
 
 
 LHWidget::LHWidget(RenWu* a){
+this->setWindowFlags (Qt::CustomizeWindowHint);
     Layout1=new QVBoxLayout;
     Layout2=new QVBoxLayout;
     Layout3=new QVBoxLayout;

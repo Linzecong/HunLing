@@ -28,6 +28,7 @@ class MapHLWidget: public QWidget{
 	public:
     void Attack_Click();
     MapHLWidget(){
+        this->setFixedSize(QSize(80,200));
         this->setEnabled(false);
         MainLayout=new QVBoxLayout;
       //Head.setPixmap(QPixmap::load(""));
@@ -53,11 +54,13 @@ void MapHLWidget::Clear(){
     LV.setText("等级：");
     Count.setText("数量：");
     this->setEnabled(false);
+    this->setVisible(false);
 }
 
 void MapHLWidget::UpDateAll(RenWu* temp, QList<LingHuan> tempList){
     if(tempList.isEmpty()==true)
         return;
+    this->setVisible(true);
     this->setEnabled(true);
     Me=temp;
     EnemyList=tempList;
@@ -66,6 +69,7 @@ void MapHLWidget::UpDateAll(RenWu* temp, QList<LingHuan> tempList){
     Count.setText("数量："+QString::number(EnemyList.size()));
 
     if(EnemyList.isEmpty()==true){
+        this->setVisible(false);
         this->setEnabled(false);
         Name.setText("");
         LV.setText("等级：");

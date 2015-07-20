@@ -30,8 +30,8 @@ class TaskMsgWidget: public QDialog{
 
     public:
     TaskMsgWidget(RenWu* a,QList<Task> b);
-    void Except_Click();
-    void List_Click();
+    void Except_Click();//接受任务
+    void List_Click();//用于更新信息
     ~TaskMsgWidget(){}
 };
 
@@ -44,6 +44,7 @@ TaskMsgWidget::TaskMsgWidget(RenWu* a, QList<Task> b){
 
     for(int i=0;i<tempTask.size();i++)
         List.addItem(tempTask[i].Name);
+    List.setCurrentRow(0);
 
     Title.setText("任务列表：");
     Name.setText("任务名称：");
@@ -56,9 +57,9 @@ TaskMsgWidget::TaskMsgWidget(RenWu* a, QList<Task> b){
     Layout2->addWidget(&Name);
     Layout2->addWidget(&Des);
     Layout2->addWidget(&MB_FMB);
-    Layout2->addWidget(&Reward);
     MainLayout->addLayout(Layout1);
     MainLayout->addLayout(Layout2);
+    MainLayout->addWidget(&Reward);
     MainLayout->addWidget(&Except);
     connect(&Except,&QPushButton::clicked,this,&Except_Click);
     connect(&List,&QListWidget::clicked,this,&List_Click);
@@ -104,10 +105,11 @@ class MapNPCWidget: public QWidget{
     TaskMsgWidget* TaskMsg;
 
 	public:
-    void Attack_Click();
-    void Task_Click();
-    void Talk_Click();
+    void Attack_Click();//触发攻击
+    void Task_Click();//触发任务
+    void Talk_Click();//触发交谈
     MapNPCWidget(){
+        this->setFixedSize(QSize(80,200));
         MainLayout=new QVBoxLayout;
       //Head.setPixmap(QPixmap::load(""));
         LV.setText("等级：");
@@ -127,8 +129,8 @@ class MapNPCWidget: public QWidget{
         connect(&Talk,QPushButton::clicked,this,MapNPCWidget::Talk_Click);
     }
     ~MapNPCWidget(){}
-    void UpDateAll(RenWu* temp,NPC a);
-    void Clear();
+    void UpDateAll(RenWu* temp,NPC a);//更新
+    void Clear();//清除
 	
 	
 };
@@ -140,9 +142,11 @@ void MapNPCWidget::Clear(){
     Talk.setText("交谈");
     Attack.setText("攻击");
     this->setEnabled(false);
+    this->setVisible(false);
 }
 
 void MapNPCWidget::UpDateAll(RenWu* temp,NPC a){
+    this->setVisible(true);
     this->setEnabled(true);
     Attack.setEnabled(true);
 
@@ -158,7 +162,7 @@ void MapNPCWidget::UpDateAll(RenWu* temp,NPC a){
     Attack.setText("攻击");
 
     if(tempNPC.Name=="空")
-        this->setEnabled(false);
+        this->setVisible(false);
 }
 
 void MapNPCWidget::Attack_Click(){
