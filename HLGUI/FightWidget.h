@@ -46,6 +46,8 @@ class HLDataWidget: public QDialog{
 };
 
 HLDataWidget::HLDataWidget(HunLing a){
+    this->setWindowTitle("详细参数");
+    this->setObjectName("Widget");
     tempHL=a;
     Name.setText("名字："+a.Name);
     Des.setText("介绍："+a.Des);
@@ -125,17 +127,15 @@ class HLWidget: public QWidget{
 
 };
 HLWidget::HLWidget(){
+    this->setObjectName("Widget");
 //  Head.setPixmap(QPixmap::load(""));
     Name.setText("名字");
     LV.setText("等级：");
     ATK.setText("攻击力：");
     DEF.setText("防御力：");
     VIT.setText("生命力：");
-    LV.setText("等级：");
-    ATK.setText("攻击力：");
-    DEF.setText("防御力：");
-    VIT.setText("生命力：");
     Data.setText("详细");
+    Data.setFixedSize(150,30);
     MainLayout.addWidget(&Head);
     MainLayout.addWidget(&Name);
     MainLayout.addWidget(&LV);
@@ -167,18 +167,27 @@ class ChooseDialog: public QDialog{
 	int num;
     QListWidget List;
     QPushButton OK;
+    QPushButton Close;
     QVBoxLayout* MainLayout;
     ChooseDialog(QList<HunLing> a){
+        this->setFixedSize(290,300);
+        num=-1;
+        List.setFocusPolicy(Qt::NoFocus);
         for(int i=0;i<a.size();i++)
             List.addItem(a[i].Name+"   生命值："+QString::number(a[i].VITNOW));
         MainLayout=new QVBoxLayout;
         List.setCurrentRow(0);
         MainLayout->addWidget(&List);
         OK.setText("确定");
+        OK.setFixedSize(255,30);
+        Close.setText("关闭");
+        Close.setFixedSize(255,30);
         MainLayout->addWidget(&OK);
+        MainLayout->addWidget(&Close);
         this->setLayout(MainLayout);
         connect(&OK,&QPushButton::clicked,this,&ChooseDialog::OKClick);
-        this->setWindowFlags(Qt::FramelessWindowHint);
+        connect(&Close,&QPushButton::clicked,this,&ChooseDialog::close);
+        this->setWindowFlags(Qt::CustomizeWindowHint);
         this->setWindowTitle("请选择魂灵");
     }
     ~ChooseDialog(){}
@@ -200,11 +209,15 @@ public:
     QPushButton Close;
     QVBoxLayout* MainLayout;
     SkillChooseDialog(LGList a,int b,int c){
+        this->setFixedSize(290,300);
+        this->setWindowFlags(Qt::CustomizeWindowHint);
+        List.setFocusPolicy(Qt::NoFocus);
         Skill.ID=0;
         Energy=b;
         Sour=c;
         LG=a;
         Close.setText("关闭");
+        Close.setFixedSize(255,30);
         if(a.Head.ID!=0)
         List.addItem(a.Head.Name+"   技能："+a.Head.ATK_Ski.Des+"   所需魂力："+QString::number(a.Head.ATK_Ski.Energy)+"   所需灵力："+QString::number(a.Head.ATK_Ski.Sour)+"   剩余冷却时间："+QString::number(a.Head.ATK_Ski.NowTurn));
         else
@@ -230,6 +243,7 @@ public:
         else
         List.addItem("此位置无灵骨");
         OK.setText("确定");
+        OK.setFixedSize(255,30);
         MainLayout=new QVBoxLayout;
         List.setCurrentRow(0);
         MainLayout->addWidget(&List);
@@ -238,7 +252,6 @@ public:
         this->setLayout(MainLayout);
         connect(&OK,&QPushButton::clicked,this,&SkillChooseDialog::OKClick);
         connect(&Close,&QPushButton::clicked,this,&SkillChooseDialog::close);
-        this->setWindowFlags(Qt::FramelessWindowHint);
         this->setWindowTitle("请选择灵骨技能");
 
     }
@@ -313,10 +326,15 @@ public:
     QPushButton Close;
     QVBoxLayout* MainLayout;
     FightItemWidget(QList<Item> a){
+        this->setFixedSize(290,300);
+        List.setFocusPolicy(Qt::NoFocus);
+        this->setWindowFlags (Qt::CustomizeWindowHint);
         tempItem=a;
         OK.setText("确定");
+        OK.setFixedSize(255,30);
         UseIndex=-1;
         Close.setText("关闭");
+        Close.setFixedSize(255,30);
         for(int i=0;i<a.size();i++)
         List.addItem(tempItem[i].Name+"作用："+tempItem[i].Des);
 
@@ -330,7 +348,6 @@ public:
         connect(&OK,&QPushButton::clicked,this,&FightItemWidget::OKClick);
         connect(&Close,&QPushButton::clicked,this,&FightItemWidget::close);
         connect(&List,&QListWidget::clicked,this,&FightItemWidget::Set);
-        this->setWindowFlags(Qt::FramelessWindowHint);
         this->setWindowTitle("请选择道具");
     }
     ~FightItemWidget(){}
@@ -372,8 +389,11 @@ class FightWidget: public QDialog{
     QPushButton ItemButton;
     QPushButton SkipButton;
 
+
+
     QHBoxLayout* Layout1;
     QHBoxLayout* Layout2;
+    QHBoxLayout* LabelLayout;
     QVBoxLayout* MainLayout;
 
 
@@ -402,6 +422,12 @@ class FightWidget: public QDialog{
 };
 
 FightWidget::FightWidget(RenWu *a, NPC b){
+    this->setObjectName("Widget");
+    this->setFixedSize(670,480);
+    this->setWindowFlags (Qt::CustomizeWindowHint);
+    EnemyHLList.setFocusPolicy(Qt::NoFocus);
+    MyHLList.setFocusPolicy(Qt::NoFocus);
+    MessageList.setFocusPolicy(Qt::NoFocus);
     Me=a;
     Me->Energy=Me->Ori_Energy;
     Me->Sour=Me->Ori_Sour;
@@ -409,7 +435,8 @@ FightWidget::FightWidget(RenWu *a, NPC b){
     Enemy.Energy=Enemy.Ori_Energy;
     Enemy.Sour=Enemy.Ori_Sour;
     Energy.setText("魂力："+QString::number(Me->Energy)+"/"+QString::number(Me->Ori_Energy));
-    Sour.setText("灵力："+QString::number(Me->Sour)+"/"+QString::number(Me->Ori_Sour));
+    Sour.setText(QString::number(Me->Sour)+"/"+QString::number(Me->Ori_Sour)+"：力灵");
+    Sour.setAlignment(Qt::AlignRight);
     WinOrLose=0;
 
     for (int i = 0; i < a->LH.size(); i++)//灵环初始化成魂灵
@@ -440,12 +467,19 @@ FightWidget::FightWidget(RenWu *a, NPC b){
     MessageList.addItem("战斗开始！");
     HLData.setData(MyHL[0]);
     Title.setText("战斗中");
+    Title.setAlignment(Qt::AlignCenter);
     GoOn.setText("继续");
+    GoOn.setFixedSize(200,30);
     ATkButton.setText("攻击");
+    ATkButton.setFixedSize(130,30);
     SkillButton.setText("魂灵技能");
+    SkillButton.setFixedSize(130,30);
     LGSkillButton.setText("灵骨技能");
+    LGSkillButton.setFixedSize(130,30);
     ItemButton.setText("背包");
+    ItemButton.setFixedSize(130,30);
     SkipButton.setText("跳过");
+    SkipButton.setFixedSize(130,30);
 
     ATkButton.setEnabled(false);
     SkillButton.setEnabled(false);
@@ -456,6 +490,7 @@ FightWidget::FightWidget(RenWu *a, NPC b){
     Layout1=new QHBoxLayout;
     Layout2=new QHBoxLayout;
     MainLayout=new QVBoxLayout;
+    LabelLayout=new QHBoxLayout;
 
     Reward.Exp=0;
     Reward.Coin=0;
@@ -470,12 +505,13 @@ FightWidget::FightWidget(RenWu *a, NPC b){
     Layout2->addWidget(&ItemButton);
     Layout2->addWidget(&SkipButton);
 
+    LabelLayout->addWidget(&Energy);
+    LabelLayout->addWidget(&GoOn);
+    LabelLayout->addWidget(&Sour);
+
     MainLayout->addWidget(&Title);
     MainLayout->addLayout(Layout1);
-    MainLayout->addWidget(&Energy);
-    MainLayout->addWidget(&Sour);
-    MainLayout->addLayout(Layout1);
-    MainLayout->addWidget(&GoOn);
+    MainLayout->addLayout(LabelLayout);
     MainLayout->addLayout(Layout2);
     MainLayout->addWidget(&MessageList);
     this->setLayout(MainLayout);
@@ -512,6 +548,10 @@ void FightWidget::Attack(){
     if(System->EB->type==1){
         ChooseDialog* temp=new ChooseDialog(EnemyHL);
         temp->exec();
+        if(temp->num<0){
+            delete temp;
+            return;
+        }
         HunLing tempEnemy=EnemyHL[temp->num];
         HunLing tempMe=MyHL[System->EB->index];
         QString msg=System->Attack(&tempMe,&tempEnemy);
@@ -583,6 +623,10 @@ void FightWidget::Skill(){
         case ENEMYSINGLE:{
             ChooseDialog* temp=new ChooseDialog(EnemyHL);
             temp->exec();
+            if(temp->num<0){
+                delete temp;
+                return;
+            }
             HunLing tempEnemy1=EnemyHL[temp->num];
             msg=System->Skill(&tempMe,&tempEnemy1,&tempMe.ATK_Ski);
             EnemyHL[temp->num]=tempEnemy1;
@@ -595,6 +639,10 @@ void FightWidget::Skill(){
         case MYSIGLE:{
             ChooseDialog* temp1=new ChooseDialog(MyHL);
             temp1->exec();
+            if(temp1->num<0){
+                delete temp1;
+                return;
+            }
             HunLing tempEnemy=MyHL[temp1->num];
             msg=System->Skill(&tempMe,&tempEnemy,&tempMe.ATK_Ski);
             MyHL[temp1->num]=tempEnemy;
@@ -668,7 +716,6 @@ void FightWidget::LGSkill(){
         SkillChooseDialog* temp2=new SkillChooseDialog(Me->LG,Me->Energy,Me->Sour);
         temp2->exec();
         if(temp2->Skill.ID==0){
-            QMessageBox::about(this,"提示","Error");
             delete temp2;
             return;
         }
@@ -676,6 +723,10 @@ void FightWidget::LGSkill(){
         case 0:{
             ChooseDialog* temp=new ChooseDialog(EnemyHL);
             temp->exec();
+            if(temp->num<0){
+                delete temp;
+                return;
+            }
             HunLing tempEnemy1=EnemyHL[temp->num];
             msg=System->Skill(&tempMe,&tempEnemy1,&temp2->Skill);
             EnemyHL[temp->num]=tempEnemy1;
@@ -690,6 +741,10 @@ void FightWidget::LGSkill(){
         case 2:{
             ChooseDialog* temp1=new ChooseDialog(MyHL);
             temp1->exec();
+            if(temp1->num<0){
+                delete temp1;
+                return;
+            }
             HunLing tempEnemy=MyHL[temp1->num];
             msg=System->Skill(&tempMe,&tempEnemy,&temp2->Skill);
             MyHL[temp1->num]=tempEnemy;
@@ -751,6 +806,10 @@ void FightWidget::UseItem(){
     case 0:{
         ChooseDialog* temp=new ChooseDialog(EnemyHL);
         temp->exec();
+        if(temp->num<0){
+            delete temp;
+            return;
+        }
         HunLing tempEnemy1=EnemyHL[temp->num];
         msg=System->UseItem(&tempMe,&tempEnemy1,Me->Bag[tempItemList->UseIndex].ID);
         EnemyHL[temp->num]=tempEnemy1;
@@ -763,6 +822,10 @@ void FightWidget::UseItem(){
     case 2:{
         ChooseDialog* temp1=new ChooseDialog(MyHL);
         temp1->exec();
+        if(temp1->num<0){
+            delete temp1;
+            return;
+        }
         HunLing tempEnemy=MyHL[temp1->num];
         msg=System->UseItem(&tempMe,&tempEnemy,Me->Bag[tempItemList->UseIndex].ID);
         MyHL[temp1->num]=tempEnemy;

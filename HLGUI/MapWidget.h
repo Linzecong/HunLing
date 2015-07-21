@@ -15,6 +15,7 @@
 #include<MapHLWidget.h>
 #include<MapNPCWidget.h>
 #include<QList>
+#include<QFrame>
 
 class MapWidget: public QWidget{
 	public:
@@ -27,9 +28,11 @@ class MapWidget: public QWidget{
     MapHLWidget MapHL[10];
     MapNPCWidget MapNPC[10];
 	QLabel Title;
-    QHBoxLayout* Layout1;
-    QHBoxLayout* Layout2;
-    QVBoxLayout* MainLayout;
+    QWidget* Layout1;
+    QWidget* Layout2;
+    QHBoxLayout* LLayout1;
+    QHBoxLayout* LLayout2;
+
 	public:
     MapWidget(DiTu a,RenWu* b);
     ~MapWidget(){}
@@ -38,9 +41,12 @@ class MapWidget: public QWidget{
 };
 
 MapWidget::MapWidget(DiTu a,RenWu* b){
-    Layout1=new QHBoxLayout;
-    Layout2=new QHBoxLayout;
-    MainLayout=new QVBoxLayout;
+    this->setStyleSheet("background-color:blue");
+    Layout1=new QWidget;
+    Layout2=new QWidget;
+    LLayout1=new QHBoxLayout;
+    LLayout2=new QHBoxLayout;
+
     Map=a;
     Me=b;
 
@@ -67,18 +73,33 @@ MapWidget::MapWidget(DiTu a,RenWu* b){
         MapHL[i].UpDateAll(Me,Enemy_List[i]);
 
 
-    Title.setText(Map.Name+"<br>"+Map.Des);
+    Title.setText(Map.Name);
+
     for(int i=0;i<9;i++)
-    Layout1->addWidget(&MapHL[i]);
+    LLayout1->addWidget(&MapHL[i]);
     for(int i=0;i<9;i++)
-    Layout2->addWidget(&MapNPC[i]);
+    LLayout2->addWidget(&MapNPC[i]);
 
-    MainLayout->addLayout(Layout1);
+    Layout1->setLayout(LLayout1);
 
-    MainLayout->addWidget(&Title);
+    Layout1->setStyleSheet("background-color:grey");
+    Layout2->setLayout(LLayout2);
+    Layout2->setStyleSheet("background-color:grey");
+    Layout1->setGeometry(3,2,660,151);
+    Layout2->setGeometry(3,304,660,151);
 
-    MainLayout->addLayout(Layout2);
-    this->setLayout(MainLayout);
+    Layout1->setParent(this);
+    Layout2->setParent(this);
+
+
+    Title.setParent(this);
+    Title.setAlignment(Qt::AlignCenter);
+    Title.setGeometry(290,200,70,30);
+
+
+
+
+
 }
 
 void MapWidget::UpDate(DiTu a){
@@ -103,7 +124,7 @@ void MapWidget::UpDate(DiTu a){
 
 
 
-    Title.setText(Map.Name+"<br>"+Map.Des);
+    Title.setText(Map.Name);
 }
 
 void MapWidget::UpDateNPC(DiTu a){//专门用于只更新NPC

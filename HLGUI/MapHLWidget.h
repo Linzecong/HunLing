@@ -28,10 +28,11 @@ class MapHLWidget: public QWidget{
 	public:
     void Attack_Click();
     MapHLWidget(){
-        this->setFixedSize(QSize(80,200));
+        this->setFixedSize(QSize(71,135));
+        this->setStyleSheet("background-color:yellow");
         this->setEnabled(false);
         MainLayout=new QVBoxLayout;
-      //Head.setPixmap(QPixmap::load(""));
+        //Head.setPixmap(QPixmap::load(""));
         LV.setText("等级：");
         Count.setText("数量：");
         Attack.setText("攻击");
@@ -90,7 +91,6 @@ void MapHLWidget::Attack_Click(){
         return;
     }
     FightWidget* Battle=new FightWidget(Me,tempNPC);
-  //Battle->setWindowFlags(Qt::FramelessWindowHint);
     Battle->exec();
     if(Battle->WinOrLose==1){
         Me->UpDateTask(tempNPC.ID,KILLNPC);

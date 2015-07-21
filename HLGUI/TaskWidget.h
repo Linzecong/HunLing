@@ -14,15 +14,14 @@
 class TaskWidget:public QDialog{
 	public:
     RenWu* Me;//用于读取任务列表
-	QLabel Title;
     QListWidget List;
     QLabel Name;
     QLabel Des;
     QLabel MB_FMB;
     QLabel Reward;
     QPushButton Finish;
-    QVBoxLayout* Layout1;
-    QHBoxLayout* MainLayout;
+    QPushButton Close;
+
 	public:
     TaskWidget(RenWu *a);
     ~TaskWidget(){}
@@ -31,30 +30,51 @@ class TaskWidget:public QDialog{
 };
 
 TaskWidget::TaskWidget(RenWu* a){
-    Layout1=new QVBoxLayout;
-    MainLayout=new QHBoxLayout;
+    List.setFocusPolicy(Qt::NoFocus);
+    this->setWindowFlags (Qt::CustomizeWindowHint);
+    this->setFixedSize(355,320);
+
+    List.setParent(this);
+    Name.setParent(this);
+    Des.setParent(this);
+    MB_FMB.setParent(this);
+    Close.setParent(this);
+    Reward.setParent(this);
+    Finish.setParent(this);
+
+    List.setGeometry(5,5,200,258);
+    Name.setGeometry(210,0,145,30);
+    MB_FMB.setGeometry(210,31,145,30);
+    Reward.setGeometry(210,62,145,162);
+    Reward.setAlignment(Qt::AlignLeft|Qt::AlignTop);
+    Finish.setGeometry(210,200,135,30);
+    Close.setGeometry(210,233,135,30);
+
+    Des.setGeometry(5,252,355,50);
+
+    Des.setWordWrap(true);
+
+
+
+
+
+
+
     Me=a;
     for(int i=0;i<a->myTaskList.size();i++)
         List.addItem(a->myTaskList[i].Name);//将任务名字添加到列表中
-    Title.setText("任务列表");
     Name.setText("任务名称：");
     Des.setText("任务简介：");
     MB_FMB.setText("任务进度：");
     Reward.setText("任务奖励：<br>");
     Finish.setText("完成！");
+    Close.setText("关闭");
     Finish.setEnabled(false);
-    Layout1->addWidget(&Name);
-    Layout1->addWidget(&Des);
-    Layout1->addWidget(&MB_FMB);
-    Layout1->addWidget(&Reward);
-    Layout1->addWidget(&Finish);
-    MainLayout->addWidget(&Title);
-    MainLayout->addWidget(&List);
-    MainLayout->addLayout(Layout1);
-    MainLayout->addStretch();
-    this->setLayout(MainLayout);
+
+
     connect(&Finish,&QPushButton::clicked,this,&Finish_Click);
     connect(&List,&QListWidget::clicked,this,&List_Click);
+    connect(&Close,&QPushButton::clicked,this,&close);
 
 }
 

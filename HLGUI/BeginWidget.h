@@ -38,9 +38,9 @@ class BeginWidget :public QWidget{
 BeginWidget::BeginWidget(){
 
 
+this->setObjectName("Widget");
 
-
-    //this->setFixedSize(QSize(1080,640));
+    this->setFixedSize(QSize(1000,480));
     Title.setText("魂灵师");
     Text.setText("这就是魂灵师……");
     Begin.setText("开始游戏");
@@ -71,7 +71,7 @@ void BeginWidget::Begin_Click(){
      animation1->setStartValue(0);
      animation1->setEndValue(1);
      animation1->start();
-    Main_W.showFullScreen();
+    Main_W.show();
 
 }
 

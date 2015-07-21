@@ -17,15 +17,15 @@
 class ItemWidget:public QDialog{
 	public:
     RenWu* Me;
-	QLabel Title;
+
 	QPushButton Use;
+    QPushButton Close;
     QListWidget Item_List;
 	QLabel Name;
 	QLabel Des;
 	QLabel Value;
 	QLabel Count;
-    QHBoxLayout* MainLayout;
-    QVBoxLayout* LabelLayout;
+
 	public:
     ItemWidget(RenWu* a);
     ~ItemWidget(){}
@@ -36,11 +36,33 @@ class ItemWidget:public QDialog{
 };
 
 ItemWidget::ItemWidget(RenWu* a){
-    MainLayout=new QHBoxLayout;
-    LabelLayout=new QVBoxLayout;
+    Item_List.setFocusPolicy(Qt::NoFocus);
+    this->setWindowFlags (Qt::CustomizeWindowHint);
+    this->setFixedSize(305,255);
+    Use.setParent(this);
+    Close.setParent(this);
+    Item_List.setParent(this);
+    Name.setParent(this);
+    Des.setParent(this);
+    Value.setParent(this);
+    Count.setParent(this);
+
+    Item_List.setGeometry(5,5,200,200);
+    Name.setGeometry(210,0,100,42);
+    Value.setGeometry(210,45,100,42);
+    Count.setGeometry(210,90,100,42);
+    Use.setGeometry(210,135,90,30);
+    Close.setGeometry(210,173,90,30);
+
+    Des.setGeometry(5,193,300,50);
+Des.setWordWrap(true);
+
+
+
     Me=a;
-    Title.setText("背包");
+
     Use.setText("使用");
+    Close.setText("关闭");
     Use.setEnabled(false);
     for(int i=0;i<Me->Bag.size();i++)
       Item_List.addItem(Me->Bag[i].Name);
@@ -49,18 +71,14 @@ ItemWidget::ItemWidget(RenWu* a){
     Des.setText("作用：");
     Value.setText("价值：");
     Count.setText("数量：");
-    LabelLayout->addWidget(&Name);
-    LabelLayout->addWidget(&Des);
-    LabelLayout->addWidget(&Value);
-    LabelLayout->addWidget(&Count);
-    LabelLayout->addWidget(&Use);
-    MainLayout->addWidget(&Title);
-    MainLayout->addWidget(&Item_List);
-    MainLayout->addLayout(LabelLayout);
+
+
     connect(&Item_List,&QListWidget::clicked,this,&ItemWidget::UpDate);
     connect(&Use,&QPushButton::clicked,this,&ItemWidget::Use_Click);
     connect(&Item_List,&QListWidget::clicked,this,&ItemWidget::change);
-    this->setLayout(MainLayout);
+    connect(&Close,&QPushButton::clicked,this,&ItemWidget::close);
+
+
 }
 
 void ItemWidget::Use_Click(){
@@ -92,7 +110,7 @@ void ItemWidget::UpDate(){
          Use.setEnabled(false);
          return;
      }
-     Name.setText("名字："+Me->Bag[temp].Name);
+     Name.setText(Me->Bag[temp].Name);
      Des.setText("作用："+Me->Bag[temp].Des);
      Value.setText("价值："+QString::number(Me->Bag[temp].Value));
      Count.setText("数量："+QString::number(Me->Bag[temp].Count));

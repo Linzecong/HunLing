@@ -30,13 +30,16 @@ class LHWidget: public QDialog{
 	QLabel Value;
 	QLabel Strength;
 	QLabel Agility;
-
+QPushButton Close;
     QPushButton Data;
     HLDataWidget* HLData;
     QVBoxLayout* Layout1;
     QVBoxLayout* Layout2;
-    QVBoxLayout* Layout3;
-    QHBoxLayout* MainLayout;
+
+    QHBoxLayout* Layout3;
+    QVBoxLayout* MainLayout;
+    QHBoxLayout* LMainLayout;
+    QVBoxLayout* LabelLayout;
 	QPushButton WearButton;
 	QPushButton Putoff;	
 	public:
@@ -55,11 +58,18 @@ class LHWidget: public QDialog{
 
 
 LHWidget::LHWidget(RenWu* a){
+    Bag.setFocusPolicy(Qt::NoFocus);
+    Wear.setFocusPolicy(Qt::NoFocus);
+    this->setObjectName("Widget");
+    this->setFixedSize(410,320);
 this->setWindowFlags (Qt::CustomizeWindowHint);
+
     Layout1=new QVBoxLayout;
     Layout2=new QVBoxLayout;
-    Layout3=new QVBoxLayout;
-    MainLayout=new QHBoxLayout;
+    Layout3=new QHBoxLayout;
+    LabelLayout=new QVBoxLayout;
+    LMainLayout=new QHBoxLayout;
+    MainLayout=new QVBoxLayout;
     Me=a;
     for(int i=0;i<Me->LHBag.size();i++)
       Bag.addItem(Me->LHBag[i].Name);
@@ -67,6 +77,8 @@ this->setWindowFlags (Qt::CustomizeWindowHint);
       Wear.addItem(Me->LH[i].Name);
     WearButton.setText("带上");
     Putoff.setText("取下");
+    WearButton.setFixedSize(92,30);
+    Putoff.setFixedSize(92,30);
     WearButton.setEnabled(false);
     Putoff.setEnabled(false);
     connect(&Bag,&QListWidget::clicked,this,&LHWidget::Bag_Click);
@@ -74,35 +86,48 @@ this->setWindowFlags (Qt::CustomizeWindowHint);
     connect(&WearButton,&QPushButton::clicked,this,&LHWidget::WearButton_Click);
     connect(&Putoff,&QPushButton::clicked,this,&LHWidget::Putoff_Click);
     connect(&Data,&QPushButton::clicked,this,&LHWidget::Data_Click);
+    connect(&Close,&QPushButton::clicked,this,&LHWidget::close);
     Title.setText("身上灵环：");
     Text.setText("背包灵环：");
     Data.setText("详细");
+    Data.setFixedSize(92,30);
+    Close.setText("关闭");
+    Close.setFixedSize(92,30);
     Layout1->addWidget(&Title);
     Layout1->addWidget(&Wear);
     Layout2->addWidget(&Text);
     Layout2->addWidget(&Bag);
+    Layout3->addLayout(Layout1);
+    Layout3->addLayout(Layout2);
 
-    Layout3->addWidget(&Name);
-    Layout3->addWidget(&Des);
-    Layout3->addWidget(&LV);
-    Layout3->addWidget(&Value);
-    Layout3->addWidget(&Strength);
-    Layout3->addWidget(&Agility);
-    Layout3->addWidget(&Col);
-    Layout3->addWidget(&WearButton);
-    Layout3->addWidget(&Putoff);
-    Layout3->addWidget(&Data);
+    LabelLayout->addWidget(&Name);
+    LabelLayout->addWidget(&LV);
+    LabelLayout->addWidget(&Value);
+    LabelLayout->addWidget(&Strength);
+    LabelLayout->addWidget(&Agility);
+    LabelLayout->addWidget(&Col);
+    LabelLayout->addWidget(&WearButton);
+    LabelLayout->addWidget(&Putoff);
+    LabelLayout->addWidget(&Data);
+    LabelLayout->addWidget(&Close);
+
     Name.setText("名字：");
     Des.setText("介绍：");
+
+    Des.setWordWrap(true);
+    Des.setAlignment(Qt::AlignTop);
+
     LV.setText("等级：");
     Col.setText("品质：");
     Strength.setText("所需力量：");
     Agility.setText("所需敏捷：");
     Value.setText("价值：");
-    MainLayout->addLayout(Layout1);
-    MainLayout->addLayout(Layout2);
     MainLayout->addLayout(Layout3);
-    this->setLayout(MainLayout);
+    MainLayout->addWidget(&Des);
+    LMainLayout->addLayout(MainLayout);
+    LMainLayout->addLayout(LabelLayout);
+    this->setLayout(LMainLayout);
+
 }
 
 void LHWidget::Data_Click(){

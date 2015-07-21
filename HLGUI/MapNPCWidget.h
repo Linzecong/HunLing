@@ -24,6 +24,7 @@ class TaskMsgWidget: public QDialog{
     QLabel MB_FMB;
     QLabel Reward;
     QPushButton Except;
+    QPushButton Close;
     QVBoxLayout* Layout1;
     QVBoxLayout* Layout2;
     QVBoxLayout* MainLayout;
@@ -36,6 +37,11 @@ class TaskMsgWidget: public QDialog{
 };
 
 TaskMsgWidget::TaskMsgWidget(RenWu* a, QList<Task> b){
+    this->setFixedSize(290,400);
+    this->setWindowFlags(Qt::CustomizeWindowHint);
+    List.setFocusPolicy(Qt::NoFocus);
+    Close.setText("关闭");
+    Close.setFixedSize(255,30);
     Layout1=new QVBoxLayout;
     Layout2=new QVBoxLayout;
     MainLayout=new QVBoxLayout;
@@ -49,10 +55,12 @@ TaskMsgWidget::TaskMsgWidget(RenWu* a, QList<Task> b){
     Title.setText("任务列表：");
     Name.setText("任务名称：");
     Des.setText("任务简介：");
+    Des.adjustSize();
+    Des.setWordWrap(true);
     MB_FMB.setText("任务进度：");
     Reward.setText("任务奖励：<br>");
     Except.setText("接受！");
-    Layout1->addWidget(&Title);
+    Except.setFixedSize(255,30);
     Layout1->addWidget(&List);
     Layout2->addWidget(&Name);
     Layout2->addWidget(&Des);
@@ -61,8 +69,10 @@ TaskMsgWidget::TaskMsgWidget(RenWu* a, QList<Task> b){
     MainLayout->addLayout(Layout2);
     MainLayout->addWidget(&Reward);
     MainLayout->addWidget(&Except);
+    MainLayout->addWidget(&Close);
     connect(&Except,&QPushButton::clicked,this,&Except_Click);
     connect(&List,&QListWidget::clicked,this,&List_Click);
+    connect(&Close,&QPushButton::clicked,this,&close);
     this->setLayout(MainLayout);
 }
 
@@ -109,7 +119,8 @@ class MapNPCWidget: public QWidget{
     void Task_Click();//触发任务
     void Talk_Click();//触发交谈
     MapNPCWidget(){
-        this->setFixedSize(QSize(80,200));
+        this->setFixedSize(QSize(71,135));
+        this->setStyleSheet("background-color:yellow");
         MainLayout=new QVBoxLayout;
       //Head.setPixmap(QPixmap::load(""));
         LV.setText("等级：");

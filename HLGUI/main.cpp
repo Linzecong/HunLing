@@ -20,13 +20,14 @@ int main(int argc, char *argv[]){
 
     BeginWidget b;//开始界面，可加动画
 
+
    /* QPropertyAnimation *animation = new QPropertyAnimation(&b, "geometry");//后期可加开始动画
     animation->setDuration(300);
     animation->setStartValue(QRect(0, 0, 1080, 640));
     animation->setEndValue(QRect((QApplication::desktop()->width()-1080)/2, (QApplication::desktop()->height()-640)/2, 1080, 640));
     animation->start();*/
 
-    b.showFullScreen();
+    b.show();
     return a.exec();
 }
 

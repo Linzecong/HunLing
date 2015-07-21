@@ -30,12 +30,16 @@ class LGWidget: public QDialog{
 	QLabel ATK_Ski;
     QLabel Add_Str;
     QLabel Add_Agi;
+    QPushButton Close;
 	QPushButton WearButton;
 	QPushButton Putoff;
     QVBoxLayout* Layout1;
     QVBoxLayout* Layout2;
-    QVBoxLayout* Layout3;
-    QHBoxLayout* MainLayout;
+
+    QHBoxLayout* Layout3;
+    QVBoxLayout* MainLayout;
+    QHBoxLayout* LMainLayout;
+    QVBoxLayout* LabelLayout;
 	public:
     void Putoff_Click();
     void WearButton_Click();
@@ -48,10 +52,16 @@ class LGWidget: public QDialog{
 	
 };
 LGWidget::LGWidget(RenWu* a){
+    Bag.setFocusPolicy(Qt::NoFocus);
+    Wear.setFocusPolicy(Qt::NoFocus);
+    this->setFixedSize(410,320);
+    this->setWindowFlags (Qt::CustomizeWindowHint);
      Layout1=new QVBoxLayout;
      Layout2=new QVBoxLayout;
-     Layout3=new QVBoxLayout;
-     MainLayout=new QHBoxLayout;
+     Layout3=new QHBoxLayout;
+     LabelLayout=new QVBoxLayout;
+     LMainLayout=new QHBoxLayout;
+     MainLayout=new QVBoxLayout;
      Me=a;
      for(int i=0;i<Me->LGBag.size();i++)
        Bag.addItem(Me->LGBag[i].Name);
@@ -61,33 +71,40 @@ LGWidget::LGWidget(RenWu* a){
      Wear.addItem(Me->LG.RHand.Name);
      Wear.addItem(Me->LG.LLeg.Name);
      Wear.addItem(Me->LG.RLeg.Name);
-
-     WearButton.setText("穿上");
+    Close.setText("关闭");
+    Close.setFixedSize(92,30);
+    WearButton.setText("穿上");
+    WearButton.setFixedSize(92,30);
     Putoff.setText("脱下");
+    Putoff.setFixedSize(92,30);
     WearButton.setEnabled(false);
     Putoff.setEnabled(false);
     connect(&Bag,&QListWidget::clicked,this,&LGWidget::Bag_Click);
     connect(&Wear,&QListWidget::clicked,this,&LGWidget::Wear_Click);
     connect(&WearButton,&QPushButton::clicked,this,&LGWidget::WearButton_Click);
     connect(&Putoff,&QPushButton::clicked,this,&LGWidget::Putoff_Click);
+    connect(&Close,&QPushButton::clicked,this,&LGWidget::close);
     Title.setText("身上灵骨：");
     Text.setText("背包灵骨：");
     Layout1->addWidget(&Title);
     Layout1->addWidget(&Wear);
     Layout2->addWidget(&Text);
     Layout2->addWidget(&Bag);
+    Layout3->addLayout(Layout1);
+    Layout3->addLayout(Layout2);
 
-    Layout3->addWidget(&Name);
-    Layout3->addWidget(&LV);
-    Layout3->addWidget(&Value);
-    Layout3->addWidget(&Strength);
-    Layout3->addWidget(&Agility);
-    Layout3->addWidget(&DEF_Ski);
-    Layout3->addWidget(&ATK_Ski);
-    Layout3->addWidget(&Add_Str);
-    Layout3->addWidget(&Add_Agi);
-    Layout3->addWidget(&WearButton);
-    Layout3->addWidget(&Putoff);
+    LabelLayout->addWidget(&Name);
+    LabelLayout->addWidget(&LV);
+    LabelLayout->addWidget(&Value);
+    LabelLayout->addWidget(&Strength);
+    LabelLayout->addWidget(&Agility);
+
+    LabelLayout->addWidget(&Add_Str);
+    LabelLayout->addWidget(&Add_Agi);
+    LabelLayout->addWidget(&WearButton);
+    LabelLayout->addWidget(&Putoff);
+    LabelLayout->addWidget(&Close);
+
     Name.setText("名字：");
     LV.setText("等级：");
     Value.setText("价值：");
@@ -98,10 +115,13 @@ LGWidget::LGWidget(RenWu* a){
     Add_Str.setText("增加力量：");
     Add_Agi.setText("增加敏捷：");
 
-    MainLayout->addLayout(Layout1);
-    MainLayout->addLayout(Layout2);
     MainLayout->addLayout(Layout3);
-    this->setLayout(MainLayout);
+    MainLayout->addWidget(&ATK_Ski);
+    MainLayout->addWidget(&DEF_Ski);
+    LMainLayout->addLayout(MainLayout);
+    LMainLayout->addLayout(LabelLayout);
+
+    this->setLayout(LMainLayout);
 }
 
 void LGWidget::Putoff_Click(){

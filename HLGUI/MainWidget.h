@@ -20,7 +20,7 @@
 #include<LHWidget.h>
 #include<TaskWidget.h>
 #include<QApplication>
-class BuffWidget: public QWidget{
+class BuffWidget: public QDialog{
     public:
     TimeWidget* Time_Widget;
     QList<Buff> List;
@@ -28,13 +28,16 @@ class BuffWidget: public QWidget{
     QLabel Buff2;
     QVBoxLayout MainLayout;
     public:
-    void UpDate(QList<Buff> a);
     BuffWidget(QList<Buff> a);
+
     ~BuffWidget(){}
 
 };
 
+
 BuffWidget::BuffWidget(QList<Buff> a){
+    this->setWindowTitle("被动列表");
+    this->setObjectName("Widget");
         Time_Widget=new TimeWidget;
     List=a;
     Buff1.setText("战前Buff：<br>");
@@ -48,22 +51,10 @@ BuffWidget::BuffWidget(QList<Buff> a){
             Buff1.setText(Buff1.text()+a[i].Name+"："+a[i].Des+"<br>");
     MainLayout.addWidget(&Buff1);
     MainLayout.addWidget(&Buff2);
-    MainLayout.addWidget(Time_Widget);
     this->setLayout(&MainLayout);
 
 }
-void BuffWidget::UpDate(QList<Buff> a){
-    List=a;
-    Buff1.setText("战前Buff：<br>");
-    for(int i=0;i<a.size();i++)
-        if(a[i].type==1&&a[i].ID!=0)
-            Buff1.setText(Buff1.text()+a[i].Name+"："+a[i].Des+"<br>");
 
-    Buff2.setText("战中Buff：<br>");
-    for(int i=0;i<a.size();i++)
-        if(a[i].type==2&&a[i].ID!=0)
-            Buff2.setText(Buff2.text()+a[i].Name+"："+a[i].Des+"<br>");
-}
 
 class DataWidget: public QWidget{
     public:
@@ -79,16 +70,20 @@ class DataWidget: public QWidget{
     QLabel Vitality;
     QLabel Energy;
     QLabel Sour;
-    BuffWidget* myBuff;
     QVBoxLayout* MainLayout;
+
+
 public:
 DataWidget(RenWu* a);
 ~DataWidget(){}
 void UpDate();
+
 };
 
 DataWidget::DataWidget(RenWu* a){
-    this->setFixedSize(QSize(180,640));
+
+    this->setObjectName("Widget");
+    this->setFixedSize(150,470);
      MainLayout=new QVBoxLayout;
     Me=a;
     Title.setText("人物信息：");
@@ -104,7 +99,7 @@ DataWidget::DataWidget(RenWu* a){
     Vitality.setText("体力："+QString::number(Me->Vitality)+"("+QString::number(Me->Ori_Vitality)+")");
     Energy.setText("魂力："+QString::number(Me->Energy)+"("+QString::number(Me->Ori_Energy)+")");
     Sour.setText("灵力："+QString::number(Me->Sour)+"("+QString::number(Me->Ori_Sour)+")");
-    myBuff=new BuffWidget(Me->myBuffList);
+
     MainLayout->addWidget(&Title);
     MainLayout->addWidget(&Name);
     MainLayout->addWidget(&Level);
@@ -116,8 +111,8 @@ DataWidget::DataWidget(RenWu* a){
     MainLayout->addWidget(&Vitality);
     MainLayout->addWidget(&Energy);
     MainLayout->addWidget(&Sour);
-    MainLayout->addStretch();
-    MainLayout->addWidget(myBuff);
+
+
 
     this->setLayout(MainLayout);
 
@@ -139,13 +134,13 @@ void DataWidget::UpDate(){
     Energy.setText("魂力："+QString::number(Me->Ori_Energy));
     Sour.setText("灵力："+QString::number(Me->Ori_Sour));
     Me->UpdateBuff();
-    myBuff->UpDate(Me->myBuffList);
+
 }
 
 
 class MapButtonWidget: public QWidget{
     public:
-
+    QPushButton BuffButton;
     QPushButton BagButton;
     QPushButton TaskButton;
     QPushButton LGButton;
@@ -155,24 +150,38 @@ class MapButtonWidget: public QWidget{
     QPushButton QuitButton;
     QVBoxLayout* MainLayout;
     MapButtonWidget();
+
     ~MapButtonWidget(){}
 };
 
 MapButtonWidget::MapButtonWidget(){
-    this->setFixedSize(QSize(180,640));
+    this->setObjectName("Widget");
+    this->setFixedSize(150,470);
 
     MainLayout=new QVBoxLayout;
     BagButton.setText("背包");
     TaskButton.setText("任务");
     LGButton.setText("灵骨");
     LHButton.setText("灵环");
+    BuffButton.setText("被动");
     SaveButton.setText("保存");
     HelpButton.setText("帮助");
     QuitButton.setText("退出");
+
+    BagButton.setFixedSize(130,45);
+    TaskButton.setFixedSize(130,45);
+    LGButton.setFixedSize(130,45);
+    LHButton.setFixedSize(130,45);
+    BuffButton.setFixedSize(130,45);
+    SaveButton.setFixedSize(130,45);
+    HelpButton.setFixedSize(130,45);
+    QuitButton.setFixedSize(130,45);
+
     MainLayout->addWidget(&BagButton);
     MainLayout->addWidget(&TaskButton);
     MainLayout->addWidget(&LGButton);
     MainLayout->addWidget(&LHButton);
+    MainLayout->addWidget(&BuffButton);
     MainLayout->addWidget(&SaveButton);
     MainLayout->addWidget(&HelpButton);
     MainLayout->addWidget(&QuitButton);
@@ -186,7 +195,7 @@ class MainWidget:public QWidget{
 	public:
     GameSystem* Game;
 	DataWidget* Data_Widget;
-
+    BuffWidget* Buff_Widget;
 	MapWidget* Map_Widget;
 	ItemWidget* Item_Widget;
 	LGWidget* LG_Widget;
@@ -208,6 +217,7 @@ class MainWidget:public QWidget{
     void ShowTask();
 	void ShowLG();
 	void ShowLH();
+    void ShowBuff();
     void xia();
     void shang();
     void zuo();
@@ -227,9 +237,12 @@ void MainWidget::closeEvent(QCloseEvent *e){
 }
 
 
-MainWidget::MainWidget(){
 
-   //this->setFixedSize(QSize(1080,640));
+MainWidget::MainWidget(){
+    this->setWindowFlags (Qt::CustomizeWindowHint);
+
+this->setObjectName("Widget");
+   this->setFixedSize(QSize(1000,480));
     Layout1=new QVBoxLayout;
     MainLayout=new QHBoxLayout;
 Game=new GameSystem;
@@ -238,20 +251,21 @@ Data_Widget=new DataWidget(&Game->Me);
 
 MapButton_Widget=new MapButtonWidget;
 Map_Widget=new MapWidget(SystemMap[Game->Me.PosX][Game->Me.PosY],&Game->Me);
-
+Buff_Widget=new BuffWidget(Game->Me.myBuffList);
 Layout1->addWidget(Map_Widget);
 MainLayout->addWidget(Data_Widget);
 MainLayout->addLayout(Layout1);
 MainLayout->addWidget(MapButton_Widget);
 
-connect(&MapButton_Widget->QuitButton,QPushButton::clicked,this,MainWidget::Quit);
-connect(&MapButton_Widget->SaveButton,QPushButton::clicked,this,MainWidget::Save);
-connect(&MapButton_Widget->HelpButton,QPushButton::clicked,this,MainWidget::Help);
-connect(&MapButton_Widget->BagButton,QPushButton::clicked,this,MainWidget::ShowItem);
-connect(&MapButton_Widget->TaskButton,QPushButton::clicked,this,MainWidget::ShowTask);
-connect(&MapButton_Widget->LGButton,QPushButton::clicked,this,MainWidget::ShowLG);
-connect(&MapButton_Widget->LHButton,QPushButton::clicked,this,MainWidget::ShowLH);
-connect(&Data_Widget->myBuff->Time_Widget->timer,&QTimer::timeout,Data_Widget,&DataWidget::UpDate);
+connect(&MapButton_Widget->QuitButton,&QPushButton::clicked,this,&MainWidget::Quit);
+connect(&MapButton_Widget->SaveButton,&QPushButton::clicked,this,&MainWidget::Save);
+connect(&MapButton_Widget->HelpButton,&QPushButton::clicked,this,&MainWidget::Help);
+connect(&MapButton_Widget->BagButton,&QPushButton::clicked,this,&MainWidget::ShowItem);
+connect(&MapButton_Widget->TaskButton,&QPushButton::clicked,this,&MainWidget::ShowTask);
+connect(&MapButton_Widget->LGButton,&QPushButton::clicked,this,&MainWidget::ShowLG);
+connect(&MapButton_Widget->LHButton,&QPushButton::clicked,this,&MainWidget::ShowLH);
+connect(&Buff_Widget->Time_Widget->timer,&QTimer::timeout,Data_Widget,&DataWidget::UpDate);
+connect(&MapButton_Widget->BuffButton,&QPushButton::clicked,this,&MainWidget::ShowBuff);
 
 this->setLayout(MainLayout);
 
@@ -273,7 +287,14 @@ void MainWidget::Help(){
 }
 
 void MainWidget::ShowItem(){
+QSound::play(DATAPATH+"6112.wav");
     Item_Widget=new ItemWidget(&Game->Me);
+    QPropertyAnimation *animation = new QPropertyAnimation(Item_Widget, "geometry");
+    animation->setDuration(1000);
+    animation->setStartValue(QRect(this->geometry().left(),this->geometry().top(),Item_Widget->geometry().top(),Item_Widget->geometry().left()));
+    animation->setEndValue(QRect(this->geometry().left(),this->geometry().top()+100,Item_Widget->geometry().top(),Item_Widget->geometry().left()));
+
+    animation->start();
     Item_Widget->exec();
     delete Item_Widget;
 
@@ -281,6 +302,13 @@ void MainWidget::ShowItem(){
 
 void MainWidget::ShowTask(){
     Task_Widget=new TaskWidget(&Game->Me);
+    QSound::play(DATAPATH+"6112.wav");
+    QPropertyAnimation *animation = new QPropertyAnimation(Task_Widget, "geometry");
+    animation->setDuration(1000);
+    animation->setStartValue(QRect(this->geometry().left(),this->geometry().top(),Task_Widget->geometry().top(),Task_Widget->geometry().left()));
+    animation->setEndValue(QRect(this->geometry().left(),this->geometry().top()+100,Task_Widget->geometry().top(),Task_Widget->geometry().left()));
+
+    animation->start();
     Task_Widget->exec();
     delete Task_Widget;
     Map_Widget->UpDateNPC(SystemMap[Game->Me.PosX][Game->Me.PosY]);
@@ -288,6 +316,14 @@ void MainWidget::ShowTask(){
 
 void MainWidget::ShowLG(){
     LG_Widget=new LGWidget(&Game->Me);
+    QSound::play(DATAPATH+"6112.wav");
+    QPropertyAnimation *animation = new QPropertyAnimation(LG_Widget, "geometry");
+    animation->setDuration(1000);
+    animation->setStartValue(QRect(this->geometry().left(),this->geometry().top(),LG_Widget->geometry().top(),LG_Widget->geometry().left()));
+    animation->setEndValue(QRect(this->geometry().left(),this->geometry().top()+100,LG_Widget->geometry().top(),LG_Widget->geometry().left()));
+
+    animation->start();
+
     LG_Widget->exec();
     delete LG_Widget;
 
@@ -307,6 +343,11 @@ void MainWidget::ShowLH(){
 
     delete LH_Widget;
 
+}
+void MainWidget::ShowBuff(){
+Buff_Widget=new BuffWidget(Game->Me.myBuffList);
+Buff_Widget->exec();
+delete Buff_Widget;
 }
 
 void MainWidget::keyPressEvent(QKeyEvent *e){
