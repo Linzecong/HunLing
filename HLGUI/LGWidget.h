@@ -30,9 +30,9 @@ class LGWidget: public QDialog{
 	QLabel ATK_Ski;
     QLabel Add_Str;
     QLabel Add_Agi;
-    QPushButton Close;
-	QPushButton WearButton;
-	QPushButton Putoff;
+    PushButton Close;
+    PushButton WearButton;
+    PushButton Putoff;
     QVBoxLayout* Layout1;
     QVBoxLayout* Layout2;
 
@@ -52,6 +52,11 @@ class LGWidget: public QDialog{
 	
 };
 LGWidget::LGWidget(RenWu* a){
+    this->setObjectName("linggu");
+    WearButton.setObjectName("function");
+    Putoff.setObjectName("function");
+    Close.setObjectName("close");
+
     Bag.setFocusPolicy(Qt::NoFocus);
     Wear.setFocusPolicy(Qt::NoFocus);
     this->setFixedSize(410,320);
@@ -141,7 +146,7 @@ void LGWidget::Putoff_Click(){
         Me->TakeoffLG(Me->LG.RLeg);
 
            UpDate();
-           QMessageBox::about(this,"提示","成功脱下！");
+           MessageBox::about(this,"提示","成功脱下！");
     }
 
 }
@@ -152,13 +157,13 @@ void LGWidget::WearButton_Click(){
     switch(Me->WearLG(Me->LGBag[a]))
     {
     case -1:
-        QMessageBox::about(this,"提示","请先脱下该位置的灵骨！");
+        MessageBox::about(this,"提示","请先脱下该位置的灵骨！");
         break;
     case 0:
-        QMessageBox::about(this,"提示","需求不足！！");
+        MessageBox::about(this,"提示","需求不足！！");
         break;
     case 1:
-        QMessageBox::about(this,"提示","穿着成功！");
+        MessageBox::about(this,"提示","穿着成功！");
         break;
 
     }

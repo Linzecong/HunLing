@@ -18,8 +18,8 @@ class ItemWidget:public QDialog{
 	public:
     RenWu* Me;
 
-	QPushButton Use;
-    QPushButton Close;
+    PushButton Use;
+    PushButton Close;
     QListWidget Item_List;
 	QLabel Name;
 	QLabel Des;
@@ -36,6 +36,10 @@ class ItemWidget:public QDialog{
 };
 
 ItemWidget::ItemWidget(RenWu* a){
+    this->setObjectName("item");
+    Use.setObjectName("function");
+    Close.setObjectName("close");
+
     Item_List.setFocusPolicy(Qt::NoFocus);
     this->setWindowFlags (Qt::CustomizeWindowHint);
     this->setFixedSize(305,255);
@@ -87,16 +91,16 @@ void ItemWidget::Use_Click(){
 
 
     if(Me->Bag[temp].Type==1){
-    QMessageBox::about(NULL,"提示","使用成功！");
+    MessageBox::about(NULL,"提示","使用成功！");
     Me->UseItem(Me->Bag[temp]);
 
     UpDateList();
     return;
     }
     if(Me->Bag[temp].Type==2)
-        QMessageBox::about(this,"提示","此道具只能战斗中使用！");
+        MessageBox::about(this,"提示","此道具只能战斗中使用！");
     if(Me->Bag[temp].Type==3)
-       QMessageBox::about(this,"提示","此道具不能使用！");
+       MessageBox::about(this,"提示","此道具不能使用！");
 
 }
 

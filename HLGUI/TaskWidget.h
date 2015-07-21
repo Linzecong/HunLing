@@ -19,8 +19,8 @@ class TaskWidget:public QDialog{
     QLabel Des;
     QLabel MB_FMB;
     QLabel Reward;
-    QPushButton Finish;
-    QPushButton Close;
+    PushButton Finish;
+    PushButton Close;
 
 	public:
     TaskWidget(RenWu *a);
@@ -41,6 +41,10 @@ TaskWidget::TaskWidget(RenWu* a){
     Close.setParent(this);
     Reward.setParent(this);
     Finish.setParent(this);
+
+    this->setObjectName("task");
+    Finish.setObjectName("function");
+    Close.setObjectName("close");
 
     List.setGeometry(5,5,200,258);
     Name.setGeometry(210,0,145,30);
@@ -82,11 +86,11 @@ void TaskWidget::Finish_Click(){
     int a=List.currentRow();
     int i=Me->FinishTask(Me->myTaskList[a]);
     if(i==1){
-    QMessageBox::about(this,"提示","任务完成！");
+    MessageBox::about(this,"提示","任务完成！");
     List.takeItem(a);//删除
     }
     else
-    QMessageBox::about(this,"提示","异常！");
+    MessageBox::about(this,"提示","异常！");
 
     Finish.setEnabled(false);
 }

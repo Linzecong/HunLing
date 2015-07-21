@@ -47,7 +47,7 @@ class HLDataWidget: public QDialog{
 
 HLDataWidget::HLDataWidget(HunLing a){
     this->setWindowTitle("详细参数");
-    this->setObjectName("Widget");
+    this->setObjectName("fight");
     tempHL=a;
     Name.setText("名字："+a.Name);
     Des.setText("介绍："+a.Des);
@@ -116,7 +116,7 @@ class HLWidget: public QWidget{
     QLabel ATK;
     QLabel DEF;
     QLabel VIT;
-    QPushButton Data;
+    PushButton Data;
     QVBoxLayout MainLayout;
     HLDataWidget* tempData;
     public:
@@ -127,7 +127,10 @@ class HLWidget: public QWidget{
 
 };
 HLWidget::HLWidget(){
-    this->setObjectName("Widget");
+    this->setObjectName("fight");
+    this->setObjectName("main");
+    Data.setObjectName("function");
+
 //  Head.setPixmap(QPixmap::load(""));
     Name.setText("名字");
     LV.setText("等级：");
@@ -166,10 +169,13 @@ class ChooseDialog: public QDialog{
 	public:
 	int num;
     QListWidget List;
-    QPushButton OK;
-    QPushButton Close;
+    PushButton OK;
+    PushButton Close;
     QVBoxLayout* MainLayout;
     ChooseDialog(QList<HunLing> a){
+        this->setObjectName("main");
+        OK.setObjectName("function");
+        Close.setObjectName("close");
         this->setFixedSize(290,300);
         num=-1;
         List.setFocusPolicy(Qt::NoFocus);
@@ -205,10 +211,13 @@ public:
     HunJi Skill;
     LGList LG;
     QListWidget List;
-    QPushButton OK;
-    QPushButton Close;
+    PushButton OK;
+    PushButton Close;
     QVBoxLayout* MainLayout;
     SkillChooseDialog(LGList a,int b,int c){
+        this->setObjectName("main");
+        OK.setObjectName("function");
+        Close.setObjectName("close");
         this->setFixedSize(290,300);
         this->setWindowFlags(Qt::CustomizeWindowHint);
         List.setFocusPolicy(Qt::NoFocus);
@@ -258,13 +267,13 @@ public:
     ~SkillChooseDialog(){}
     void OKClick(){
         if(List.item(List.currentRow())->text()=="此位置无灵骨"){
-            QMessageBox::about(this,"提示","此位置无灵骨");
+            MessageBox::about(this,"提示","此位置无灵骨");
             return;
         }
         switch(List.currentRow()){
         case 0:
             if(LG.Head.ATK_Ski.NowTurn>0&&LG.Head.ATK_Ski.Energy>=Energy&&LG.Head.ATK_Ski.Sour>=Sour){
-                QMessageBox::about(this,"提示","此技能冷却中或魂力或灵力不足");
+                MessageBox::about(this,"提示","此技能冷却中或魂力或灵力不足");
                 return;
             }
             Skill=LG.Head.ATK_Ski;
@@ -272,7 +281,7 @@ public:
             break;
         case 1:
             if(LG.Body.ATK_Ski.NowTurn>0&&LG.Body.ATK_Ski.Energy>=Energy&&LG.Body.ATK_Ski.Sour>=Sour){
-                QMessageBox::about(this,"提示","此技能冷却中或魂力或灵力不足");
+                MessageBox::about(this,"提示","此技能冷却中或魂力或灵力不足");
                 return;
             }
             Skill=LG.Body.ATK_Ski;
@@ -280,7 +289,7 @@ public:
             break;
         case 2:
             if(LG.LHand.ATK_Ski.NowTurn>0&&LG.LHand.ATK_Ski.Energy>=Energy&&LG.LHand.ATK_Ski.Sour>=Sour){
-                QMessageBox::about(this,"提示","此技能冷却中或魂力或灵力不足");
+                MessageBox::about(this,"提示","此技能冷却中或魂力或灵力不足");
                 return;
             }
             Skill=LG.LHand.ATK_Ski;
@@ -288,7 +297,7 @@ public:
             break;
         case 3:
             if(LG.RHand.ATK_Ski.NowTurn>0&&LG.RHand.ATK_Ski.Energy>=Energy&&LG.RHand.ATK_Ski.Sour>=Sour){
-                QMessageBox::about(this,"提示","此技能冷却中或魂力或灵力不足");
+                MessageBox::about(this,"提示","此技能冷却中或魂力或灵力不足");
                 return;
             }
             Skill=LG.RHand.ATK_Ski;
@@ -296,7 +305,7 @@ public:
             break;
         case 4:
             if(LG.LLeg.ATK_Ski.NowTurn>0&&LG.LLeg.ATK_Ski.Energy>=Energy&&LG.LLeg.ATK_Ski.Sour>=Sour){
-                QMessageBox::about(this,"提示","此技能冷却中或魂力或灵力不足");
+                MessageBox::about(this,"提示","此技能冷却中或魂力或灵力不足");
                 return;
             }
             Skill=LG.LLeg.ATK_Ski;
@@ -304,7 +313,7 @@ public:
             break;
         case 5:
             if(LG.RLeg.ATK_Ski.NowTurn>0&&LG.RLeg.ATK_Ski.Energy>=Energy&&LG.RLeg.ATK_Ski.Sour>=Sour){
-                QMessageBox::about(this,"提示","此技能冷却中或魂力或灵力不足");
+                MessageBox::about(this,"提示","此技能冷却中或魂力或灵力不足");
                 return;
             }
             Skill=LG.RLeg.ATK_Ski;
@@ -322,10 +331,15 @@ public:
     int UseIndex;
     QList<Item> tempItem;
     QListWidget List;
-    QPushButton OK;
-    QPushButton Close;
+    PushButton OK;
+    PushButton Close;
     QVBoxLayout* MainLayout;
     FightItemWidget(QList<Item> a){
+        this->setObjectName("main");
+        OK.setObjectName("function");
+        Close.setObjectName("close");
+
+
         this->setFixedSize(290,300);
         List.setFocusPolicy(Qt::NoFocus);
         this->setWindowFlags (Qt::CustomizeWindowHint);
@@ -354,7 +368,7 @@ public:
 
     void OKClick(){
         if(tempItem[List.currentRow()].Type!=2){
-            QMessageBox::about(this,"提示","此道具无法在战斗中使用 ");
+            MessageBox::about(this,"提示","此道具无法在战斗中使用 ");
             return;
         }
         UseIndex=List.currentRow();
@@ -381,13 +395,13 @@ class FightWidget: public QDialog{
 
 	QLabel Title;
 
-	QPushButton GoOn;
+    PushButton GoOn;
 
-    QPushButton ATkButton;
-    QPushButton SkillButton;
-    QPushButton LGSkillButton;
-    QPushButton ItemButton;
-    QPushButton SkipButton;
+    PushButton ATkButton;
+    PushButton SkillButton;
+    PushButton LGSkillButton;
+    PushButton ItemButton;
+    PushButton SkipButton;
 
 
 
@@ -422,7 +436,8 @@ class FightWidget: public QDialog{
 };
 
 FightWidget::FightWidget(RenWu *a, NPC b){
-    this->setObjectName("Widget");
+    this->setObjectName("fight");
+    SkipButton.setObjectName("close");
     this->setFixedSize(670,480);
     this->setWindowFlags (Qt::CustomizeWindowHint);
     EnemyHLList.setFocusPolicy(Qt::NoFocus);
@@ -539,7 +554,7 @@ void FightWidget::Attack(){
         HunLing tempMe=MyHL[a-1];//以后要优化
         QString msg=System->Attack(&tempEnemy,&tempMe);
         msg="（敌方）"+msg;
-        QMessageBox::about(this,"提示",msg);
+        MessageBox::about(this,"提示",msg);
         MessageList.addItem(msg);
         EnemyHL[System->EB->index]=tempEnemy;
         MyHL[a-1]=tempMe;
@@ -556,7 +571,7 @@ void FightWidget::Attack(){
         HunLing tempMe=MyHL[System->EB->index];
         QString msg=System->Attack(&tempMe,&tempEnemy);
         msg="（我方）"+msg;
-        QMessageBox::about(this,"提示",msg);
+        MessageBox::about(this,"提示",msg);
         MessageList.addItem(msg);
         EnemyHL[temp->num]=tempEnemy;
         MyHL[System->EB->index]=tempMe;
@@ -595,7 +610,7 @@ void FightWidget::Skill(){
         }
         }
         msg="（敌方）"+msg;
-        QMessageBox::about(this,"提示",msg);
+        MessageBox::about(this,"提示",msg);
 
         System->UsedSkill(&Enemy,&tempEnemy.ATK_Ski);
         EnemyHL[System->EB->index].ATK_Ski=tempEnemy.ATK_Ski;
@@ -608,12 +623,12 @@ void FightWidget::Skill(){
         HunLing tempMe=MyHL[System->EB->index];
         QString msg="";
         if(tempMe.ATK_Ski.NowTurn>0){
-            QMessageBox::about(this,"提示","技能还有"+QString::number(tempMe.ATK_Ski.NowTurn)+"回合冷却时间！");
+            MessageBox::about(this,"提示","技能还有"+QString::number(tempMe.ATK_Ski.NowTurn)+"回合冷却时间！");
             return;
         }
         else{
              if(tempMe.ATK_Ski.Energy>Me->Energy||tempMe.ATK_Ski.Sour>Me->Sour){
-                 QMessageBox::about(this,"提示","魂力或灵力不足");
+                 MessageBox::about(this,"提示","魂力或灵力不足");
                  return;
              }
         }
@@ -655,7 +670,7 @@ void FightWidget::Skill(){
         }
 
         msg="（我方）"+msg;
-        QMessageBox::about(this,"提示",msg);
+        MessageBox::about(this,"提示",msg);
         MessageList.addItem(msg);
 
 
@@ -699,7 +714,7 @@ void FightWidget::EnemyLGSkill(HunJi* Skill){
         break;
         }
         msg="（敌方）"+msg;
-        QMessageBox::about(this,"提示",msg);
+        MessageBox::about(this,"提示",msg);
         MessageList.addItem(msg);
 
 
@@ -781,7 +796,7 @@ void FightWidget::LGSkill(){
             break;
         }
         msg="（我方）"+msg;
-        QMessageBox::about(this,"提示",msg);
+        MessageBox::about(this,"提示",msg);
         MessageList.addItem(msg);
 
 
@@ -839,7 +854,7 @@ void FightWidget::UseItem(){
     }
 
     msg="（我方）"+msg;
-    QMessageBox::about(this,"提示",msg);
+    MessageBox::about(this,"提示",msg);
     MessageList.addItem(msg);
 
 
@@ -854,9 +869,12 @@ this->SetButtonEnable(false);
 
 void FightWidget::Skip(){
     QMessageBox msgBox;
+    msgBox.setWindowTitle("提示");
     msgBox.setText("你确定要跳过吗？？？");
     msgBox.setStandardButtons(QMessageBox::Yes|QMessageBox::No);
     msgBox.setDefaultButton(QMessageBox::No);
+    msgBox.buttons()[0]->setFixedSize(100,30);
+    msgBox.buttons()[1]->setFixedSize(100,30);
     int ret = msgBox.exec();
     if(ret==QMessageBox::Yes){
     MessageList.addItem("（我方）"+MyHL[System->EB->index].Name+"无所事事！跳过了回合！");
@@ -946,20 +964,20 @@ void FightWidget::GoOn_Ckick(){
      Energy.setText("魂力："+QString::number(Me->Energy)+"/"+QString::number(Me->Ori_Energy));
      Sour.setText("灵力："+QString::number(Me->Sour)+"/"+QString::number(Me->Ori_Sour));
      if(System->CanGoOn()==0){
-         QMessageBox::about(this,"提示","你输了！");
+         MessageBox::about(this,"提示","你输了！");
          WinOrLose=0;
          this->close();
          return;
      }
      if(System->CanGoOn()==-1){
-         QMessageBox::about(this,"提示","你获得了胜利！");
+         MessageBox::about(this,"提示","你获得了胜利！");
          WinOrLose=1;
          Reward=GameSystem::DropItem(EnemyHL);
          this->close();
          return;
      }
      if(System->CanGoOn()==-2){
-         QMessageBox::about(this,"提示","分不出胜负！");
+         MessageBox::about(this,"提示","分不出胜负！");
          WinOrLose=-1;
          this->close();
          return;

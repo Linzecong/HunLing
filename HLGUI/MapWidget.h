@@ -28,10 +28,10 @@ class MapWidget: public QWidget{
     MapHLWidget MapHL[10];
     MapNPCWidget MapNPC[10];
 	QLabel Title;
-    QWidget* Layout1;
-    QWidget* Layout2;
+
     QHBoxLayout* LLayout1;
     QHBoxLayout* LLayout2;
+    QVBoxLayout* MainLayout;
 
 	public:
     MapWidget(DiTu a,RenWu* b);
@@ -41,11 +41,11 @@ class MapWidget: public QWidget{
 };
 
 MapWidget::MapWidget(DiTu a,RenWu* b){
-    this->setStyleSheet("background-color:blue");
-    Layout1=new QWidget;
-    Layout2=new QWidget;
+    this->setObjectName("map");
+
     LLayout1=new QHBoxLayout;
     LLayout2=new QHBoxLayout;
+    MainLayout=new QVBoxLayout;
 
     Map=a;
     Me=b;
@@ -80,21 +80,17 @@ MapWidget::MapWidget(DiTu a,RenWu* b){
     for(int i=0;i<9;i++)
     LLayout2->addWidget(&MapNPC[i]);
 
-    Layout1->setLayout(LLayout1);
 
-    Layout1->setStyleSheet("background-color:grey");
-    Layout2->setLayout(LLayout2);
-    Layout2->setStyleSheet("background-color:grey");
-    Layout1->setGeometry(3,2,660,151);
-    Layout2->setGeometry(3,304,660,151);
-
-    Layout1->setParent(this);
-    Layout2->setParent(this);
 
 
     Title.setParent(this);
     Title.setAlignment(Qt::AlignCenter);
     Title.setGeometry(290,200,70,30);
+
+    MainLayout->addLayout(LLayout1);
+    MainLayout->addStretch();
+    MainLayout->addLayout(LLayout2);
+    this->setLayout(MainLayout);
 
 
 

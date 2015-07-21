@@ -23,8 +23,8 @@ class TaskMsgWidget: public QDialog{
     QLabel Des;
     QLabel MB_FMB;
     QLabel Reward;
-    QPushButton Except;
-    QPushButton Close;
+    PushButton Except;
+    PushButton Close;
     QVBoxLayout* Layout1;
     QVBoxLayout* Layout2;
     QVBoxLayout* MainLayout;
@@ -37,6 +37,12 @@ class TaskMsgWidget: public QDialog{
 };
 
 TaskMsgWidget::TaskMsgWidget(RenWu* a, QList<Task> b){
+    this->setObjectName("task");
+    Except.setObjectName("function");
+    Close.setObjectName("close");
+
+
+
     this->setFixedSize(290,400);
     this->setWindowFlags(Qt::CustomizeWindowHint);
     List.setFocusPolicy(Qt::NoFocus);
@@ -83,10 +89,10 @@ void TaskMsgWidget::Except_Click(){
 
     if(Me->ExceptTask(tempTask[a])==1){
     Except.setEnabled(false);
-    QMessageBox::about(this,"提示","接受成功！");
+    MessageBox::about(this,"提示","接受成功！");
     }
     else
-        QMessageBox::about(this,"提示","Error");
+        MessageBox::about(this,"提示","Error");
     List.takeItem(a);
     tempTask.takeAt(a);
 }
@@ -108,9 +114,9 @@ class MapNPCWidget: public QWidget{
     QLabel Head;
 	QLabel Name;
 	QLabel LV;
-	QPushButton Task;
-	QPushButton Talk;
-    QPushButton Attack;//注意设置不能再显示
+    PushButton Task;
+    PushButton Talk;
+    PushButton Attack;//注意设置不能再显示
     QVBoxLayout* MainLayout;
     TaskMsgWidget* TaskMsg;
 
@@ -119,14 +125,25 @@ class MapNPCWidget: public QWidget{
     void Task_Click();//触发任务
     void Talk_Click();//触发交谈
     MapNPCWidget(){
+        this->setObjectName("npc");
+        Task.setObjectName("function");
+        Talk.setObjectName("function");
+        Attack.setObjectName("attack");
+
+
         this->setFixedSize(QSize(71,135));
-        this->setStyleSheet("background-color:yellow");
+
         MainLayout=new QVBoxLayout;
       //Head.setPixmap(QPixmap::load(""));
+        Name.setObjectName("small");
         LV.setText("等级：");
+        LV.setObjectName("small");
         Task.setText("任务");
+        Task.setFixedSize(55,20);
         Talk.setText("交谈");
+        Talk.setFixedSize(55,20);
         Attack.setText("攻击");
+        Attack.setFixedSize(55,20);
         MainLayout->addWidget(&Head);
         MainLayout->addWidget(&Name);
         MainLayout->addWidget(&LV);
@@ -164,9 +181,12 @@ void MapNPCWidget::UpDateAll(RenWu* temp,NPC a){
     Me=temp;
     tempNPC=a;
   //Head.setPixmap(QPixmap::load(""));
+
     Name.setText(tempNPC.Name);
+
     LV.setText("等级："+QString::number(tempNPC.LV));
     Task.setText("任务");
+
     Talk.setText("交谈");
     if(tempNPC.CanATK==0)
         Attack.setEnabled(false);
@@ -178,11 +198,11 @@ void MapNPCWidget::UpDateAll(RenWu* temp,NPC a){
 
 void MapNPCWidget::Attack_Click(){
     if(Me->LH.isEmpty()==true||tempNPC.LH.isEmpty()==true){
-        QMessageBox::about(this,"你没有灵环啊！","你该怎么打架？");
+        MessageBox::about(this,"你没有灵环啊！","你该怎么打架？");
         return;
     }
     if(tempNPC.LH.isEmpty()==true){
-        QMessageBox::about(this,"你的对手没有灵环啊！","别欺负人家！");
+        MessageBox::about(this,"你的对手没有灵环啊！","别欺负人家！");
         return;
     }
     FightWidget* Battle=new FightWidget(Me,tempNPC);
@@ -201,7 +221,7 @@ void MapNPCWidget::Attack_Click(){
 void MapNPCWidget::Task_Click(){
     TaskMsg=new TaskMsgWidget(Me,GameSystem::CanExceptList(tempNPC,Me));
     if(TaskMsg->tempTask.isEmpty()==true){
-        QMessageBox::about(this,"没有任务","没有任务");
+        MessageBox::about(this,"没有任务","没有任务");
         return;
     }
     TaskMsg->exec();
@@ -215,9 +235,9 @@ void MapNPCWidget::Talk_Click(){
    QList<Message> temp=GameSystem::CanTalkList(tempNPC,Me);
 
    if(temp.isEmpty()==true)
-       QMessageBox::about(this,"你好！","你好！");
+       MessageBox::about(this,"你好！","你好！");
    for(int i=0;i<temp.size();i++)
-       QMessageBox::about(this,"对话中",temp[i].Msg);
+       MessageBox::about(this,"对话中",temp[i].Msg);
 
 
 }

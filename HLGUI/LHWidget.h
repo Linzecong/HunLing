@@ -30,8 +30,8 @@ class LHWidget: public QDialog{
 	QLabel Value;
 	QLabel Strength;
 	QLabel Agility;
-QPushButton Close;
-    QPushButton Data;
+PushButton Close;
+    PushButton Data;
     HLDataWidget* HLData;
     QVBoxLayout* Layout1;
     QVBoxLayout* Layout2;
@@ -40,8 +40,8 @@ QPushButton Close;
     QVBoxLayout* MainLayout;
     QHBoxLayout* LMainLayout;
     QVBoxLayout* LabelLayout;
-	QPushButton WearButton;
-	QPushButton Putoff;	
+    PushButton WearButton;
+    PushButton Putoff;
 	public:
     LHWidget(RenWu* a);
     void Data_Click();
@@ -58,11 +58,19 @@ QPushButton Close;
 
 
 LHWidget::LHWidget(RenWu* a){
+    this->setObjectName("linghuan");
+    Data.setObjectName("function");
+    WearButton.setObjectName("function");
+    Putoff.setObjectName("function");
+    Close.setObjectName("close");
+
+
+
     Bag.setFocusPolicy(Qt::NoFocus);
     Wear.setFocusPolicy(Qt::NoFocus);
-    this->setObjectName("Widget");
+
     this->setFixedSize(410,320);
-this->setWindowFlags (Qt::CustomizeWindowHint);
+    this->setWindowFlags (Qt::CustomizeWindowHint);
 
     Layout1=new QVBoxLayout;
     Layout2=new QVBoxLayout;
@@ -138,7 +146,7 @@ void LHWidget::Data_Click(){
 
 void LHWidget::Putoff_Click(){
     Me->TakeoffLH(tempLH);
-    QMessageBox::about(this,"成功！","成功脱下！");
+    MessageBox::about(this,"成功！","成功脱下！");
     UpDate();
 }
 
@@ -146,16 +154,16 @@ void LHWidget::WearButton_Click(){
     switch(Me->WearLH(tempLH))
     {
     case -1:
-        QMessageBox::about(this,"提示","等级不足！");
+        MessageBox::about(this,"提示","等级不足！");
         break;
     case 0:
-        QMessageBox::about(this,"提示","需求不足！！");
+        MessageBox::about(this,"提示","需求不足！！");
         break;
     case 2:
-        QMessageBox::about(this,"提示","不能携带相同的灵环！");
+        MessageBox::about(this,"提示","不能携带相同的灵环！");
         break;
     case 1:
-        QMessageBox::about(this,"提示","成功！");
+        MessageBox::about(this,"提示","成功！");
         Me->LHBag.removeAt(Bag.currentRow());
         break;
 

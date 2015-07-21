@@ -36,8 +36,9 @@ class BuffWidget: public QDialog{
 
 
 BuffWidget::BuffWidget(QList<Buff> a){
+    this->setFixedWidth(200);
     this->setWindowTitle("被动列表");
-    this->setObjectName("Widget");
+    this->setObjectName("main");
         Time_Widget=new TimeWidget;
     List=a;
     Buff1.setText("战前Buff：<br>");
@@ -82,7 +83,7 @@ void UpDate();
 
 DataWidget::DataWidget(RenWu* a){
 
-    this->setObjectName("Widget");
+    this->setObjectName("main");
     this->setFixedSize(150,470);
      MainLayout=new QVBoxLayout;
     Me=a;
@@ -138,24 +139,29 @@ void DataWidget::UpDate(){
 }
 
 
+
 class MapButtonWidget: public QWidget{
     public:
-    QPushButton BuffButton;
-    QPushButton BagButton;
-    QPushButton TaskButton;
-    QPushButton LGButton;
-    QPushButton LHButton;
-    QPushButton SaveButton;
-    QPushButton HelpButton;
-    QPushButton QuitButton;
+    PushButton BuffButton;
+    PushButton BagButton;
+    PushButton TaskButton;
+    PushButton LGButton;
+    PushButton LHButton;
+    PushButton SaveButton;
+    PushButton HelpButton;
+    PushButton QuitButton;
     QVBoxLayout* MainLayout;
     MapButtonWidget();
 
     ~MapButtonWidget(){}
+
 };
 
 MapButtonWidget::MapButtonWidget(){
-    this->setObjectName("Widget");
+
+    this->setObjectName("main");
+    QuitButton.setObjectName("close");
+
     this->setFixedSize(150,470);
 
     MainLayout=new QVBoxLayout;
@@ -185,9 +191,9 @@ MapButtonWidget::MapButtonWidget(){
     MainLayout->addWidget(&SaveButton);
     MainLayout->addWidget(&HelpButton);
     MainLayout->addWidget(&QuitButton);
-
-
     this->setLayout(MainLayout);
+
+
 
 }
 
@@ -231,7 +237,6 @@ protected:
 
 };
 void MainWidget::closeEvent(QCloseEvent *e){
-    QMessageBox::about(this,"关闭","关闭");
     QApplication::closeAllWindows();
 
 }
@@ -239,9 +244,13 @@ void MainWidget::closeEvent(QCloseEvent *e){
 
 
 MainWidget::MainWidget(){
+    QSound::play(DATAPATH+"背景.wav");
     this->setWindowFlags (Qt::CustomizeWindowHint);
 
-this->setObjectName("Widget");
+this->setObjectName("main");
+
+
+
    this->setFixedSize(QSize(1000,480));
     Layout1=new QVBoxLayout;
     MainLayout=new QHBoxLayout;
@@ -279,18 +288,18 @@ void MainWidget::Save(){
     Game->Me.Save();
     SystemNPC[0].Save();
     SystemTask[0].Save();
-    QMessageBox::about(this,"提示","保存成功");
+    MessageBox::about(this,"提示","保存成功");
 }
 
 void MainWidget::Help(){
-    QMessageBox::about(this,"帮助","Help");
+    MessageBox::about(this,"帮助","Help");
 }
 
 void MainWidget::ShowItem(){
 QSound::play(DATAPATH+"6112.wav");
     Item_Widget=new ItemWidget(&Game->Me);
     QPropertyAnimation *animation = new QPropertyAnimation(Item_Widget, "geometry");
-    animation->setDuration(1000);
+    animation->setDuration(200);
     animation->setStartValue(QRect(this->geometry().left(),this->geometry().top(),Item_Widget->geometry().top(),Item_Widget->geometry().left()));
     animation->setEndValue(QRect(this->geometry().left(),this->geometry().top()+100,Item_Widget->geometry().top(),Item_Widget->geometry().left()));
 
@@ -304,7 +313,7 @@ void MainWidget::ShowTask(){
     Task_Widget=new TaskWidget(&Game->Me);
     QSound::play(DATAPATH+"6112.wav");
     QPropertyAnimation *animation = new QPropertyAnimation(Task_Widget, "geometry");
-    animation->setDuration(1000);
+    animation->setDuration(200);
     animation->setStartValue(QRect(this->geometry().left(),this->geometry().top(),Task_Widget->geometry().top(),Task_Widget->geometry().left()));
     animation->setEndValue(QRect(this->geometry().left(),this->geometry().top()+100,Task_Widget->geometry().top(),Task_Widget->geometry().left()));
 
@@ -318,7 +327,7 @@ void MainWidget::ShowLG(){
     LG_Widget=new LGWidget(&Game->Me);
     QSound::play(DATAPATH+"6112.wav");
     QPropertyAnimation *animation = new QPropertyAnimation(LG_Widget, "geometry");
-    animation->setDuration(1000);
+    animation->setDuration(200);
     animation->setStartValue(QRect(this->geometry().left(),this->geometry().top(),LG_Widget->geometry().top(),LG_Widget->geometry().left()));
     animation->setEndValue(QRect(this->geometry().left(),this->geometry().top()+100,LG_Widget->geometry().top(),LG_Widget->geometry().left()));
 
@@ -334,7 +343,7 @@ void MainWidget::ShowLH(){
     QSound::play(DATAPATH+"6112.wav");
     LH_Widget=new LHWidget(&Game->Me);
     QPropertyAnimation *animation = new QPropertyAnimation(LH_Widget, "geometry");
-    animation->setDuration(1000);
+    animation->setDuration(200);
     animation->setStartValue(QRect(this->geometry().left(),this->geometry().top(),LH_Widget->geometry().top(),LH_Widget->geometry().left()));
     animation->setEndValue(QRect(this->geometry().left(),this->geometry().top()+100,LH_Widget->geometry().top(),LH_Widget->geometry().left()));
 
@@ -367,7 +376,7 @@ void MainWidget::keyPressEvent(QKeyEvent *e){
 
 void MainWidget::xia(){
     if(Game->Me.PosY==25){
-        QMessageBox::about(this,"提示","这已经是世界的尽头！");
+        MessageBox::about(this,"提示","这已经是世界的尽头！");
     return;
 }
     if(Game->CanGoTo(SystemMap[Game->Me.PosX][(Game->Me.PosY)+1])){
@@ -375,11 +384,11 @@ void MainWidget::xia(){
   Map_Widget->UpDate(SystemMap[Game->Me.PosX][Game->Me.PosY]);
     }
     else
-        QMessageBox::about(this,"提示","你还不能去那里！");
+        MessageBox::about(this,"提示","你还不能去那里！");
 }
 void MainWidget::shang(){
     if(Game->Me.PosY==0){
-        QMessageBox::about(this,"提示","这已经是世界的尽头！");
+        MessageBox::about(this,"提示","这已经是世界的尽头！");
     return;
 }
     if(Game->CanGoTo(SystemMap[Game->Me.PosX][(Game->Me.PosY)-1])){
@@ -387,11 +396,11 @@ void MainWidget::shang(){
     Map_Widget->UpDate(SystemMap[Game->Me.PosX][Game->Me.PosY]);
     }
     else
-        QMessageBox::about(this,"提示","你还不能去那里！");
+        MessageBox::about(this,"提示","你还不能去那里！");
 }
 void MainWidget::zuo(){
     if(Game->Me.PosX==0){
-        QMessageBox::about(this,"提示","这已经是世界的尽头！");
+        MessageBox::about(this,"提示","这已经是世界的尽头！");
     return;
 }
      if(Game->CanGoTo(SystemMap[(Game->Me.PosX)-1][(Game->Me.PosY)])){
@@ -399,11 +408,11 @@ void MainWidget::zuo(){
     Map_Widget->UpDate(SystemMap[Game->Me.PosX][Game->Me.PosY]);
 }
 else
-    QMessageBox::about(this,"提示","你还不能去那里！");
+    MessageBox::about(this,"提示","你还不能去那里！");
 }
 void MainWidget::you(){
     if(Game->Me.PosX==25){
-        QMessageBox::about(this,"提示","这已经是世界的尽头！");
+        MessageBox::about(this,"提示","这已经是世界的尽头！");
     return;
 }
      if(Game->CanGoTo(SystemMap[(Game->Me.PosX)+1][(Game->Me.PosY)])){
@@ -411,7 +420,7 @@ void MainWidget::you(){
     Map_Widget->UpDate(SystemMap[Game->Me.PosX][Game->Me.PosY]);
      }
      else
-         QMessageBox::about(this,"提示","你还不能去那里！");
+         MessageBox::about(this,"提示","你还不能去那里！");
 }
 
 #endif
