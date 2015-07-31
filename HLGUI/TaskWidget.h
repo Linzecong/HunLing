@@ -10,9 +10,11 @@
 #include<QPushButton>
 #include<QListWidget>
 #include<QMessageBox>
+#include<Global.h>
 #include<../HLBase/HL_RenWu.h>
+
 class TaskWidget:public QDialog{
-	public:
+private:
     RenWu* Me;//用于读取任务列表
     QListWidget List;
     QLabel Name;
@@ -22,14 +24,17 @@ class TaskWidget:public QDialog{
     PushButton Finish;
     PushButton Close;
 
-	public:
+public:
     TaskWidget(RenWu *a);
     ~TaskWidget(){}
-	void Finish_Click();
-    void List_Click();
+
+private:
+    void Finish_Click();
+    void List_Click();//列表被点击时
 };
 
 TaskWidget::TaskWidget(RenWu* a){
+    /*在这里处理界面*/
     List.setFocusPolicy(Qt::NoFocus);
     this->setWindowFlags (Qt::CustomizeWindowHint);
     this->setFixedSize(355,320);
@@ -43,7 +48,9 @@ TaskWidget::TaskWidget(RenWu* a){
     Finish.setParent(this);
 
     this->setObjectName("task");
+
     Finish.setObjectName("function");
+    Finish.setStyleSheet("backgrounf-image:()");//设置初始图片
     Close.setObjectName("close");
 
     List.setGeometry(5,5,200,258);
@@ -55,18 +62,13 @@ TaskWidget::TaskWidget(RenWu* a){
     Close.setGeometry(210,233,135,30);
 
     Des.setGeometry(5,252,355,50);
-
     Des.setWordWrap(true);
 
-
-
-
-
-
-
+    /*在这里处理UI逻辑*/
     Me=a;
     for(int i=0;i<a->myTaskList.size();i++)
-        List.addItem(a->myTaskList[i].Name);//将任务名字添加到列表中
+        List.addItem(a->myTaskList[i].Name);//将任务名字添加到列表中，以后可加Icon。
+
     Name.setText("任务名称：");
     Des.setText("任务简介：");
     MB_FMB.setText("任务进度：");
@@ -74,7 +76,6 @@ TaskWidget::TaskWidget(RenWu* a){
     Finish.setText("完成！");
     Close.setText("关闭");
     Finish.setEnabled(false);
-
 
     connect(&Finish,&QPushButton::clicked,this,&Finish_Click);
     connect(&List,&QListWidget::clicked,this,&List_Click);
@@ -86,17 +87,19 @@ void TaskWidget::Finish_Click(){
     int a=List.currentRow();
     int i=Me->FinishTask(Me->myTaskList[a]);
     if(i==1){
-    MessageBox::about(this,"提示","任务完成！");
-    List.takeItem(a);//删除
+        MessageBox::about(this,"提示","任务完成！");
+        List.takeItem(a);//删除
     }
     else
-    MessageBox::about(this,"提示","异常！");
+        MessageBox::about(this,"提示","异常！");
 
     Finish.setEnabled(false);
 }
 
 void TaskWidget::List_Click(){
     int a=List.currentRow();
+    if(a<0)
+        return;
     Task b=Me->myTaskList[a];
     Name.setText("任务名称："+b.Name);
     Des.setText("任务简介："+b.Des);

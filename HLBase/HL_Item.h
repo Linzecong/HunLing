@@ -30,20 +30,20 @@ class Item{
         Str=Agi=Vit=Ene=Sour=Exp=0;
         Count=1;
     }
-} SystemItem[200];
+} SystemItem[ITEMMAX];
 
 void Item::Init(){
 	QFile file((DATAPATH+"SaveItem.str"));
 	file.open(QIODevice::ReadOnly);
 	QTextStream in(&file);
-    for (int i = 0; i <200; i++)
+    for (int i = 0; i <ITEMMAX; i++)
 		in >> SystemItem[i].Name >> SystemItem[i].Des;
        file.close();
 
 	QFile tmpfile(DATAPATH+"SaveItem.num");
 	tmpfile.open(QIODevice::ReadOnly);
         int a = sizeof(int);
-        for (int i = 0; i <200; i++){
+        for (int i = 0; i <ITEMMAX; i++){
 		tmpfile.read((char *)&SystemItem[i].ID, a);
 		tmpfile.read((char *)&SystemItem[i].Type, a);
         tmpfile.read((char *)&SystemItem[i].ATKType, a);

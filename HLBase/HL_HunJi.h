@@ -32,20 +32,20 @@ class HunJi{
         Name=Des="空";
         Energy=Sour=0;
     }
-} SystemHJ[200];
+} SystemHJ[HJMAX];
 
 void HunJi::Init(){
     QFile file((DATAPATH+"SaveHJ.str"));
       file.open(QIODevice::ReadOnly);
       QTextStream in(&file);
-        for(int i=0;i<200;i++)
+        for(int i=0;i<HJMAX;i++)
         in>>SystemHJ[i].Name>>SystemHJ[i].Des;
          file.close();
 
     QFile tmpfile( DATAPATH+"SaveHJ.num" );
     tmpfile.open(QIODevice::ReadOnly);
     int a=sizeof(int);
-    for(int i=0;i<200;i++){
+    for(int i=0;i<HJMAX;i++){
     tmpfile.read(( char *)&SystemHJ[i].ID,a);
     tmpfile.read(( char *)&SystemHJ[i].Energy,a);
     tmpfile.read(( char *)&SystemHJ[i].Sour,a);
@@ -67,19 +67,19 @@ class Buff{
         ID=type=0;
         Name=Des="空";
     }
-} SystemBuff[200];
+} SystemBuff[BUFFMAX];
 
 void Buff::Init(){
     QFile file((DATAPATH+"SaveBuff.str"));
     file.open(QIODevice::ReadOnly);
       QTextStream in(&file);
-         for(int i=0;i<200;i++)
+         for(int i=0;i<BUFFMAX;i++)
         in>>SystemBuff[i].Name>>SystemBuff[i].Des;
         file.close();
 
     QFile tmpfile(DATAPATH+"SaveBuff.num" );
     tmpfile.open(QIODevice::ReadOnly);
-    for(int i=0;i<200;i++){
+    for(int i=0;i<BUFFMAX;i++){
     int a=sizeof(int);
     tmpfile.read(( char *)&SystemBuff[i].ID,a);
     tmpfile.read(( char *)&SystemBuff[i].type,a);
@@ -87,37 +87,4 @@ void Buff::Init(){
     tmpfile.close();
 }
 
-/*
-class BuffList{
-  public:
-    QList<Buff> List;
-  public:
-	void Insert(Buff a);
-	void Remove(int a);
-	Buff GetData(int a);
-	void Clear();
-	int Count();
-};
-
-void BuffList::Clear(){
-    List.clear();
-}
-
-
-void BuffList::Remove(int a){
-    List.removeAt(a);
-}
-
-int BuffList::Count(){
-    return List.size();
-}
-
-void BuffList::Insert(Buff a){
-    List.append(a);
-}
-
-Buff BuffList::GetData(int a){
-    return List[a];
-}
-*/
 #endif

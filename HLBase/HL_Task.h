@@ -45,20 +45,20 @@ class Task
 	}
     void Save();
     void Init();
-} SystemTask[200];
+} SystemTask[TASKMAX];
 
 void Task::Save(){
 		QFile file((DATAPATH+"SaveTask.str"));
       file.open(QIODevice::WriteOnly);
       QTextStream in(&file);
-         for(int i=0;i<200;i++)
+         for(int i=0;i<TASKMAX;i++)
     	in<<SystemTask[i].Name<<" "<<SystemTask[i].Des<<endl;
      file.close();
 
 	 QFile tmpfile( DATAPATH+"SaveTask.num" );  
     tmpfile.open(QIODevice::WriteOnly);
     int a=sizeof(int);
-    for(int i=0;i<200;i++){
+    for(int i=0;i<TASKMAX;i++){
     tmpfile.write(( char *)&SystemTask[i].ID,a);
     tmpfile.write(( char *)&SystemTask[i].Need_ID,a);
     tmpfile.write(( char *)&SystemTask[i].IsFinish,a);
@@ -80,14 +80,14 @@ void Task::Init(){
 	QFile file((DATAPATH+"SaveTask.str"));
 file.open(QIODevice::ReadOnly);
       QTextStream in(&file);
-         for(int i=0;i<200;i++)
+         for(int i=0;i<TASKMAX;i++)
     	in>>SystemTask[i].Name>>SystemTask[i].Des;
        file.close();
 
     QFile tmpfile( DATAPATH+"SaveTask.num" );  
     tmpfile.open(QIODevice::ReadOnly);
     int a=sizeof(int);
-    for(int i=0;i<200;i++){
+    for(int i=0;i<TASKMAX;i++){
 	tmpfile.read(( char *)&SystemTask[i].ID,a);
 	tmpfile.read(( char *)&SystemTask[i].Need_ID,a);
 	tmpfile.read(( char *)&SystemTask[i].IsFinish,a);

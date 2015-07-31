@@ -529,8 +529,8 @@ int RenWu::UpdateLV(){
 		{
             sum += 1;
 			LV++;
-            Exp_Now=0;
-            Exp_Need = ((LV-1)*(LV-1)*(LV-1)+60)/5*((LV-1)*2+60);//等级公式
+            Exp_Now=Exp_Now-Exp_Need;
+            Exp_Need = (((LV-1)*(LV-1)*(LV-1)+60)/25)*((LV-1)+60);//等级公式
             Ori_Strength+=2;
             Ori_Agility+=2;
             Ori_Vitality+=1;
@@ -576,6 +576,9 @@ int RenWu::FinishTask(Task a){
 
 
 	Exp_Now += a.A_Exp;
+    int UL=UpdateLV();
+    if(UL>0)
+       QMessageBox::about(NULL,"提示","恭喜！你升级了！");
 	Coin += a.A_Coin;
     if (a.A_Item != 0){
         int stop=0;
@@ -758,12 +761,22 @@ void RenWu::UpdateBuff(){
     for (int i = 0; i < myBuffList.size(); i++){
         int a = myBuffList[i].ID;
 		switch (a){
-		case 1:
+        case 3:
+            Vitality+=20;
+				break;
+        case 6:
+            Vitality+=20;
+				break;
+        case 9:
             Strength+=10;
-				break;
-		case 2:
-            Agility+=20;
-				break;
+                break;
+        case 10:
+            Agility+=10;
+                break;
+        case 11:
+            Vitality+=10;
+                break;
+
 		}
 	}
 }

@@ -19,7 +19,7 @@
 #include<../HLBase/HL_GameSystem.h>
 
 class HLDataWidget: public QDialog{
-    public:
+public:
     HunLing tempHL;
     QLabel Name;
     QLabel Des;
@@ -39,7 +39,7 @@ class HLDataWidget: public QDialog{
     QLabel DEF_Ski;
     QLabel ATK_Ski;
     QVBoxLayout MainLayout;
-    public:
+public:
     void setData(HunLing a);
     HLDataWidget(HunLing a);
     ~HLDataWidget(){}
@@ -64,7 +64,7 @@ HLDataWidget::HLDataWidget(HunLing a){
     G_Ice.setText("冰冷伤害："+QString::number(a.G_Ice));
     G_Lig.setText("电击伤害："+QString::number(a.G_Lig));
     G_Tox.setText("毒素伤害："+QString::number(a.G_Tox));
-    ATK_Ski.setText("攻击技能：<br>"+SystemHJ[a.DEF_Ski].Name+"："+SystemHJ[a.DEF_Ski].Des);
+    ATK_Ski.setText("攻击技能：<br>"+SystemHJ[a.ATK_Ski.ID].Name+"："+SystemHJ[a.ATK_Ski.ID].Des);
     DEF_Ski.setText("防御技能：<br>"+SystemBuff[a.DEF_Ski].Name+"："+SystemBuff[a.DEF_Ski].Des);
     MainLayout.addWidget(&Name);
     MainLayout.addWidget(&Des);
@@ -103,12 +103,12 @@ void HLDataWidget::setData(HunLing a){
     G_Ice.setText("冰冷伤害："+QString::number(a.G_Ice));
     G_Lig.setText("电击伤害："+QString::number(a.G_Lig));
     G_Tox.setText("毒素伤害："+QString::number(a.G_Tox));
-    ATK_Ski.setText("攻击技能：<br>"+SystemHJ[a.DEF_Ski].Name+"："+SystemHJ[a.DEF_Ski].Des);
+    ATK_Ski.setText("攻击技能：<br>"+SystemHJ[a.ATK_Ski.ID].Name+"："+SystemHJ[a.ATK_Ski.ID].Des+"<br>所需魂力："+QString::number(a.ATK_Ski.Energy)+"<br>所需灵力："+QString::number(a.ATK_Ski.Sour)+"<br>冷却时间："+QString::number(a.ATK_Ski.NowTurn));
     DEF_Ski.setText("防御技能：<br>"+SystemBuff[a.DEF_Ski].Name+"："+SystemBuff[a.DEF_Ski].Des);
 }
 
 class HLWidget: public QWidget{
-    public:
+public:
     HunLing tempHL;
     QLabel Head;
     QLabel Name;
@@ -119,7 +119,7 @@ class HLWidget: public QWidget{
     PushButton Data;
     QVBoxLayout MainLayout;
     HLDataWidget* tempData;
-    public:
+public:
     HLWidget();
     ~HLWidget(){}
     void Data_Click();
@@ -131,7 +131,7 @@ HLWidget::HLWidget(){
     this->setObjectName("main");
     Data.setObjectName("function");
 
-//  Head.setPixmap(QPixmap::load(""));
+    //  Head.setPixmap(QPixmap::load(""));
     Name.setText("名字");
     LV.setText("等级：");
     ATK.setText("攻击力：");
@@ -166,13 +166,15 @@ void HLWidget::setData(HunLing a){
 }
 
 class ChooseDialog: public QDialog{
-	public:
-	int num;
+public:
+    int num;
+    QList<HunLing> temphl;
     QListWidget List;
     PushButton OK;
     PushButton Close;
     QVBoxLayout* MainLayout;
     ChooseDialog(QList<HunLing> a){
+        temphl=a;
         this->setObjectName("main");
         OK.setObjectName("function");
         Close.setObjectName("close");
@@ -193,13 +195,23 @@ class ChooseDialog: public QDialog{
         this->setLayout(MainLayout);
         connect(&OK,&QPushButton::clicked,this,&ChooseDialog::OKClick);
         connect(&Close,&QPushButton::clicked,this,&ChooseDialog::close);
+        connect(&List,&QListWidget::doubleClicked,this,&ChooseDialog::ShowData);
         this->setWindowFlags(Qt::CustomizeWindowHint);
         this->setWindowTitle("请选择魂灵");
     }
     ~ChooseDialog(){}
     void OKClick(){
+        if(temphl[List.currentRow()].VITNOW==0){
+            QMessageBox::about(this,"提示","请不要鞭尸！");
+            return;
+        }
         num=List.currentRow();
         this->close();
+    }
+    void ShowData(){
+        HLDataWidget* a=new HLDataWidget(temphl[List.currentRow()]);
+        a->exec();
+        delete a;
     }
 };
 
@@ -228,29 +240,29 @@ public:
         Close.setText("关闭");
         Close.setFixedSize(255,30);
         if(a.Head.ID!=0)
-        List.addItem(a.Head.Name+"   技能："+a.Head.ATK_Ski.Des+"   所需魂力："+QString::number(a.Head.ATK_Ski.Energy)+"   所需灵力："+QString::number(a.Head.ATK_Ski.Sour)+"   剩余冷却时间："+QString::number(a.Head.ATK_Ski.NowTurn));
+            List.addItem(a.Head.Name+"   技能："+a.Head.ATK_Ski.Des+"   所需魂力："+QString::number(a.Head.ATK_Ski.Energy)+"   所需灵力："+QString::number(a.Head.ATK_Ski.Sour)+"   剩余冷却时间："+QString::number(a.Head.ATK_Ski.NowTurn));
         else
-        List.addItem("此位置无灵骨");
+            List.addItem("此位置无灵骨");
         if(a.Body.ID!=0)
-        List.addItem(a.Body.Name+"   技能："+a.Body.ATK_Ski.Des+"   所需魂力："+QString::number(a.Body.ATK_Ski.Energy)+"   所需灵力："+QString::number(a.Body.ATK_Ski.Sour)+"   剩余冷却时间："+QString::number(a.Body.ATK_Ski.NowTurn));
+            List.addItem(a.Body.Name+"   技能："+a.Body.ATK_Ski.Des+"   所需魂力："+QString::number(a.Body.ATK_Ski.Energy)+"   所需灵力："+QString::number(a.Body.ATK_Ski.Sour)+"   剩余冷却时间："+QString::number(a.Body.ATK_Ski.NowTurn));
         else
-        List.addItem("此位置无灵骨");
+            List.addItem("此位置无灵骨");
         if(a.LHand.ID!=0)
-        List.addItem(a.LHand.Name+"   技能："+a.LHand.ATK_Ski.Des+"   所需魂力："+QString::number(a.LHand.ATK_Ski.Energy)+"   所需灵力："+QString::number(a.LHand.ATK_Ski.Sour)+"   剩余冷却时间："+QString::number(a.LHand.ATK_Ski.NowTurn));
+            List.addItem(a.LHand.Name+"   技能："+a.LHand.ATK_Ski.Des+"   所需魂力："+QString::number(a.LHand.ATK_Ski.Energy)+"   所需灵力："+QString::number(a.LHand.ATK_Ski.Sour)+"   剩余冷却时间："+QString::number(a.LHand.ATK_Ski.NowTurn));
         else
-        List.addItem("此位置无灵骨");
+            List.addItem("此位置无灵骨");
         if(a.RHand.ID!=0)
-        List.addItem(a.RHand.Name+"   技能："+a.RHand.ATK_Ski.Des+"   所需魂力："+QString::number(a.RHand.ATK_Ski.Energy)+"   所需灵力："+QString::number(a.RHand.ATK_Ski.Sour)+"   剩余冷却时间："+QString::number(a.RHand.ATK_Ski.NowTurn));
+            List.addItem(a.RHand.Name+"   技能："+a.RHand.ATK_Ski.Des+"   所需魂力："+QString::number(a.RHand.ATK_Ski.Energy)+"   所需灵力："+QString::number(a.RHand.ATK_Ski.Sour)+"   剩余冷却时间："+QString::number(a.RHand.ATK_Ski.NowTurn));
         else
-        List.addItem("此位置无灵骨");
+            List.addItem("此位置无灵骨");
         if(a.LLeg.ID!=0)
-        List.addItem(a.LLeg.Name+"   技能："+a.LLeg.ATK_Ski.Des+"   所需魂力："+QString::number(a.LLeg.ATK_Ski.Energy)+"   所需灵力："+QString::number(a.LLeg.ATK_Ski.Sour)+"   剩余冷却时间："+QString::number(a.LLeg.ATK_Ski.NowTurn));
+            List.addItem(a.LLeg.Name+"   技能："+a.LLeg.ATK_Ski.Des+"   所需魂力："+QString::number(a.LLeg.ATK_Ski.Energy)+"   所需灵力："+QString::number(a.LLeg.ATK_Ski.Sour)+"   剩余冷却时间："+QString::number(a.LLeg.ATK_Ski.NowTurn));
         else
-        List.addItem("此位置无灵骨");
+            List.addItem("此位置无灵骨");
         if(a.RLeg.ID!=0)
-        List.addItem(a.RLeg.Name+"   技能："+a.RLeg.ATK_Ski.Des+"   所需魂力："+QString::number(a.RLeg.ATK_Ski.Energy)+"   所需灵力："+QString::number(a.RLeg.ATK_Ski.Sour)+"   剩余冷却时间："+QString::number(a.RLeg.ATK_Ski.NowTurn));
+            List.addItem(a.RLeg.Name+"   技能："+a.RLeg.ATK_Ski.Des+"   所需魂力："+QString::number(a.RLeg.ATK_Ski.Energy)+"   所需灵力："+QString::number(a.RLeg.ATK_Ski.Sour)+"   剩余冷却时间："+QString::number(a.RLeg.ATK_Ski.NowTurn));
         else
-        List.addItem("此位置无灵骨");
+            List.addItem("此位置无灵骨");
         OK.setText("确定");
         OK.setFixedSize(255,30);
         MainLayout=new QVBoxLayout;
@@ -350,7 +362,7 @@ public:
         Close.setText("关闭");
         Close.setFixedSize(255,30);
         for(int i=0;i<a.size();i++)
-        List.addItem(tempItem[i].Name+"作用："+tempItem[i].Des);
+            List.addItem(tempItem[i].Name+"作用："+tempItem[i].Des);
 
         MainLayout=new QVBoxLayout;
         List.setCurrentRow(0);
@@ -378,10 +390,10 @@ public:
 };
 
 class FightWidget: public QDialog{
-	public:
+public:
     FightSystem* System;
     RenWu* Me;
-	NPC Enemy;
+    NPC Enemy;
     QList<HunLing> MyHL;
     QList<HunLing> EnemyHL;
     QList<HunLing*> tmpMyHL;
@@ -393,7 +405,7 @@ class FightWidget: public QDialog{
     QLabel Energy;
     QLabel Sour;
 
-	QLabel Title;
+    QLabel Title;
 
     PushButton GoOn;
 
@@ -414,7 +426,7 @@ class FightWidget: public QDialog{
     DropData Reward;
     int WinOrLose;//记录0输了还是1赢了-1打平
 
-	public:
+public:
     FightWidget(RenWu* a,NPC b);
     ~FightWidget(){}
     void Attack();//记得replace魂灵
@@ -433,6 +445,9 @@ class FightWidget: public QDialog{
         ItemButton.setEnabled(a);
         SkipButton.setEnabled(a);
     }
+    void SetLast(){
+        MessageList.setCurrentRow(MessageList.count()-1);
+    }
 };
 
 FightWidget::FightWidget(RenWu *a, NPC b){
@@ -450,17 +465,17 @@ FightWidget::FightWidget(RenWu *a, NPC b){
     Enemy.Energy=Enemy.Ori_Energy;
     Enemy.Sour=Enemy.Ori_Sour;
     Energy.setText("魂力："+QString::number(Me->Energy)+"/"+QString::number(Me->Ori_Energy));
-    Sour.setText(QString::number(Me->Sour)+"/"+QString::number(Me->Ori_Sour)+"：力灵");
+    Sour.setText("灵力："+QString::number(Me->Sour)+"/"+QString::number(Me->Ori_Sour));
     Sour.setAlignment(Qt::AlignRight);
     WinOrLose=0;
 
     for (int i = 0; i < a->LH.size(); i++)//灵环初始化成魂灵
         if(a->LH[i].ID!=0)
-        MyHL.append(GameSystem::CreatHL(*a,a->LH[i]));
+            MyHL.append(GameSystem::CreatHL(*a,a->LH[i]));
 
     for (int i = 0; i < b.LH.size(); i++)
         if(b.LH[i].ID!=0)
-        EnemyHL.append(GameSystem::CreatHL(b,b.LH[i]));
+            EnemyHL.append(GameSystem::CreatHL(b,b.LH[i]));
 
 
 
@@ -475,13 +490,13 @@ FightWidget::FightWidget(RenWu *a, NPC b){
     System=new FightSystem(Me,&Enemy,tmpMyHL,tmpEnemyHL);
 
     for(int i=0;i<MyHL.size();i++)
-        MyHLList.addItem(MyHL[i].Name);
+        MyHLList.addItem(MyHL[i].Name+"   "+QString::number(MyHL[i].VITNOW)+"/"+QString::number(MyHL[i].VIT));
     for(int i=0;i<EnemyHL.size();i++)
-        EnemyHLList.addItem(EnemyHL[i].Name);
+        EnemyHLList.addItem(EnemyHL[i].Name+"   "+QString::number(EnemyHL[i].VITNOW)+"/"+QString::number(EnemyHL[i].VIT));
 
     MessageList.addItem("战斗开始！");
     HLData.setData(MyHL[0]);
-    Title.setText("战斗中");
+    Title.setText("战斗中...0 Turn");
     Title.setAlignment(Qt::AlignCenter);
     GoOn.setText("继续");
     GoOn.setFixedSize(200,30);
@@ -537,7 +552,6 @@ FightWidget::FightWidget(RenWu *a, NPC b){
     connect(&ItemButton,&QPushButton::clicked,this,&FightWidget::UseItem);
     connect(&SkipButton,&QPushButton::clicked,this,&FightWidget::Skip);
     connect(&GoOn,&QPushButton::clicked,this,&FightWidget::GoOn_Ckick);
-
     connect(&EnemyHLList,&QListWidget::clicked,this,&FightWidget::EnemyClick);
     connect(&MyHLList,&QListWidget::clicked,this,&FightWidget::MeClick);
 
@@ -552,9 +566,13 @@ void FightWidget::Attack(){
         HunLing tempEnemy=EnemyHL[System->EB->index];
         int a=GetNumber(1,MyHL.size());
         HunLing tempMe=MyHL[a-1];//以后要优化
+        while(tempMe.VITNOW==0){
+            a=GetNumber(1,MyHL.size());
+            tempMe=MyHL[a-1];
+        }
         QString msg=System->Attack(&tempEnemy,&tempMe);
         msg="（敌方）"+msg;
-        MessageBox::about(this,"提示",msg);
+        //MessageBox::about(this,"提示",msg);
         MessageList.addItem(msg);
         EnemyHL[System->EB->index]=tempEnemy;
         MyHL[a-1]=tempMe;
@@ -571,7 +589,7 @@ void FightWidget::Attack(){
         HunLing tempMe=MyHL[System->EB->index];
         QString msg=System->Attack(&tempMe,&tempEnemy);
         msg="（我方）"+msg;
-        MessageBox::about(this,"提示",msg);
+        //MessageBox::about(this,"提示",msg);
         MessageList.addItem(msg);
         EnemyHL[temp->num]=tempEnemy;
         MyHL[System->EB->index]=tempMe;
@@ -579,38 +597,56 @@ void FightWidget::Attack(){
         GoOn.setEnabled(true);
     }
     this->SetButtonEnable(false);
+    Energy.setText("魂力："+QString::number(Me->Energy)+"/"+QString::number(Me->Ori_Energy));
+    Sour.setText("灵力："+QString::number(Me->Sour)+"/"+QString::number(Me->Ori_Sour));
+
+    MyHLList.clear();
+    EnemyHLList.clear();
+    for(int i=0;i<MyHL.size();i++)
+        MyHLList.addItem(MyHL[i].Name+"   "+QString::number(MyHL[i].VITNOW)+"/"+QString::number(MyHL[i].VIT));
+    for(int i=0;i<EnemyHL.size();i++)
+        EnemyHLList.addItem(EnemyHL[i].Name+"   "+QString::number(EnemyHL[i].VITNOW)+"/"+QString::number(EnemyHL[i].VIT));
+    SetLast();
 }
 
 void FightWidget::Skill(){
     if(System->EB->type==0){
-        HunLing tempEnemy=EnemyHL[System->EB->index];
+        HunLing &tempEnemy=EnemyHL[System->EB->index];
         QString msg="";
         switch(tempEnemy.ATK_Ski.Type){
         case ENEMYSINGLE:{
-        int a=GetNumber(1,MyHL.size());
-        HunLing tempMe=MyHL[a-1];//以后要优化
-        msg=System->Skill(&tempEnemy,&tempMe,&tempEnemy.ATK_Ski);
-        MyHL[a-1]=tempMe;
-        break;
+            int a=GetNumber(1,MyHL.size());
+            HunLing tempMe=MyHL[a-1];//以后要优化
+            while(tempMe.VITNOW==0){
+                a=GetNumber(1,MyHL.size());
+                tempMe=MyHL[a-1];
+            }
+            msg=System->Skill(&tempEnemy,&tempMe,&tempEnemy.ATK_Ski);
+            MyHL[a-1]=tempMe;
+            break;
         }
         case ENEMYTEAM:{
-        msg=System->Skill(&tempEnemy,tmpMyHL,&tempEnemy.ATK_Ski);
-        break;
+            msg=System->Skill(&tempEnemy,tmpMyHL,&tempEnemy.ATK_Ski);
+            break;
         }
         case MYSIGLE:{
-        int b=GetNumber(1,EnemyHL.size());
-        HunLing b1=EnemyHL[b-1];//以后要优化
-        msg=System->Skill(&tempEnemy,&b1,&tempEnemy.ATK_Ski);
-        EnemyHL[b-1]=b1;
-        break;
+            int b=GetNumber(1,EnemyHL.size());
+            HunLing b1=EnemyHL[b-1];//以后要优化
+            while(b1.VITNOW==0){
+                b=GetNumber(1,MyHL.size());
+                b1=MyHL[b-1];
+            }
+            msg=System->Skill(&tempEnemy,&b1,&tempEnemy.ATK_Ski);
+            EnemyHL[b-1]=b1;
+            break;
         }
         case MYTEAM:{
-        msg=System->Skill(&tempEnemy,tmpEnemyHL,&tempEnemy.ATK_Ski);
-        break;
+            msg=System->Skill(&tempEnemy,tmpEnemyHL,&tempEnemy.ATK_Ski);
+            break;
         }
         }
         msg="（敌方）"+msg;
-        MessageBox::about(this,"提示",msg);
+        //MessageBox::about(this,"提示",msg);
 
         System->UsedSkill(&Enemy,&tempEnemy.ATK_Ski);
         EnemyHL[System->EB->index].ATK_Ski=tempEnemy.ATK_Ski;
@@ -620,17 +656,28 @@ void FightWidget::Skill(){
         GoOn.setEnabled(true);
     }
     if(System->EB->type==1){
-        HunLing tempMe=MyHL[System->EB->index];
+        HunLing &tempMe=MyHL[System->EB->index];
         QString msg="";
+        QMessageBox msgBox;
+        msgBox.setWindowTitle("魂技");
+        msgBox.setText(tempMe.ATK_Ski.Name+"："+tempMe.ATK_Ski.Des+"<br>所需魂力："+QString::number(tempMe.ATK_Ski.Energy)+"<br>所需灵力："+QString::number(tempMe.ATK_Ski.Sour)+"<br>冷却时间："+QString::number(tempMe.ATK_Ski.Turn));
+        msgBox.setStandardButtons(QMessageBox::Yes|QMessageBox::No);
+        msgBox.setDefaultButton(QMessageBox::No);
+        msgBox.buttons()[0]->setFixedSize(100,30);
+        msgBox.buttons()[1]->setFixedSize(100,30);
+        int ret = msgBox.exec();
+        if(ret==QMessageBox::No)
+            return;
+
         if(tempMe.ATK_Ski.NowTurn>0){
             MessageBox::about(this,"提示","技能还有"+QString::number(tempMe.ATK_Ski.NowTurn)+"回合冷却时间！");
             return;
         }
         else{
-             if(tempMe.ATK_Ski.Energy>Me->Energy||tempMe.ATK_Ski.Sour>Me->Sour){
-                 MessageBox::about(this,"提示","魂力或灵力不足");
-                 return;
-             }
+            if(tempMe.ATK_Ski.Energy>Me->Energy||tempMe.ATK_Ski.Sour>Me->Sour){
+                MessageBox::about(this,"提示","魂力或灵力不足");
+                return;
+            }
         }
 
 
@@ -670,145 +717,182 @@ void FightWidget::Skill(){
         }
 
         msg="（我方）"+msg;
-        MessageBox::about(this,"提示",msg);
+        //MessageBox::about(this,"提示",msg);
         MessageList.addItem(msg);
 
 
         System->UsedSkill(Me,&tempMe.ATK_Ski);
-        MyHL[System->EB->index].ATK_Ski=tempMe.ATK_Ski;
+
 
 
         GoOn.setEnabled(true);
 
     }
     this->SetButtonEnable(false);
+    Energy.setText("魂力："+QString::number(Me->Energy)+"/"+QString::number(Me->Ori_Energy));
+    Sour.setText("灵力："+QString::number(Me->Sour)+"/"+QString::number(Me->Ori_Sour));
+
+    MyHLList.clear();
+    EnemyHLList.clear();
+    for(int i=0;i<MyHL.size();i++)
+        MyHLList.addItem(MyHL[i].Name+"   "+QString::number(MyHL[i].VITNOW)+"/"+QString::number(MyHL[i].VIT));
+    for(int i=0;i<EnemyHL.size();i++)
+        EnemyHLList.addItem(EnemyHL[i].Name+"   "+QString::number(EnemyHL[i].VITNOW)+"/"+QString::number(EnemyHL[i].VIT));
+    SetLast();
 }
 
 void FightWidget::EnemyLGSkill(HunJi* Skill){
-        HunLing tempEnemy=EnemyHL[System->EB->index];
-        QString msg="";
-        switch(Skill->Type){
-        case 0:{
+    HunLing &tempEnemy=EnemyHL[System->EB->index];
+    QString msg="";
+    switch(Skill->Type){
+    case 0:{
         int a=GetNumber(1,MyHL.size());
         HunLing tempMe=MyHL[a-1];//以后要优化
+        while(tempMe.VITNOW==0){
+            a=GetNumber(1,MyHL.size());
+            tempMe=MyHL[a-1];
+        }
         msg=System->Skill(&tempEnemy,&tempMe,Skill);
         msg=msg+"（灵骨技能）";
         MyHL[a-1]=tempMe;
         break;
-        }
-        case 1:
+    }
+    case 1:
         msg=System->Skill(&tempEnemy,tmpMyHL,Skill);
         msg=msg+"（灵骨技能）";
         break;
-        case 2:{
+    case 2:{
         int b=GetNumber(1,EnemyHL.size());
         HunLing b1=EnemyHL[b-1];//以后要优化
+        while(b1.VITNOW==0){
+            b=GetNumber(1,MyHL.size());
+            b1=MyHL[b-1];
+        }
         msg=System->Skill(&tempEnemy,&b1,Skill);
         msg=msg+"（灵骨技能）";
         EnemyHL[b-1]=b1;
         break;
-        }
-        case 3:
+    }
+    case 3:
         msg=System->Skill(&tempEnemy,tmpEnemyHL,Skill);
         msg=msg+"（灵骨技能）";
         break;
-        }
-        msg="（敌方）"+msg;
-        MessageBox::about(this,"提示",msg);
-        MessageList.addItem(msg);
+    }
+    msg="（敌方）"+msg;
+    //MessageBox::about(this,"提示",msg);
+    MessageList.addItem(msg);
 
 
-        System->UsedSkill(&Enemy,Skill);
+    System->UsedSkill(&Enemy,Skill);
 
 
-        GoOn.setEnabled(true);
+    GoOn.setEnabled(true);
+    Energy.setText("魂力："+QString::number(Me->Energy)+"/"+QString::number(Me->Ori_Energy));
+    Sour.setText("灵力："+QString::number(Me->Sour)+"/"+QString::number(Me->Ori_Sour));
 
+    MyHLList.clear();
+    EnemyHLList.clear();
+    for(int i=0;i<MyHL.size();i++)
+        MyHLList.addItem(MyHL[i].Name+"   "+QString::number(MyHL[i].VITNOW)+"/"+QString::number(MyHL[i].VIT));
+    for(int i=0;i<EnemyHL.size();i++)
+        EnemyHLList.addItem(EnemyHL[i].Name+"   "+QString::number(EnemyHL[i].VITNOW)+"/"+QString::number(EnemyHL[i].VIT));
+    SetLast();
 
 }
 void FightWidget::LGSkill(){
-        HunLing tempMe=MyHL[System->EB->index];
-        QString msg="";
-        SkillChooseDialog* temp2=new SkillChooseDialog(Me->LG,Me->Energy,Me->Sour);
-        temp2->exec();
-        if(temp2->Skill.ID==0){
-            delete temp2;
+    HunLing &tempMe=MyHL[System->EB->index];
+    QString msg="";
+    SkillChooseDialog* temp2=new SkillChooseDialog(Me->LG,Me->Energy,Me->Sour);
+    temp2->exec();
+    if(temp2->Skill.ID==0){
+        delete temp2;
+        return;
+    }
+    switch(temp2->Skill.Type){
+    case 0:{
+        ChooseDialog* temp=new ChooseDialog(EnemyHL);
+        temp->exec();
+        if(temp->num<0){
+            delete temp;
             return;
         }
-        switch(temp2->Skill.Type){
-        case 0:{
-            ChooseDialog* temp=new ChooseDialog(EnemyHL);
-            temp->exec();
-            if(temp->num<0){
-                delete temp;
-                return;
-            }
-            HunLing tempEnemy1=EnemyHL[temp->num];
-            msg=System->Skill(&tempMe,&tempEnemy1,&temp2->Skill);
-            EnemyHL[temp->num]=tempEnemy1;
-            msg=msg+"（灵骨技能）";
-            delete temp;
-            break;
-        }
-        case 1:
-            msg=System->Skill(&tempMe,tmpEnemyHL,&temp2->Skill);
-            msg=msg+"（灵骨技能）";
-            break;
-        case 2:{
-            ChooseDialog* temp1=new ChooseDialog(MyHL);
-            temp1->exec();
-            if(temp1->num<0){
-                delete temp1;
-                return;
-            }
-            HunLing tempEnemy=MyHL[temp1->num];
-            msg=System->Skill(&tempMe,&tempEnemy,&temp2->Skill);
-            MyHL[temp1->num]=tempEnemy;
-            msg=msg+"（灵骨技能）";
+        HunLing tempEnemy1=EnemyHL[temp->num];
+        msg=System->Skill(&tempMe,&tempEnemy1,&temp2->Skill);
+        EnemyHL[temp->num]=tempEnemy1;
+        msg=msg+"（灵骨技能）";
+        delete temp;
+        break;
+    }
+    case 1:
+        msg=System->Skill(&tempMe,tmpEnemyHL,&temp2->Skill);
+        msg=msg+"（灵骨技能）";
+        break;
+    case 2:{
+        ChooseDialog* temp1=new ChooseDialog(MyHL);
+        temp1->exec();
+        if(temp1->num<0){
             delete temp1;
-            break;
+            return;
         }
-        case 3:
-            msg=System->Skill(&tempMe,tmpMyHL,&temp2->Skill);
-            msg=msg+"（灵骨技能）";
-            break;
-        }
+        HunLing tempEnemy=MyHL[temp1->num];
+        msg=System->Skill(&tempMe,&tempEnemy,&temp2->Skill);
+        MyHL[temp1->num]=tempEnemy;
+        msg=msg+"（灵骨技能）";
+        delete temp1;
+        break;
+    }
+    case 3:
+        msg=System->Skill(&tempMe,tmpMyHL,&temp2->Skill);
+        msg=msg+"（灵骨技能）";
+        break;
+    }
 
-        System->UsedSkill(Me,&temp2->Skill);
+    System->UsedSkill(Me,&temp2->Skill);
 
-        switch(temp2->type){
-        case 1:
-            Me->LG.Head.ATK_Ski=temp2->Skill;
-            break;
-        case 2:
-            Me->LG.Body.ATK_Ski=temp2->Skill;
-            break;
-        case 3:
-            Me->LG.RHand.ATK_Ski=temp2->Skill;
-            break;
-        case 4:
-            Me->LG.LHand.ATK_Ski=temp2->Skill;
-            break;
-        case 5:
-            Me->LG.RLeg.ATK_Ski=temp2->Skill;
-            break;
-        case 6:
-            Me->LG.LLeg.ATK_Ski=temp2->Skill;
-            break;
-        }
-        msg="（我方）"+msg;
-        MessageBox::about(this,"提示",msg);
-        MessageList.addItem(msg);
+    switch(temp2->type){
+    case 1:
+        Me->LG.Head.ATK_Ski=temp2->Skill;
+        break;
+    case 2:
+        Me->LG.Body.ATK_Ski=temp2->Skill;
+        break;
+    case 3:
+        Me->LG.RHand.ATK_Ski=temp2->Skill;
+        break;
+    case 4:
+        Me->LG.LHand.ATK_Ski=temp2->Skill;
+        break;
+    case 5:
+        Me->LG.RLeg.ATK_Ski=temp2->Skill;
+        break;
+    case 6:
+        Me->LG.LLeg.ATK_Ski=temp2->Skill;
+        break;
+    }
+    msg="（我方）"+msg;
+    // MessageBox::about(this,"提示",msg);
+    MessageList.addItem(msg);
 
 
-        delete temp2;
-        GoOn.setEnabled(true);
-        this->SetButtonEnable(false);
+    delete temp2;
+    GoOn.setEnabled(true);
+    this->SetButtonEnable(false);
+    Energy.setText("魂力："+QString::number(Me->Energy)+"/"+QString::number(Me->Ori_Energy));
+    Sour.setText("灵力："+QString::number(Me->Sour)+"/"+QString::number(Me->Ori_Sour));
 
+    MyHLList.clear();
+    EnemyHLList.clear();
+    for(int i=0;i<MyHL.size();i++)
+        MyHLList.addItem(MyHL[i].Name+"   "+QString::number(MyHL[i].VITNOW)+"/"+QString::number(MyHL[i].VIT));
+    for(int i=0;i<EnemyHL.size();i++)
+        EnemyHLList.addItem(EnemyHL[i].Name+"   "+QString::number(EnemyHL[i].VITNOW)+"/"+QString::number(EnemyHL[i].VIT));
+
+    SetLast();
 }
 
 
 void FightWidget::UseItem(){
-    HunLing tempMe=MyHL[System->EB->index];
+    HunLing &tempMe=MyHL[System->EB->index];
     QString msg="";
     FightItemWidget* tempItemList=new FightItemWidget(Me->Bag);
     tempItemList->exec();
@@ -854,7 +938,7 @@ void FightWidget::UseItem(){
     }
 
     msg="（我方）"+msg;
-    MessageBox::about(this,"提示",msg);
+    //MessageBox::about(this,"提示",msg);
     MessageList.addItem(msg);
 
 
@@ -864,7 +948,17 @@ void FightWidget::UseItem(){
     GoOn.setEnabled(true);
 
 
-this->SetButtonEnable(false);
+    this->SetButtonEnable(false);
+    Energy.setText("魂力："+QString::number(Me->Energy)+"/"+QString::number(Me->Ori_Energy));
+    Sour.setText("灵力："+QString::number(Me->Sour)+"/"+QString::number(Me->Ori_Sour));
+
+    MyHLList.clear();
+    EnemyHLList.clear();
+    for(int i=0;i<MyHL.size();i++)
+        MyHLList.addItem(MyHL[i].Name+"   "+QString::number(MyHL[i].VITNOW)+"/"+QString::number(MyHL[i].VIT));
+    for(int i=0;i<EnemyHL.size();i++)
+        EnemyHLList.addItem(EnemyHL[i].Name+"   "+QString::number(EnemyHL[i].VITNOW)+"/"+QString::number(EnemyHL[i].VIT));
+    SetLast();
 }
 
 void FightWidget::Skip(){
@@ -877,15 +971,16 @@ void FightWidget::Skip(){
     msgBox.buttons()[1]->setFixedSize(100,30);
     int ret = msgBox.exec();
     if(ret==QMessageBox::Yes){
-    MessageList.addItem("（我方）"+MyHL[System->EB->index].Name+"无所事事！跳过了回合！");
-    GoOn.setEnabled(true);
-    this->SetButtonEnable(false);
+        MessageList.addItem("（我方）"+MyHL[System->EB->index].Name+"无所事事！跳过了回合！");
+        GoOn.setEnabled(true);
+        this->SetButtonEnable(false);
     }
+    SetLast();
 }
 
 void FightWidget::EnemyClick(){
-     int a=EnemyHLList.currentRow();
-     HLData.setData(EnemyHL[a]);
+    int a=EnemyHLList.currentRow();
+    HLData.setData(EnemyHL[a]);
 
 }
 
@@ -896,92 +991,107 @@ void FightWidget::MeClick(){
 }
 
 void FightWidget::GoOn_Ckick(){
-     GoOn.setEnabled(false);
-     System->TurnOut();
-     if(System->CanGoOn()==1){
-         System->EB->next();
-         if(System->EB->type==0){
-             MessageList.addItem("（敌方）现在是 "+EnemyHL[System->EB->index].Name+"的回合！");
-             if(Enemy.Des=="魂灵"){
-             if(Enemy.CanUseHJList(EnemyHL[System->EB->index].ID).isEmpty()==true){
-                 Attack();
-             }
-             else{
-                 if(GetNumber(0,10)>=5)
-                     Attack();
-                 else
-                     Skill();
-             }
-             }
-             else{
-                 if(Enemy.CanUseHJList(EnemyHL[System->EB->index].ID).isEmpty()==true){
-                         Attack();
-                 }
-                 else{
-                     if(GetNumber(0,10)>=5)
-                         Attack();
-                     else{
-                         QList<int> temphj=Enemy.CanUseHJList(EnemyHL[System->EB->index].ID);
-                         int hj=GetNumber(1,temphj.size());
-                             switch(temphj[hj-1]){
-                             case 0:
-                                 Skill();
-                                 break;
-                             case 1:
-                                 EnemyLGSkill(&Enemy.LG.Head.ATK_Ski);
-                                 break;
-                             case 2:
-                                 EnemyLGSkill(&Enemy.LG.Body.ATK_Ski);
-                                 break;
-                             case 3:
-                                 EnemyLGSkill(&Enemy.LG.LHand.ATK_Ski);
-                                 break;
-                             case 4:
-                                 EnemyLGSkill(&Enemy.LG.RHand.ATK_Ski);
-                                 break;
-                             case 5:
-                                 EnemyLGSkill(&Enemy.LG.LLeg.ATK_Ski);
-                                 break;
-                             case 6:
-                                 EnemyLGSkill(&Enemy.LG.RLeg.ATK_Ski);
-                                 break;
-                             }
+    Title.setText("战斗中..."+QString::number(System->Turn)+" Turn");
+    GoOn.setEnabled(false);
+    System->TurnOut();
+    if(System->CanGoOn()==1){
+        System->EB->next();
+        if(System->EB->type==0){
+            MessageList.addItem("（敌方）现在是 "+EnemyHL[System->EB->index].Name+"的回合！");
+            EnemyHLList.setCurrentRow(System->EB->index);
+            EnemyClick();
+            if(Enemy.Des=="魂灵"){
+                if(Enemy.CanUseHJList(EnemyHL[System->EB->index].ID).isEmpty()==true){
+                    Attack();
+                }
+                else{
+                    if(GetNumber(0,10)>=7)
+                        Attack();
+                    else
+                        Skill();
+                }
+            }
+            else{
+                if(Enemy.CanUseHJList(EnemyHL[System->EB->index].ID).isEmpty()==true){
+                    Attack();
+                }
+                else{
+                    if(GetNumber(0,10)>=9)
+                        Attack();
+                    else{
+                        QList<int> temphj=Enemy.CanUseHJList(EnemyHL[System->EB->index].ID);
+                        int hj=GetNumber(1,temphj.size());
+                        if(GetNumber(1,10)>7)hj=1;
+                        switch(temphj[hj-1]){
+                        case 0:
+                            Skill();
+                            break;
+                        case 1:
+                            EnemyLGSkill(&Enemy.LG.Head.ATK_Ski);
+                            break;
+                        case 2:
+                            EnemyLGSkill(&Enemy.LG.Body.ATK_Ski);
+                            break;
+                        case 3:
+                            EnemyLGSkill(&Enemy.LG.LHand.ATK_Ski);
+                            break;
+                        case 4:
+                            EnemyLGSkill(&Enemy.LG.RHand.ATK_Ski);
+                            break;
+                        case 5:
+                            EnemyLGSkill(&Enemy.LG.LLeg.ATK_Ski);
+                            break;
+                        case 6:
+                            EnemyLGSkill(&Enemy.LG.RLeg.ATK_Ski);
+                            break;
+                        }
 
-                     }
+                    }
 
-                 }
-             }
-             GoOn.setEnabled(true);
+                }
+            }
+            GoOn.setEnabled(true);
 
-         }
-         else{
-             this->SetButtonEnable(true);
-             MessageList.addItem("（我方）现在是 "+MyHL[System->EB->index].Name+"的回合！");
-         }
+        }
+        else{
+            this->SetButtonEnable(true);
+            MessageList.addItem("（我方）现在是 "+MyHL[System->EB->index].Name+"的回合！");
+            MyHLList.setCurrentRow(System->EB->index);
+            MeClick();
+        }
 
 
-     }
-     Energy.setText("魂力："+QString::number(Me->Energy)+"/"+QString::number(Me->Ori_Energy));
-     Sour.setText("灵力："+QString::number(Me->Sour)+"/"+QString::number(Me->Ori_Sour));
-     if(System->CanGoOn()==0){
-         MessageBox::about(this,"提示","你输了！");
-         WinOrLose=0;
-         this->close();
-         return;
-     }
-     if(System->CanGoOn()==-1){
-         MessageBox::about(this,"提示","你获得了胜利！");
-         WinOrLose=1;
-         Reward=GameSystem::DropItem(EnemyHL);
-         this->close();
-         return;
-     }
-     if(System->CanGoOn()==-2){
-         MessageBox::about(this,"提示","分不出胜负！");
-         WinOrLose=-1;
-         this->close();
-         return;
-     }
+    }
+    Energy.setText("魂力："+QString::number(Me->Energy)+"/"+QString::number(Me->Ori_Energy));
+    Sour.setText("灵力："+QString::number(Me->Sour)+"/"+QString::number(Me->Ori_Sour));
+
+    MyHLList.clear();
+    EnemyHLList.clear();
+    System->UpdateVIT();
+    for(int i=0;i<MyHL.size();i++)
+        MyHLList.addItem(MyHL[i].Name+"   "+QString::number(MyHL[i].VITNOW)+"/"+QString::number(MyHL[i].VIT));
+    for(int i=0;i<EnemyHL.size();i++)
+        EnemyHLList.addItem(EnemyHL[i].Name+"   "+QString::number(EnemyHL[i].VITNOW)+"/"+QString::number(EnemyHL[i].VIT));
+    SetLast();
+    if(System->CanGoOn()==0){
+        MessageBox::about(this,"提示","你输了！");
+        WinOrLose=0;
+        this->close();
+        return;
+    }
+    if(System->CanGoOn()==-1){
+        MessageBox::about(this,"提示","你获得了胜利！");
+        WinOrLose=1;
+        Reward=GameSystem::DropItem(EnemyHL);
+        this->close();
+        return;
+    }
+    if(System->CanGoOn()==-2){
+        MessageBox::about(this,"提示","分不出胜负！");
+        WinOrLose=-1;
+        this->close();
+        return;
+    }
 
 }
 

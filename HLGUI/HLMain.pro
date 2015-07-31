@@ -15,7 +15,6 @@ HEADERS  += \
     MapHLWidget.h \
     MapNPCWidget.h \
     TaskWidget.h \
-    TimeWidget.h \
     FightWidget.h \
     MainWidget.h \
     MapWidget.h \
@@ -40,6 +39,7 @@ HEADERS  += \
     ../HLBase/HL_LingHuan.h \
     ../HLBase/HL_NPC.h \
     ../HLBase/HL_RenWu.h \
-    ../HLBase/HL_Task.h
+    ../HLBase/HL_Task.h \
+    Global.h
 
 RESOURCES +=

@@ -11,10 +11,6 @@
 #include<QDialog>
 
 
-
-
-
-
 class BeginWidget :public QWidget{
 	public:
 	QLabel Title;
@@ -33,7 +29,6 @@ class BeginWidget :public QWidget{
 
 BeginWidget::BeginWidget(){
 
-
 this->setObjectName("Widget");
 this->setWindowFlags(Qt::CustomizeWindowHint);
     this->setFixedSize(QSize(1000,480));
@@ -41,8 +36,8 @@ this->setWindowFlags(Qt::CustomizeWindowHint);
     Text.setText("这就是魂灵师……");
     Begin.setText("开始游戏");
     Quit.setText("退出");
-    MainLayout.addWidget(&Title);
-    MainLayout.addWidget(&Text);
+    //MainLayout.addWidget(&Title);
+   // MainLayout.addWidget(&Text);
     MainLayout.addWidget(&Begin);
     MainLayout.addWidget(&Quit);
     this->setLayout(&MainLayout);
@@ -67,6 +62,7 @@ void BeginWidget::Begin_Click(){
      animation1->setStartValue(0);
      animation1->setEndValue(1);
      animation1->start();
+
     Main_W.show();
 
 }

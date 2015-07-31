@@ -79,10 +79,23 @@ LHWidget::LHWidget(RenWu* a){
     LMainLayout=new QHBoxLayout;
     MainLayout=new QVBoxLayout;
     Me=a;
-    for(int i=0;i<Me->LHBag.size();i++)
-      Bag.addItem(Me->LHBag[i].Name);
-    for(int i=0;i<Me->LH.size();i++)
-      Wear.addItem(Me->LH[i].Name);
+    for(int i=0;i<Me->LHBag.size();i++){
+        QIcon icon;
+        QPixmap pix;
+        pix.load("./Data/背景.jpg");
+        icon.addPixmap(pix);
+      QListWidgetItem* item=new QListWidgetItem(icon,Me->LHBag[i].Name,&Bag);
+      Bag.addItem(item);
+    }
+    for(int i=0;i<Me->LH.size();i++){
+        QIcon icon;
+        QPixmap pix;
+        pix.load("./Data/背景.jpg");
+        icon.addPixmap(pix);
+      QListWidgetItem* item=new QListWidgetItem(icon,Me->LH[i].Name,&Wear);
+      Wear.addItem(item);
+    }
+
     WearButton.setText("带上");
     Putoff.setText("取下");
     WearButton.setFixedSize(92,30);
@@ -165,6 +178,7 @@ void LHWidget::WearButton_Click(){
     case 1:
         MessageBox::about(this,"提示","成功！");
         Me->LHBag.removeAt(Bag.currentRow());
+        WearButton.setEnabled(false);
         break;
 
     }
@@ -175,6 +189,8 @@ void LHWidget::Wear_Click(){
     WearButton.setEnabled(false);
     Putoff.setEnabled(true);
     int a=Wear.currentRow();
+    if(a<0)
+        return;
     tempLH=Me->LH[a];
     SetData(tempLH);
 }
@@ -183,6 +199,8 @@ void LHWidget::Bag_Click(){
     WearButton.setEnabled(true);
     Putoff.setEnabled(false);
     int a=Bag.currentRow();
+    if(a<0)
+        return;
     tempLH=Me->LHBag[a];
     SetData(tempLH);
 }
@@ -201,10 +219,22 @@ void LHWidget::SetData(LingHuan a){
 void LHWidget::UpDate(){
     Wear.clear();
     Bag.clear();
-    for(int i=0;i<Me->LHBag.size();i++)
-      Bag.addItem(Me->LHBag[i].Name);
-    for(int i=0;i<Me->LH.size();i++)
-      Wear.addItem(Me->LH[i].Name);
+    for(int i=0;i<Me->LHBag.size();i++){
+        QIcon icon;
+        QPixmap pix;
+        pix.load("./Data/背景.jpg");
+        icon.addPixmap(pix);
+      QListWidgetItem* item=new QListWidgetItem(icon,Me->LHBag[i].Name,&Bag);
+      Bag.addItem(item);
+    }
+    for(int i=0;i<Me->LH.size();i++){
+        QIcon icon;
+        QPixmap pix;
+        pix.load("./Data/背景.jpg");
+        icon.addPixmap(pix);
+      QListWidgetItem* item=new QListWidgetItem(icon,Me->LH[i].Name,&Wear);
+      Wear.addItem(item);
+    }
 }
 
 #endif

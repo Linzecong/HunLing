@@ -1,7 +1,6 @@
 #ifndef HL_GAMESYSTEM
 #define HL_GAMESYSTEM
-#define SAVEPATH QString("./Save/")
-#define DATAPATH QString("./Data/")
+
 
 #include <QString>
 #include<QTextStream>
@@ -31,31 +30,107 @@ class GameSystem{
 
 
 
-        Me.LV=1;
-        Me.Exp_Need=720;
+        Me.LV=98;
+        Me.Exp_Need=100000;
         Me.Exp_Now=0;
-        Me.Name="傻逼";
+        Me.Name="酱油A";
         Me.Coin=10;
         Me.PosX=1;
         Me.PosY=1;
-        Me.Ori_Agility=10;
-        Me.Ori_Energy=100;
-        Me.Ori_Strength=10;
-        Me.Ori_Vitality=5;
-        Me.Ori_Sour=100;
-        LingHuan a;
-        a.LV=5;
-        a.ID=1;
-        a.DEF_Ski=1;
-        a.Name=SystemHL[1].Name;
-        a.Des=SystemHL[1].Des;
-        a.Col="灰";
-        a.Value=999;
-        a.Strength=SystemHL[1].Strength+10;
-        a.Agility=SystemHL[1].Agility+10;
+        Me.Ori_Agility=260;
+        Me.Ori_Energy=5000;
+        Me.Ori_Strength=260;
+        Me.Ori_Vitality=110;
+        Me.Ori_Sour=200;
 
+        LingHuan a;
+        a.LV=93;
+        a.ID=10;
+        a.DEF_Ski=8;
+        a.Name=SystemHL[10].Name;
+        a.Des=SystemHL[10].Des;
+        a.Col="彩";
+        a.Value=9999;
+        a.Strength=SystemHL[10].Strength+a.LV*2;
+        a.Agility=SystemHL[10].Agility+a.LV*2;
         Me.LH.append(a);
-Me.UpdateBuff();
+
+        a.LV=93;
+        a.ID=11;
+        a.DEF_Ski=8;
+        a.Name=SystemHL[11].Name;
+        a.Des=SystemHL[11].Des;
+        a.Strength=SystemHL[11].Strength+a.LV*2;
+        a.Agility=SystemHL[11].Agility+a.LV*2;
+        Me.LH.append(a);
+
+        a.LV=93;
+        a.ID=12;
+        a.DEF_Ski=9;
+        a.Name=SystemHL[12].Name;
+        a.Des=SystemHL[12].Des;
+        a.Strength=SystemHL[12].Strength+a.LV*2;
+        a.Agility=SystemHL[12].Agility+a.LV*2;
+        Me.LH.append(a);
+
+        a.LV=93;
+        a.ID=13;
+        a.DEF_Ski=9;
+        a.Name=SystemHL[13].Name;
+        a.Des=SystemHL[13].Des;
+        a.Strength=SystemHL[13].Strength+a.LV*2;
+        a.Agility=SystemHL[13].Agility+a.LV*2;
+        Me.LH.append(a);
+
+        a.LV=94;
+        a.ID=14;
+        a.DEF_Ski=10;
+        a.Name=SystemHL[14].Name;
+        a.Des=SystemHL[14].Des;
+        a.Strength=SystemHL[14].Strength+a.LV*2;
+        a.Agility=SystemHL[14].Agility+a.LV*2;
+        Me.LH.append(a);
+
+        a.LV=94;
+        a.ID=15;
+        a.DEF_Ski=9;
+        a.Name=SystemHL[15].Name;
+        a.Des=SystemHL[15].Des;
+        a.Strength=SystemHL[15].Strength+a.LV*2;
+        a.Agility=SystemHL[15].Agility+a.LV*2;
+        Me.LH.append(a);
+
+        a.LV=95;
+        a.ID=16;
+        a.DEF_Ski=10;
+        a.Name=SystemHL[16].Name;
+        a.Des=SystemHL[16].Des;
+        a.Strength=SystemHL[16].Strength+a.LV*2;
+        a.Agility=SystemHL[16].Agility+a.LV*2;
+        Me.LH.append(a);
+
+        a.LV=95;
+        a.ID=17;
+        a.DEF_Ski=11;
+        a.Name=SystemHL[17].Name;
+        a.Des=SystemHL[17].Des;
+        a.Strength=SystemHL[17].Strength+a.LV*2;
+        a.Agility=SystemHL[17].Agility+a.LV*2;
+        Me.LH.append(a);
+
+        a.LV=99;
+        a.ID=18;
+        a.DEF_Ski=12;
+        a.Name=SystemHL[18].Name;
+        a.Des=SystemHL[18].Des;
+        a.Strength=SystemHL[18].Strength+a.LV*2;
+        a.Agility=SystemHL[18].Agility+a.LV*2;
+        Me.LH.append(a);
+
+
+
+
+        Me.UpdateBuff();
 
 
 
@@ -83,9 +158,9 @@ Me.UpdateBuff();
         tempHL.LV = b.LV;
         tempHL.Strength = a.Strength+b.Strength;
         tempHL.Agility = a.Agility+b.Agility;
-        tempHL.ATK =((1 + 2 * tempHL.LV) * (tempHL.Strength * tempHL.ATK_Str + tempHL.Agility * tempHL.ATK_Agi))/10;
-        tempHL.DEF =((1 + 2 * tempHL.LV) * (tempHL.Strength * tempHL.DEF_Str + tempHL.Agility * tempHL.DEF_Agi))/13;
-        tempHL.VIT = ((a.Vitality+tempHL.Strength) * tempHL.VIT_Vit * tempHL.LV)/2;
+        tempHL.ATK =(tempHL.LV+10) * (tempHL.Strength * (tempHL.ATK_Str+10) + tempHL.Agility * (tempHL.ATK_Agi+10))/(100+tempHL.LV/5);
+        tempHL.DEF =(tempHL.LV+10) * (tempHL.Strength * (tempHL.ATK_Str+10) + tempHL.Agility * (tempHL.ATK_Agi+10))/(180+tempHL.LV/5);
+        tempHL.VIT = (((tempHL.LV+tempHL.VIT_Vit) * tempHL.LV*a.Vitality)+(a.Vitality+tempHL.Strength)*a.Vitality)/(10+tempHL.LV/10);
         tempHL.VITNOW=tempHL.VIT;
         return tempHL;
 
@@ -119,8 +194,8 @@ LingHuan GameSystem::CreateLH(HunLing a){
         temp.Col = "紫";
     if (temp.LV >= 90)
         temp.Col = "彩";
-    temp.Strength = a.Strength*0.8;
-    temp.Agility = a.Agility*0.8;
+    temp.Strength = a.Strength*0.9;
+    temp.Agility = a.Agility*0.9;
 	temp.ID = a.ID;
 	temp.DEF_Ski = a.DEF_Ski;
     temp.Value=(temp.Strength * 100 + temp.Agility * 100 + temp.LV * 50 ) * 1.5;
@@ -184,7 +259,7 @@ NPC GameSystem::CreateNPC(QList<LingHuan> a){//通过灵环列表生成NPC，为
         tempAgi += a[i].Agility;
     temp.Ori_Agility = tempAgi / a.size();//平均敏捷
 
-    temp.Ori_Vitality = (temp.Ori_Strength + temp.Ori_Agility)/10;//体力等于力量加敏捷/10
+    temp.Ori_Vitality = (temp.Ori_Strength + temp.Ori_Agility)/3;//体力等于力量加敏捷/3
 
 	temp.Ori_Energy = temp.Ori_Vitality * 50 * temp.LV;//相当于无限魂力
 	temp.Ori_Sour = 500;//灵力
@@ -305,13 +380,13 @@ DropData GameSystem::DropItem(QList<HunLing> a){//通过魂灵列表生成掉落
         if(aaa!=0)
         tempData.Item.append(SystemItem[aaa]);
         }
-        tempData.Exp +=(a[i].LV-1)*2+60;//要改！！
+        tempData.Exp +=(a[i].LV-1)*(a[i].LV)+60;
 		tempData.Coin += GetNumber(temp.LV * 1.5, temp.LV * 2);
-        if (GetNumber(1, 5) == 1){
+        if (GetNumber(1, 50) == 1){
 			LingGu tempLG = CreateLG(temp,GetNumber(1,6));
             tempData.LG.append(tempLG);
 		}
-		if (GetNumber(1, 20) == 1){
+        if (GetNumber(1, 15) == 1){
             LingHuan tempLH = CreateLH(temp);
             tempData.LH.append(tempLH);
 		}

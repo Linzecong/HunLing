@@ -24,7 +24,7 @@ class NPC:public RenWu{
 	void Save();
     QList<int> CanUseHJList(int hl);//返回当前可以使用的技能(魂灵ID)，0魂技,1~6魂骨技能
     NPC();
-} SystemNPC[200];
+} SystemNPC[NPCMAX];
 
 NPC::NPC():RenWu(){
     Des="空";CanATK=0;TaskShow=0;ID=0;
@@ -63,14 +63,14 @@ void NPC::Save(){
         QFile file((DATAPATH+"SaveNPC.str"));
         file.open(QIODevice::WriteOnly);
          QTextStream in(&file);
-         for(int i=0;i<200;i++)
+         for(int i=0;i<NPCMAX;i++)
         in<<SystemNPC[i].Name<<" "<<SystemNPC[i].Des<<endl;
          file.close();
 
      QFile tmpfile(DATAPATH+"SaveNPC.num" );
     tmpfile.open(QIODevice::WriteOnly);
     int a=sizeof(int);
-    for(int i=0;i<200;i++){
+    for(int i=0;i<NPCMAX;i++){
     tmpfile.write(( char *)&SystemNPC[i].ID,a);
     tmpfile.write(( char *)&SystemNPC[i].LV,a);
     tmpfile.write(( char *)&SystemNPC[i].Ori_Strength,a);
@@ -94,14 +94,14 @@ void NPC::Init(){
     QFile file((DATAPATH+"SaveNPC.str"));
      file.open(QIODevice::ReadOnly);
       QTextStream in(&file);
-         for(int i=0;i<200;i++)
+         for(int i=0;i<NPCMAX;i++)
         in>>SystemNPC[i].Name>>SystemNPC[i].Des;
       file.close();
 
     QFile tmpfile( DATAPATH+"SaveNPC.num" );
     tmpfile.open(QIODevice::ReadOnly);
      int a=sizeof(int);
-    for(int i=0;i<200;i++){
+    for(int i=0;i<NPCMAX;i++){
         tmpfile.read(( char *)&SystemNPC[i].ID,a);
         tmpfile.read(( char *)&SystemNPC[i].LV,a);
         tmpfile.read(( char *)&SystemNPC[i].Ori_Strength,a);
@@ -120,7 +120,7 @@ void NPC::Init(){
     }
     tmpfile.close();
 
-    for(int i=0;i<200;i++)
+    for(int i=0;i<NPCMAX;i++)
         SystemNPC[i].Update();
 }
 
@@ -132,9 +132,9 @@ void NPC::Update(){
 		int b=LHLV[i];
         if(b==0)
             continue;
+
 		HunLing tempHL=SystemHL[a];
 		tempHL.LV=b;
-	    tempHL.Update();
 		LingHuan temp;
 		temp.LV = tempHL.LV;
         temp.Strength = tempHL.Strength + tempHL.LV * 2 ;
@@ -171,10 +171,10 @@ void NPC::Update(){
             continue;
 		HunLing a=SystemHL[aID];
 		a.LV=aLV;
-	    a.Update();
+
 	    LingGu temp;
 	temp.ID=a.ID;
-	temp.LV = a.LV - 2 + GetNumber(2, 4);
+    temp.LV = a.LV ;
 	temp.Type = i;
 	temp.Strength = a.Strength - 5 + GetNumber(5, 10);
 	temp.Agility = a.Agility - 5 + GetNumber(5, 10);
@@ -242,13 +242,13 @@ class Message{
         NTask=0;
         Msg="空";
     }
-} SystemMessage[500];
+} SystemMessage[MSGMAX];
 
 void Message::Init(){
 	QFile file((DATAPATH+"SaveMessage.str"));
 	file.open(QIODevice::ReadOnly);
 	QTextStream in(&file);
-    for (int i = 0; i <500; i++)
+    for (int i = 0; i <MSGMAX; i++)
 		in >> SystemMessage[i].NTask >> SystemMessage[i].Msg;
 	file.close();
 }  

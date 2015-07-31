@@ -33,17 +33,24 @@ class MapHLWidget: public QWidget{
         this->setObjectName("hunling");
         Attack.setObjectName("attack");
 
-        this->setFixedSize(QSize(71,135));
+        this->setFixedSize(QSize(80,160));
         this->setEnabled(false);
         MainLayout=new QVBoxLayout;
-        //Head.setPixmap(QPixmap::load(""));
+        QPixmap pix;
+        pix.load("./Data/背景.jpg");
+        pix.scaled(50,50);
+        Head.setPixmap(pix);
+        Head.setAlignment(Qt::AlignCenter);
+        Name.setAlignment(Qt::AlignCenter);
         Name.setObjectName("small");
         LV.setText("等级：");
+        LV.setAlignment(Qt::AlignCenter);
         LV.setObjectName("small");
         Count.setText("数量：");
+        Count.setAlignment(Qt::AlignCenter);
         Count.setObjectName("small");
         Attack.setText("攻击");
-        Attack.setFixedSize(55,20);
+        Attack.setFixedSize(70,28);
         MainLayout->addWidget(&Head);
         MainLayout->addWidget(&Name);
         MainLayout->addWidget(&LV);

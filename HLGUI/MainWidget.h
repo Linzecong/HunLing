@@ -2,7 +2,7 @@
 
 #ifndef MAINWIDGET
 #define MAINWIDGET
-
+#include<QPropertyAnimation>
 #include<QString>
 #include<QWidget>
 #include<QDialog>
@@ -13,21 +13,22 @@
 #include<QKeyEvent>
 #include<QMessageBox>
 #include<../HLBase/HL_GameSystem.h>
-#include<TimeWidget.h>
+#include<Global.h>
 #include<MapWidget.h>
 #include<ItemWidget.h>
 #include<LGWidget.h>
 #include<LHWidget.h>
 #include<TaskWidget.h>
 #include<QApplication>
+#include<QPainter>
 class BuffWidget: public QDialog{
-    public:
+public:
     TimeWidget* Time_Widget;
     QList<Buff> List;
     QLabel Buff1;
     QLabel Buff2;
     QVBoxLayout MainLayout;
-    public:
+public:
     BuffWidget(QList<Buff> a);
 
     ~BuffWidget(){}
@@ -36,10 +37,10 @@ class BuffWidget: public QDialog{
 
 
 BuffWidget::BuffWidget(QList<Buff> a){
-    this->setFixedWidth(200);
+    this->setFixedWidth(350);
     this->setWindowTitle("被动列表");
     this->setObjectName("main");
-        Time_Widget=new TimeWidget;
+    Time_Widget=new TimeWidget;
     List=a;
     Buff1.setText("战前Buff：<br>");
     for(int i=0;i<a.size();i++)
@@ -58,7 +59,7 @@ BuffWidget::BuffWidget(QList<Buff> a){
 
 
 class DataWidget: public QWidget{
-    public:
+public:
     RenWu* Me;
     QLabel Title;
     QLabel Name;
@@ -75,33 +76,31 @@ class DataWidget: public QWidget{
 
 
 public:
-DataWidget(RenWu* a);
-~DataWidget(){}
-void UpDate();
+    DataWidget(RenWu* a);
+    ~DataWidget(){}
+    void UpDate();
 
 };
 
 DataWidget::DataWidget(RenWu* a){
 
-    this->setObjectName("main");
+   // this->setObjectName("main");
     this->setFixedSize(150,470);
-     MainLayout=new QVBoxLayout;
+    MainLayout=new QVBoxLayout;
     Me=a;
-    Title.setText("人物信息：");
     Name.setText("名字："+Me->Name);
     Level.setText("等级："+QString::number(Me->LV)+"级");
     Exp.setText("经验："+QString::number(Me->Exp_Now)+"/"+QString::number(Me->Exp_Need));
     Coin.setText("金币："+QString::number(Me->Coin));
     for(int i=0;i<Me->LH.size();i++)
-    LingHuan.setText(LingHuan.text()+Me->LH[i].Col);
-    LingHuan.setText("灵环："+LingHuan.text());
+        LingHuan.setText(LingHuan.text()+Me->LH[i].Col);
+    LingHuan.setText(LingHuan.text());
     Strength.setText("力量："+QString::number(Me->Strength)+"("+QString::number(Me->Ori_Strength)+")");
     Agility.setText("敏捷："+QString::number(Me->Agility)+"("+QString::number(Me->Ori_Agility)+")");
     Vitality.setText("体力："+QString::number(Me->Vitality)+"("+QString::number(Me->Ori_Vitality)+")");
     Energy.setText("魂力："+QString::number(Me->Energy)+"("+QString::number(Me->Ori_Energy)+")");
     Sour.setText("灵力："+QString::number(Me->Sour)+"("+QString::number(Me->Ori_Sour)+")");
 
-    MainLayout->addWidget(&Title);
     MainLayout->addWidget(&Name);
     MainLayout->addWidget(&Level);
     MainLayout->addWidget(&Exp);
@@ -127,8 +126,8 @@ void DataWidget::UpDate(){
     Exp.setText("经验："+QString::number(Me->Exp_Now)+"/"+QString::number(Me->Exp_Need));
     LingHuan.setText("");
     for(int i=0;i<Me->LH.size();i++)
-    LingHuan.setText(LingHuan.text()+Me->LH[i].Col);
-    LingHuan.setText("灵环："+LingHuan.text());
+        LingHuan.setText(LingHuan.text()+Me->LH[i].Col);
+    LingHuan.setText(LingHuan.text());
     Strength.setText("力量："+QString::number(Me->Strength)+"("+QString::number(Me->Ori_Strength)+")");
     Agility.setText("敏捷："+QString::number(Me->Agility)+"("+QString::number(Me->Ori_Agility)+")");
     Vitality.setText("体力："+QString::number(Me->Vitality)+"("+QString::number(Me->Ori_Vitality)+")");
@@ -141,7 +140,7 @@ void DataWidget::UpDate(){
 
 
 class MapButtonWidget: public QWidget{
-    public:
+public:
     PushButton BuffButton;
     PushButton BagButton;
     PushButton TaskButton;
@@ -159,7 +158,7 @@ class MapButtonWidget: public QWidget{
 
 MapButtonWidget::MapButtonWidget(){
 
-    this->setObjectName("main");
+    //this->setObjectName("main");
     QuitButton.setObjectName("close");
 
     this->setFixedSize(150,470);
@@ -175,6 +174,7 @@ MapButtonWidget::MapButtonWidget(){
     QuitButton.setText("退出");
 
     BagButton.setFixedSize(130,45);
+    BagButton.setObjectName("bagbutton");
     TaskButton.setFixedSize(130,45);
     LGButton.setFixedSize(130,45);
     LHButton.setFixedSize(130,45);
@@ -198,36 +198,44 @@ MapButtonWidget::MapButtonWidget(){
 }
 
 class MainWidget:public QWidget{
-	public:
+public:
     GameSystem* Game;
-	DataWidget* Data_Widget;
+    DataWidget* Data_Widget;
     BuffWidget* Buff_Widget;
-	MapWidget* Map_Widget;
-	ItemWidget* Item_Widget;
-	LGWidget* LG_Widget;
-	LHWidget* LH_Widget;
+    MapWidget* Map_Widget;
+    ItemWidget* Item_Widget;
+    LGWidget* LG_Widget;
+    LHWidget* LH_Widget;
     TaskWidget* Task_Widget;
-	MapButtonWidget* MapButton_Widget;
+    MapButtonWidget* MapButton_Widget;
 
     QVBoxLayout* Layout1;
     QHBoxLayout* MainLayout;
 
-	public:
+public:
     MainWidget();
     ~MainWidget(){}
 
     void Quit();
-	void Save();
+    void Save();
     void Help();
-	void ShowItem();
+    void ShowItem();
     void ShowTask();
-	void ShowLG();
-	void ShowLH();
+    void ShowLG();
+    void ShowLH();
     void ShowBuff();
     void xia();
     void shang();
     void zuo();
     void you();
+//    void paintEvent(QPaintEvent *e)
+//    {
+//        QPainter p(this);
+//        QPixmap map;
+//        map.load("./Data/背景.png");
+//        p.drawPixmap(0,0,map);
+
+//    }
 
 
 protected:
@@ -244,39 +252,43 @@ void MainWidget::closeEvent(QCloseEvent *e){
 
 
 MainWidget::MainWidget(){
-    QSound::play(DATAPATH+"背景.wav");
+    //setAttribute(Qt::WA_TranslucentBackground);
+    QSound* asd=new QSound(DATAPATH+"背景.wav");
+    asd->setLoops(-1);
+    asd->play();
+
     this->setWindowFlags (Qt::CustomizeWindowHint);
 
-this->setObjectName("main");
 
+    this->setObjectName("mainwidget");
+    this->setStyleSheet("#mainwidget{background-image: url(./Data/背景.png);}");
 
-
-   this->setFixedSize(QSize(1000,480));
+    this->setFixedSize(QSize(1000,480));
     Layout1=new QVBoxLayout;
     MainLayout=new QHBoxLayout;
-Game=new GameSystem;
-Data_Widget=new DataWidget(&Game->Me);
+    Game=new GameSystem;
+    Data_Widget=new DataWidget(&Game->Me);
 
 
-MapButton_Widget=new MapButtonWidget;
-Map_Widget=new MapWidget(SystemMap[Game->Me.PosX][Game->Me.PosY],&Game->Me);
-Buff_Widget=new BuffWidget(Game->Me.myBuffList);
-Layout1->addWidget(Map_Widget);
-MainLayout->addWidget(Data_Widget);
-MainLayout->addLayout(Layout1);
-MainLayout->addWidget(MapButton_Widget);
+    MapButton_Widget=new MapButtonWidget;
+    Map_Widget=new MapWidget(SystemMap[Game->Me.PosX][Game->Me.PosY],&Game->Me);
+    Buff_Widget=new BuffWidget(Game->Me.myBuffList);
+    Layout1->addWidget(Map_Widget);
+    MainLayout->addWidget(Data_Widget);
+    MainLayout->addLayout(Layout1);
+    MainLayout->addWidget(MapButton_Widget);
 
-connect(&MapButton_Widget->QuitButton,&QPushButton::clicked,this,&MainWidget::Quit);
-connect(&MapButton_Widget->SaveButton,&QPushButton::clicked,this,&MainWidget::Save);
-connect(&MapButton_Widget->HelpButton,&QPushButton::clicked,this,&MainWidget::Help);
-connect(&MapButton_Widget->BagButton,&QPushButton::clicked,this,&MainWidget::ShowItem);
-connect(&MapButton_Widget->TaskButton,&QPushButton::clicked,this,&MainWidget::ShowTask);
-connect(&MapButton_Widget->LGButton,&QPushButton::clicked,this,&MainWidget::ShowLG);
-connect(&MapButton_Widget->LHButton,&QPushButton::clicked,this,&MainWidget::ShowLH);
-connect(&Buff_Widget->Time_Widget->timer,&QTimer::timeout,Data_Widget,&DataWidget::UpDate);
-connect(&MapButton_Widget->BuffButton,&QPushButton::clicked,this,&MainWidget::ShowBuff);
+    connect(&MapButton_Widget->QuitButton,&QPushButton::clicked,this,&MainWidget::Quit);
+    connect(&MapButton_Widget->SaveButton,&QPushButton::clicked,this,&MainWidget::Save);
+    connect(&MapButton_Widget->HelpButton,&QPushButton::clicked,this,&MainWidget::Help);
+    connect(&MapButton_Widget->BagButton,&QPushButton::clicked,this,&MainWidget::ShowItem);
+    connect(&MapButton_Widget->TaskButton,&QPushButton::clicked,this,&MainWidget::ShowTask);
+    connect(&MapButton_Widget->LGButton,&QPushButton::clicked,this,&MainWidget::ShowLG);
+    connect(&MapButton_Widget->LHButton,&QPushButton::clicked,this,&MainWidget::ShowLH);
+    connect(&Buff_Widget->Time_Widget->timer,&QTimer::timeout,Data_Widget,&DataWidget::UpDate);
+    connect(&MapButton_Widget->BuffButton,&QPushButton::clicked,this,&MainWidget::ShowBuff);
 
-this->setLayout(MainLayout);
+    this->setLayout(MainLayout);
 
 }
 
@@ -296,7 +308,7 @@ void MainWidget::Help(){
 }
 
 void MainWidget::ShowItem(){
-QSound::play(DATAPATH+"6112.wav");
+    QSound::play(DATAPATH+"6112.wav");
     Item_Widget=new ItemWidget(&Game->Me);
     QPropertyAnimation *animation = new QPropertyAnimation(Item_Widget, "geometry");
     animation->setDuration(200);
@@ -354,22 +366,22 @@ void MainWidget::ShowLH(){
 
 }
 void MainWidget::ShowBuff(){
-Buff_Widget=new BuffWidget(Game->Me.myBuffList);
-Buff_Widget->exec();
-delete Buff_Widget;
+    Buff_Widget=new BuffWidget(Game->Me.myBuffList);
+    Buff_Widget->exec();
+    delete Buff_Widget;
 }
 
 void MainWidget::keyPressEvent(QKeyEvent *e){
 
-                int key = e->key();
-                if (Qt::Key_S == key)
-                xia();
-                if (Qt::Key_W == key)
-                shang();
-                if (Qt::Key_A == key)
-                zuo();
-                if (Qt::Key_D == key)
-                you();
+    int key = e->key();
+    if (Qt::Key_S == key)
+        xia();
+    if (Qt::Key_W == key)
+        shang();
+    if (Qt::Key_A == key)
+        zuo();
+    if (Qt::Key_D == key)
+        you();
 
 }
 
@@ -377,11 +389,11 @@ void MainWidget::keyPressEvent(QKeyEvent *e){
 void MainWidget::xia(){
     if(Game->Me.PosY==25){
         MessageBox::about(this,"提示","这已经是世界的尽头！");
-    return;
-}
+        return;
+    }
     if(Game->CanGoTo(SystemMap[Game->Me.PosX][(Game->Me.PosY)+1])){
-  Game->Me.PosY++;
-  Map_Widget->UpDate(SystemMap[Game->Me.PosX][Game->Me.PosY]);
+        Game->Me.PosY++;
+        Map_Widget->UpDate(SystemMap[Game->Me.PosX][Game->Me.PosY]);
     }
     else
         MessageBox::about(this,"提示","你还不能去那里！");
@@ -389,11 +401,11 @@ void MainWidget::xia(){
 void MainWidget::shang(){
     if(Game->Me.PosY==0){
         MessageBox::about(this,"提示","这已经是世界的尽头！");
-    return;
-}
+        return;
+    }
     if(Game->CanGoTo(SystemMap[Game->Me.PosX][(Game->Me.PosY)-1])){
-    Game->Me.PosY--;
-    Map_Widget->UpDate(SystemMap[Game->Me.PosX][Game->Me.PosY]);
+        Game->Me.PosY--;
+        Map_Widget->UpDate(SystemMap[Game->Me.PosX][Game->Me.PosY]);
     }
     else
         MessageBox::about(this,"提示","你还不能去那里！");
@@ -401,26 +413,26 @@ void MainWidget::shang(){
 void MainWidget::zuo(){
     if(Game->Me.PosX==0){
         MessageBox::about(this,"提示","这已经是世界的尽头！");
-    return;
-}
-     if(Game->CanGoTo(SystemMap[(Game->Me.PosX)-1][(Game->Me.PosY)])){
-    Game->Me.PosX--;
-    Map_Widget->UpDate(SystemMap[Game->Me.PosX][Game->Me.PosY]);
-}
-else
-    MessageBox::about(this,"提示","你还不能去那里！");
+        return;
+    }
+    if(Game->CanGoTo(SystemMap[(Game->Me.PosX)-1][(Game->Me.PosY)])){
+        Game->Me.PosX--;
+        Map_Widget->UpDate(SystemMap[Game->Me.PosX][Game->Me.PosY]);
+    }
+    else
+        MessageBox::about(this,"提示","你还不能去那里！");
 }
 void MainWidget::you(){
     if(Game->Me.PosX==25){
         MessageBox::about(this,"提示","这已经是世界的尽头！");
-    return;
-}
-     if(Game->CanGoTo(SystemMap[(Game->Me.PosX)+1][(Game->Me.PosY)])){
-    Game->Me.PosX++;
-    Map_Widget->UpDate(SystemMap[Game->Me.PosX][Game->Me.PosY]);
-     }
-     else
-         MessageBox::about(this,"提示","你还不能去那里！");
+        return;
+    }
+    if(Game->CanGoTo(SystemMap[(Game->Me.PosX)+1][(Game->Me.PosY)])){
+        Game->Me.PosX++;
+        Map_Widget->UpDate(SystemMap[Game->Me.PosX][Game->Me.PosY]);
+    }
+    else
+        MessageBox::about(this,"提示","你还不能去那里！");
 }
 
 #endif

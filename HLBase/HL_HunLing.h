@@ -37,7 +37,6 @@ class HunLing{
 	HunJi ATK_Ski;
 	int DropItem[10];//会掉落的道具
 	void Init();
-    void Update();//更新力量和敏捷（NPC生成灵环用）
     HunLing(){
         LV=ID=0;
         Name=Des="空";
@@ -49,28 +48,22 @@ class HunLing{
         for(int i=0;i<10;i++)
             DropItem[i]=0;
     }
-} SystemHL[200];
+} SystemHL[HLMAX];
 
-void HunLing::Update(){
-    if(Agility==0&&Strength==0)
-        return;
-		int AgiP =LV * 5 * Agility / (Agility +Strength);
-		Strength = Strength + LV * 5 - AgiP;
-		Agility = Agility + AgiP;	
-}
+
 
 void HunLing::Init(){
     QFile file((DATAPATH+"SaveHL.str"));
     file.open(QIODevice::ReadOnly);
       QTextStream in(&file);
-         for(int i=0;i<200;i++)
+         for(int i=0;i<HLMAX;i++)
         in>>SystemHL[i].Name>>SystemHL[i].Des;
        file.close();
 
     QFile tmpfile( DATAPATH+"SaveHL.num" );
     tmpfile.open(QIODevice::ReadOnly);
     int a=sizeof(int);
-    for(int i=0;i<200;i++){
+    for(int i=0;i<HLMAX;i++){
         tmpfile.read(( char *)&SystemHL[i].ID,a);
         tmpfile.read(( char *)&SystemHL[i].Strength,a);
         tmpfile.read(( char *)&SystemHL[i].Agility,a);
@@ -97,64 +90,5 @@ void HunLing::Init(){
     tmpfile.close();
 }
 
-/*
-class HLList{
-  public:
-    QList<HunLing> List;
-  public:
-	HunLing GetData(int a);
-	int Count();
-	int AVE_ATK();
-	int AVE_DEF();
-	int TOL_VIT();
-	HunLing Take(int a);
-	void Insert(HunLing a);
-	HunLing Replace(HunLing a, int b);
 
-};
-
-HunLing HLList::Replace(HunLing a, int b){
-    HunLing C=List[b];
-    List[b]=a;
-    return C;
-}
-
-
-HunLing HLList::Take(int a){
-   return List.takeAt(a);
-}
-
-int HLList::Count(){
-    return List.size();
-}
-
-void HLList::Insert(HunLing a){
-    List.append(a);
-}
-
-HunLing HLList::GetData(int a){
-    return List[a];
-}
-
-int HLList::AVE_ATK(){
-	int sum = 0;
-    for (int i = 1; i <=Count(); i++)
-		sum += GetData(i).ATK;
-	return sum / Count();
-}
-
-int HLList::AVE_DEF(){
-	int sum = 0;
-	for (int i = 1; i <= Count(); i++)
-		sum += GetData(i).DEF;
-	return sum / Count();
-}
-
-int HLList::TOL_VIT(){
-	int sum = 0;
-	for (int i = 1; i <= Count(); i++)
-		sum += GetData(i).VIT;
-	return sum;
-}
-*/
 #endif

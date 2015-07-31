@@ -68,8 +68,16 @@ Des.setWordWrap(true);
     Use.setText("使用");
     Close.setText("关闭");
     Use.setEnabled(false);
-    for(int i=0;i<Me->Bag.size();i++)
-      Item_List.addItem(Me->Bag[i].Name);
+    for(int i=0;i<Me->Bag.size();i++){
+        QIcon icon;
+        QPixmap pix;
+        pix.load("./Data/背景.jpg");
+        icon.addPixmap(pix);
+      QListWidgetItem* item=new QListWidgetItem(icon,Me->Bag[i].Name,&Item_List);
+      Item_List.addItem(item);
+    }
+
+
 
     Name.setText("名字：");
     Des.setText("作用：");
