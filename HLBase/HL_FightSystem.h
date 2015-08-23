@@ -263,8 +263,9 @@ QString FightSystem::Skill(HunLing * a, HunLing * b, HunJi * skill){//注意技�
         int Point=int(ATKPoint(*a,*b,0,2));
         b->VITNOW -= Point;
         Description=a->Name+"对"+b->Name+"使用技能"+skill->Name+"，"+"对对方"+b->Name+"造成"+QString::number(Point)+"点伤害！";
+    break;
     }
-        break;
+
     case 6:{
         b->VITNOW *= 0.1;
         Description=a->Name+"对"+b->Name+"使用技能"+skill->Name+"，"+"体力将至10%";
@@ -274,6 +275,11 @@ QString FightSystem::Skill(HunLing * a, HunLing * b, HunJi * skill){//注意技�
         int Point=int(ATKPoint(*a,*b,1,1.5));
         b->VITNOW -= Point;
         Description=a->Name+"对"+b->Name+"使用技能"+skill->Name+"，"+"对对方"+b->Name+"造成"+QString::number(Point)+"点伤害！";
+    break;
+    }
+    case 15:{
+        Description=a->Name+"对"+b->Name+"使用技能"+skill->Name+"，"+"对方很无语...";
+    break;
     }
 
 

@@ -565,6 +565,7 @@ int RenWu::FinishTask(Task a){
         return -1;
     else{
 	SystemTask[a.ID].IsFinish = 1;
+
     for(int i=0;i<myTaskList.size();i++)//删除
     if(myTaskList[i].ID==a.ID)
         myTaskList.removeAt(i);
@@ -594,8 +595,8 @@ int RenWu::FinishTask(Task a){
             Bag.append(SystemItem[a.A_Item]);
             Bag.last().Count=a.A_Count;
         }
-        return 1;
     }
+    return 1;
     }
     return -1;
 }

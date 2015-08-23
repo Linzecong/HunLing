@@ -228,6 +228,11 @@ public:
     void shang();
     void zuo();
     void you();
+    void UpdataMap(){
+        Map_Widget->UpDate(SystemMap[Game->Me.PosX][Game->Me.PosY]);
+    }
+
+
 //    void paintEvent(QPaintEvent *e)
 //    {
 //        QPainter p(this);
@@ -286,6 +291,7 @@ MainWidget::MainWidget(){
     connect(&MapButton_Widget->LGButton,&QPushButton::clicked,this,&MainWidget::ShowLG);
     connect(&MapButton_Widget->LHButton,&QPushButton::clicked,this,&MainWidget::ShowLH);
     connect(&Buff_Widget->Time_Widget->timer,&QTimer::timeout,Data_Widget,&DataWidget::UpDate);
+
     connect(&MapButton_Widget->BuffButton,&QPushButton::clicked,this,&MainWidget::ShowBuff);
 
     this->setLayout(MainLayout);
@@ -330,7 +336,10 @@ void MainWidget::ShowTask(){
     animation->setEndValue(QRect(this->geometry().left(),this->geometry().top()+100,Task_Widget->geometry().top(),Task_Widget->geometry().left()));
 
     animation->start();
+    connect(&Task_Widget->UpDataMap,&QPushButton::clicked,this,&MainWidget::UpdataMap);
+
     Task_Widget->exec();
+
     delete Task_Widget;
     Map_Widget->UpDateNPC(SystemMap[Game->Me.PosX][Game->Me.PosY]);
 }

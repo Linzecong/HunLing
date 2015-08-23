@@ -26,9 +26,9 @@ class GameSystem{
         SystemMessage[0].Init();
         SystemBuff[0].Init();
         SystemNPC[0].Init();
-       // Me.Init();
+        Me.Init();
 
-
+/*
 
         Me.LV=98;
         Me.Exp_Need=100000;
@@ -37,9 +37,9 @@ class GameSystem{
         Me.Coin=10;
         Me.PosX=1;
         Me.PosY=1;
-        Me.Ori_Agility=260;
+        Me.Ori_Agility=210;
         Me.Ori_Energy=5000;
-        Me.Ori_Strength=260;
+        Me.Ori_Strength=210;
         Me.Ori_Vitality=110;
         Me.Ori_Sour=200;
 
@@ -127,8 +127,14 @@ class GameSystem{
         a.Agility=SystemHL[18].Agility+a.LV*2;
         Me.LH.append(a);
 
+        Me.LG.Head=CreateLG(SystemHL[15],1);
+        Me.LG.Body=CreateLG(SystemHL[17],2);
+        Me.LG.LHand=CreateLG(SystemHL[12],3);
+        Me.LG.RHand=CreateLG(SystemHL[13],4);
+        Me.LG.LLeg=CreateLG(SystemHL[10],5);
+        Me.LG.RLeg=CreateLG(SystemHL[11],6);
 
-
+*/
 
         Me.UpdateBuff();
 
@@ -151,6 +157,7 @@ class GameSystem{
     static QList<Message> CanTalkList(NPC a,RenWu* b);
     static QList<Task> CanExceptList(NPC a,RenWu* b);
     static QList<NPC> CanShowList(DiTu a);
+    static bool CanAttack(NPC a,RenWu* b);
     static DropData DropItem(QList<HunLing> a);
     template <class T>
     static HunLing CreatHL(T a,LingHuan b){
@@ -311,6 +318,8 @@ QList<LingHuan> GameSystem::CreateLHList(DiTu a){//通过地图，生成灵环�
 
 
 bool GameSystem::CanGoTo(DiTu a){//判断能否去那个地方
+    if(a.Name=="空")
+        return false;
 	return SystemTask[a.NTask].IsFinish;
 }
 
@@ -323,6 +332,11 @@ QList<Message> GameSystem::CanTalkList(NPC a, RenWu *b){//返回一个NPC所能�
 		if (aaa == 0)
 			continue;
         Task temp = SystemTask[SystemMessage[aaa].NTask];//说话所需任务(已完成的任务)
+        if (temp.ID==0){
+           tempList.append(SystemMessage[aaa]);
+           continue;
+        }
+
             for(int j=0;j<b->myTaskList.size();j++)
         if (temp.ID==b->myTaskList[j].ID||temp.ID==0)
                 tempList.append(SystemMessage[aaa]);
@@ -356,7 +370,18 @@ QList<NPC> GameSystem::CanShowList(DiTu a){//返回目前可以显示的NPC
         if (SystemTask[SystemNPC[a.IndexNPC[i]].TaskShow].IsFinish==1&&a.IndexNPC[i]!=0)
             tempList.append(SystemNPC[a.IndexNPC[i]]);
 	}
-	return tempList;
+    return tempList;
+}
+
+bool GameSystem::CanAttack(NPC a, RenWu *b){
+     if(a.CanATK==1)
+       for(int i=0;i<b->myTaskList.size();i++){
+    if(b->myTaskList[i].NKillNPC==a.ID)
+        return true;
+}
+
+return false;
+
 }
 
 DropData GameSystem::DropItem(QList<HunLing> a){//通过魂灵列表生成掉落的东西,特定物品可特定判断

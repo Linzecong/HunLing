@@ -117,6 +117,7 @@ LGWidget::LGWidget(RenWu* a){
     Agility.setText("所需敏捷：");
     DEF_Ski.setText("防御技能：<br>");
     ATK_Ski.setText("攻击技能：<br>");
+    ATK_Ski.setWordWrap(true);
     Add_Str.setText("增加力量：");
     Add_Agi.setText("增加敏捷：");
 

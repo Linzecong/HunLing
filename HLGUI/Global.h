@@ -37,25 +37,26 @@ protected:
         //鼠标移进按钮时，发出声音
         if(this->isEnabled()==true)
             QSound::play(DATAPATH+"鼠标.wav");
-        /*改变图片，通过objectName判断是哪个按钮
+        //改变图片，通过objectName判断是哪个按钮
         if(this->objectName()=="bagbutton")
-                map.load("./Data/背包enter.png");*/
+                map.load("./Data/背包enter.png");
     }
 
     void leaveEvent(QEvent *e){
-        /*鼠标离开时，改变图片，通过objectName判断是哪个按钮
+        //鼠标离开时，改变图片，通过objectName判断是哪个按钮
         if(this->objectName()=="bagbutton")
-            map.load("./Data/背包.png");*/
+            map.load("./Data/背包.png");
     }
 
-    void paintEvent(QPaintEvent *e)
-    {
-        if(map.isNull()==true)
-            MessageBox::about(NULL,"提示","资源出错！");
-        /*绘图
-        QPainter p(this);
-        p.drawPixmap(0,0,map);*/
-    }
+//    void paintEvent(QPaintEvent *e)
+//    {
+//         map.load("./Data/背包.png");
+//        //if(map.isNull()==true)
+//           // MessageBox::about(NULL,"提示","资源出错！");
+//        //绘图
+//       // QPainter p(this);
+//       // p.drawPixmap(0,0,map);
+//    }
 };
 
 class TimeWidget: public QWidget{

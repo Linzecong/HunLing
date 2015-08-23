@@ -115,7 +115,12 @@ void TaskMsgWidget::List_Click(){
     Name.setText("任务名称："+b.Name);
     Des.setText("任务简介："+b.Des);
     MB_FMB.setText("任务进度："+QString::number(b.FMB)+"/"+QString::number(b.MB));
-    Reward.setText("任务奖励：<br>金钱："+QString::number(b.A_Coin)+"<br>经验："+QString::number(b.A_Exp)+"<br>道具："+SystemItem[b.A_Item].Name+" * "+QString::number(b.A_Count)+"个");
+
+    QString str="任务奖励：<br>金钱："+QString::number(b.A_Coin)+"<br>经验："+QString::number(b.A_Exp)+"<br>";
+    if(b.A_Item!=0)
+    Reward.setText(str+SystemItem[b.A_Item].Name+"x"+QString::number(b.A_Count)+"个");
+    else
+    Reward.setText(str);
 }
 
 /*一个小框框，用于显示NPC*/
@@ -139,6 +144,8 @@ public:
     ~MapNPCWidget(){}
     void UpDateAll(RenWu* temp,NPC a);//更新
     void Clear();//清除
+
+    QPushButton UpDataALLATK;//用于更新是否可攻击
 
 };
 
@@ -169,6 +176,8 @@ MapNPCWidget::MapNPCWidget(){
     Talk.setFixedSize(70,28);
     Attack.setText("攻击");
     Attack.setFixedSize(70,28);
+
+
     MainLayout->addWidget(&Head);
     MainLayout->addWidget(&Name);
     MainLayout->addWidget(&LV);
@@ -207,9 +216,21 @@ void MapNPCWidget::UpDateAll(RenWu* temp,NPC a){
     LV.setText("等级："+QString::number(tempNPC.LV));
     Task.setText("任务");
 
+
+    TaskMsg=new TaskMsgWidget(Me,GameSystem::CanExceptList(tempNPC,Me));
+
+
+    if(tempNPC.myTaskList.isEmpty()==true||TaskMsg->tempTask.isEmpty()==true)
+        Task.setEnabled(false);
+    else
+        Task.setEnabled(true);
+
+
     Talk.setText("交谈");
-    if(tempNPC.CanATK==0)
+    if(GameSystem::CanAttack(a,temp)==false)
         Attack.setEnabled(false);
+    else
+        Attack.setEnabled(true);
     Attack.setText("攻击");
 
     if(tempNPC.Name=="空")
@@ -229,12 +250,24 @@ void MapNPCWidget::Attack_Click(){
     FightWidget* Battle=new FightWidget(Me,tempNPC);
     //Battle->setWindowFlags(Qt::FramelessWindowHint);
     Battle->exec();
+
+    /*处理开场事件*/
+
+
+
+
+
+
+
     if(Battle->WinOrLose==1){
         Me->UpDateTask(tempNPC.ID,KILLNPC);
         SystemNPC[tempNPC.ID].CanATK=0;
         Me->ExceptReward(Battle->Reward);
         Attack.setEnabled(false);
         SystemNPC[tempNPC.ID].TaskShow=199;
+
+
+
     }
     delete Battle;
 }
@@ -247,6 +280,11 @@ void MapNPCWidget::Task_Click(){
     }
     TaskMsg->exec();
     delete TaskMsg;
+
+    UpDateAll(Me,tempNPC);
+
+    UpDataALLATK.click();
+
 
 }
 

@@ -38,6 +38,8 @@ public:
     ~MapWidget(){}
     void UpDate(DiTu a);//跳转地图后，更新当前界面
     void UpDateNPC(DiTu a);//完成任务后更新地图NPC
+
+    void UpDateNPCATK();//更新是否可以攻击
 };
 
 MapWidget::MapWidget(DiTu a,RenWu* b){
@@ -91,6 +93,9 @@ MapWidget::MapWidget(DiTu a,RenWu* b){
     MainLayout->addLayout(LLayout2);
     this->setLayout(MainLayout);
 
+    for(int i=0;i<10;i++)
+    connect(&MapNPC[i].UpDataALLATK,&QPushButton::clicked,this,&MapWidget::UpDateNPCATK);
+
 }
 
 void MapWidget::UpDate(DiTu a){
@@ -120,6 +125,17 @@ void MapWidget::UpDate(DiTu a){
 
 void MapWidget::UpDateNPC(DiTu a){//专门用于只更新NPC
     Map=a;
+    NPC_List=GameSystem::CanShowList(Map);
+
+    for(int i=0;i<9;i++)
+        MapNPC[i].Clear();
+
+    for(int i=0;i<NPC_List.size();i++)
+        MapNPC[i].UpDateAll(Me,NPC_List[i]);
+
+}
+
+void MapWidget::UpDateNPCATK(){//专门用于只更新NPC
     NPC_List=GameSystem::CanShowList(Map);
 
     for(int i=0;i<9;i++)
