@@ -34,25 +34,17 @@ int GetNumber(int a, int b){//获得随机数
 
 class DiTu{
 public:
-    QString Name;
-    QString Des;
-    int IndexNPC[10];//会出现的NPC
-    int IndexHL[10];//会出现的魂兽
-    int MaxLV;
-    int MinLV;
-    int NTask;//到这里需要完成哪个任务
-    int PosX;
-    int PosY;
-    int HLCount;//魂兽会出现的最大数量
-    void Init();
-    DiTu(){
-        Name=Des="空";
-        for(int i=0;i<10;i++)
-            IndexHL[i]=IndexNPC[i]=0;
-        MaxLV=MinLV=NTask=0;
-        PosX=PosY=0;
-        HLCount=0;
-    }
+    QString Name="空";
+    QString Des="空";
+    int IndexNPC[10]{0,0,0,0,0,0,0,0,0,0};//会出现的NPC
+    int IndexHL[10]{0,0,0,0,0,0,0,0,0,0};//会出现的魂兽
+    int MaxLV=0;
+    int MinLV=0;
+    int NTask=0;//到这里需要完成哪个任务
+    int PosX=0;
+    int PosY=0;
+    int HLCount=0;//魂兽会出现的最大数量
+    static void Init();
 }SystemMap[MAPMAX][MAPMAX];
 
 void DiTu::Init(){

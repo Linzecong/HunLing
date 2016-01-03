@@ -14,29 +14,24 @@ public:
     QList<HunLing*> Me;
     QList<HunLing*> Enemy;
     QList<double> List;//敌人再自己
-    double totle;//能量最大值
-    int type;// 敌人还是自己,0敌人1自己
-    int index;
+    double Total=0;//能量最大值
+    int Type=0;// 敌人还是自己,0敌人1自己
+    int Index=0;
 public:
     EnergyBar(QList<HunLing*> a,QList<HunLing*> b);
     ~EnergyBar(){}
     void next();
 
 };
-EnergyBar::EnergyBar(QList<HunLing*> a, QList<HunLing*> b){
-    Enemy=b;
-    Me=a;
-    totle=0;
+EnergyBar::EnergyBar(QList<HunLing*> a, QList<HunLing*> b):Enemy(b),Me(a){
     for(int i=0;i<Enemy.size();i++){//统计能量最大值
-        totle+=Enemy[i]->Agility*500;
+        Total+=Enemy[i]->Agility*500;
         List.append(Enemy[i]->Agility);
     }
     for(int i=0;i<Me.size();i++){
-        totle+=Me[i]->Agility*500;
+        Total+=Me[i]->Agility*500;
         List.append(Me[i]->Agility);
     }
-    type=0;
-    index=0;
 }
 
 void EnergyBar::next(){
@@ -49,17 +44,16 @@ void EnergyBar::next(){
                 List[i]+=Me[i-Enemy.size()]->Agility;
         }
         for(int i=0;i<List.size();i++){
-            if(List[i]>=totle){//如果大于能量最大值
-                List[i]-=totle;//循环
+            if(List[i]>=Total){//如果大于能量最大值
+                List[i]-=Total;//循环
                 if(i>=Enemy.size()){
-                    type=1;
-                    index=i-Enemy.size();
+                    Type=1;
+                    Index=i-Enemy.size();
                 }
                 else{
-                    type=0;
-                    index=i;
+                    Type=0;
+                    Index=i;
                 }
-
                 stop=1;
                 break;
 
@@ -81,7 +75,7 @@ public:
 public:
     void SetBuff();//初始化后自动调用，设置Buff效果
     FightSystem(RenWu* a, NPC* b,QList<HunLing*> a1,QList<HunLing*> b1);
-    void TurnOut();				// 技能-1
+    void TurnOut();				// 技能冷却-1
     QString Attack(HunLing * a, HunLing * b);//攻击
     QString Skill(HunLing * a, HunLing* b, HunJi * skill);//技能，直接传入技能。单体。
     QString Skill(HunLing * a, QList<HunLing*> b, HunJi * skill);//技能，直接传入技能。全体。注意replace
@@ -130,12 +124,14 @@ public:
 
 
 
-FightSystem::FightSystem(RenWu* a, NPC *b, QList<HunLing *> a1, QList<HunLing *> b1){
-    Me = a;
-    Enemy= b;
-    MyHL=a1;
-    EnemyHL=b1;
-    Turn = 1;
+FightSystem::FightSystem(RenWu* a, NPC *b, QList<HunLing *> a1, QList<HunLing *> b1)
+    :Me(a),
+    Enemy(b),
+    MyHL(a1),
+    EnemyHL(b1),
+    Turn(1)
+{
+    //重置冷却时间
     for (int i = 0; i < MyHL.size(); i++)
         MyHL[i]->ATK_Ski.NowTurn=0;
 
@@ -160,7 +156,7 @@ FightSystem::FightSystem(RenWu* a, NPC *b, QList<HunLing *> a1, QList<HunLing *>
 }
 
 
-void FightSystem::UpdateVIT(){
+void FightSystem::UpdateVIT(){//更新体力值
     for(int i=0;i<MyHL.size();i++){
         MyHL[i]->VIT =(((MyHL[i]->LV+MyHL[i]->VIT_Vit) * MyHL[i]->LV*Me->Vitality)+(Me->Vitality+MyHL[i]->Strength)*Me->Vitality)/(10+MyHL[i]->LV/10);
         if(MyHL[i]->VIT<MyHL[i]->VITNOW)
@@ -233,7 +229,7 @@ int FightSystem::CanGoOn(){// 判断能否继续。0我输，1继续，-1赢了,
     return n;//注意初始化掉落
 }
 
-QString FightSystem::Attack(HunLing * a, HunLing * b){
+QString FightSystem::Attack(HunLing * a, HunLing * b){//a
     int Point=int(ATKPoint(*a,*b,0,1));
     b->VITNOW -= Point;//important
     if (b->VITNOW <= 0){

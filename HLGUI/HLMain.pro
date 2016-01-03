@@ -4,7 +4,7 @@ greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 QT += multimedia
 TARGET = HLMain
 TEMPLATE = app
-
+CONFIG+=c++14
 SOURCES += main.cpp
 
 HEADERS  += \
@@ -18,17 +18,6 @@ HEADERS  += \
     FightWidget.h \
     MainWidget.h \
     MapWidget.h \
-    HLQTData/HL_DiTu.h \
-    HLQTData/HL_FightSystem.h \
-    HLQTData/HL_GameSystem.h \
-    HLQTData/HL_HunJi.h \
-    HLQTData/HL_HunLing.h \
-    HLQTData/HL_Item.h \
-    HLQTData/HL_LingGu.h \
-    HLQTData/HL_LingHuan.h \
-    HLQTData/HL_NPC.h \
-    HLQTData/HL_RenWu.h \
-    HLQTData/HL_Task.h \
     ../HLBase/HL_DiTu.h \
     ../HLBase/HL_FightSystem.h \
     ../HLBase/HL_GameSystem.h \

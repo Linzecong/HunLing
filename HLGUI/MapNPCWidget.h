@@ -298,7 +298,7 @@ void MapNPCWidget::Talk_Click(){
     Des.setWindowFlags(Qt::CustomizeWindowHint);
     Des.show();
     if(temp.isEmpty()==true)
-        MessageBox::about(this,"你好！","你好！");
+        MessageBox::about(this,"。。。","（没有话）");
     for(int i=0;i<temp.size();i++)
         MessageBox::about(this,"对话中",temp[i].Msg);
     Des.close();
